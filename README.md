@@ -13,7 +13,7 @@ npm install
 npm run dev
 ```
 
-The dev server prints a local URL. Start at `/` (the manufacturer list), then open `/about`, `/manufacturers`, and `/manufacturers/liberty-tabletop`.
+The dev server prints a local URL. Start at `/` (the manufacturer list). The header is the logo, Categories, and How we rate. Open `/categories`, `/how-we-rate`, and `/manufacturers/liberty-tabletop`. `/about` and `/manufacturers` redirect to the rating page and the list.
 
 ## Build
 

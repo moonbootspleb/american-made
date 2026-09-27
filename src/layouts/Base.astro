@@ -37,16 +37,13 @@ const current = (href: string) => {
     <a class="skip" href="#content">Skip to content</a>
     <header class="site-header">
       <div class="header-inner">
-        <a class="wordmark" href="/">
+        <a class="wordmark" href="/" aria-current={current('/')}>
           <span class="mark" aria-hidden="true"><span class="mark__rivet"></span><span class="mark__rivet"></span></span>
           <strong>{siteName}</strong>
         </a>
         <nav class="nav" aria-label="Primary">
-          <a href="/" aria-current={current('/')}>Home</a>
           <a href="/categories" aria-current={current('/categories')}>Categories</a>
-          <a href="/manufacturers" aria-current={current('/manufacturers')}>Manufacturers</a>
           <a href="/how-we-rate" aria-current={current('/how-we-rate')}>How we rate</a>
-          <a href="/about" aria-current={current('/about')}>How this works</a>
         </nav>
       </div>
     </header>
@@ -60,8 +57,6 @@ const current = (href: string) => {
           <a href="/categories">Categories</a>
           <span aria-hidden="true"> · </span>
           <a href="/how-we-rate">How we rate</a>
-          <span aria-hidden="true"> · </span>
-          <a href="/about">How this works</a>
         </p>
       </div>
     </footer>
