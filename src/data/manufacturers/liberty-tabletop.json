@@ -29,6 +29,12 @@
     "short": "Current stainless flatware. Contract work ran in Toluca, Mexico, during the bankruptcy years, and reporting says it returned in 2014.",
     "confidence": "reported"
   },
+  "automation": {
+    "heavilyAutomated": true,
+    "label": "Heavily automated",
+    "note": "Reported, not a floor audit. Owens said in 2016 that almost every stage is automated. A 2025 report describes a robotic stamper in the plant. The company also describes polishers and hand packing.",
+    "sources": ["spectrum-2016", "rome-2025", "about", "pr-2025"]
+  },
   "lede": [
     {
       "text": "Liberty Tabletop is the consumer brand of Sherrill Manufacturing, a private company in Sherrill, New York. Greg Owens and Matthew Roberts, both former Oneida Ltd. managers, started it in 2005 and took up flatware work in the former Oneida plant after Oneida stopped production there.",
@@ -79,6 +85,10 @@
         {
           "text": "The badge is the current plant, and the Mexico chapter stays visible. The company history page describes the 2010 Chapter 11 case and a late-2013 exit, and it does not mention Toluca. Syracuse.com reported in May 2014 that the company had stopped production in Sherrill during the bankruptcy, shifted it to a contract manufacturer in Toluca, and was bringing that work back. Wikipedia, summarizing local coverage, places the return of government and contract manufacturing in June 2014. The customer-service address on the company site is a suite at 102 East Seneca Street. This profile does not treat that suite as the verified street address of the factory floor.",
           "sources": ["history", "syracuse-2014", "wikipedia", "about"]
+        },
+        {
+          "text": "Automation is on the record for this plant, and it is not a machine inventory. On October 1, 2016, during a public tour, Owens told Spectrum News that Oneida had spent about thirty years from the 1970s automating what it could, and that almost every stage of the process was automated to the max. He was describing the process visitors would see that day. Chief Executive wrote on March 20, 2020 that the business model was based on high levels of factory automation. That sentence is the magazine's, not a quote. On March 2, 2025, the Rome Sentinel described a MARQ4 Automation machine at the Sherrill plant that stamps stainless flatware and drops it in a catch bin, and ran a February 6, 2025 photo of Owens with the machine. The September 9, 2025 press release still says the flatware is hand-packed, and the about page names polishers and packers. Those accounts sit together here. None of them counts how many steps run unattended.",
+          "sources": ["spectrum-2016", "chief-2020", "rome-2025", "pr-2025", "about"]
         }
       ]
     },
@@ -181,6 +191,13 @@
       "sources": ["bi-2021"]
     },
     {
+      "sortDate": "2025-02-06",
+      "dateLabel": "February 6, 2025",
+      "title": "A robotic stamper is reported on the floor",
+      "text": "The Rome Sentinel reported on March 2, 2025 that a MARQ4 Automation machine at the Sherrill plant stamps stainless flatware and delivers it into a catch bin. The story includes a February 6 photo of Owens with the machine. Roberts called 2025 a year of efficiency and said the company was investing in new technology. The article does not say the machine replaced the rest of the line.",
+      "sources": ["rome-2025"]
+    },
+    {
       "sortDate": "2025-04-15",
       "dateLabel": "April 15, 2025",
       "title": "The company publishes its 20-year account",
@@ -234,6 +251,10 @@
     {
       "text": "The two Syracuse.com articles did not return full text to our reader while this profile was built. Facts taken from them follow the articles as published and indexed, and where Wikipedia summarizes the same reporting that is noted in the entry. Dollar figures, the Drummond loan, and the headcounts from those stories should be read with that limit.",
       "sources": ["syracuse-2014", "syracuse-2016", "wikipedia"]
+    },
+    {
+      "text": "The share of today's work that is automated is not established. Owens's October 2016 line, Chief Executive's March 2020 description, and the March 2025 report of one robotic stamper do not say what portion of the current line runs without a person. The company still describes hand packing and polishers. No floor audit was reviewed.",
+      "sources": ["spectrum-2016", "chief-2020", "rome-2025", "pr-2025", "about"]
     }
   ],
   "sources": [
@@ -322,6 +343,33 @@
       "url": "https://en.wikipedia.org/wiki/Sherrill_Manufacturing",
       "kind": "reference",
       "note": "Encyclopedia summary, read September 27, 2026. Used where it adds the May 2005 restart, the private-company styling, and workforce figures it draws from local news. Prefer the company pages and the news articles where those were read directly. The underlying 2013 Syracuse.com bankruptcy story was not opened, so Wikipedia's purchase-price and sale-leaseback details stay in the limits section."
+    },
+    {
+      "id": "spectrum-2016",
+      "title": "Take a Look Inside the Only Flatware Manufacturing Factory in the United States",
+      "publisher": "Spectrum News, Melissa Krull",
+      "date": "2016-10-01",
+      "url": "https://spectrumnews1.com/news/2016/10/1/inside-the-country-s-only-flatware-manufacturing-factory",
+      "kind": "news",
+      "note": "Read September 27, 2026. Owens, identified as CEO, says almost every stage of the process is automated to the max, on a public tour of the Sherrill plant. The page is a short tour story, not a machine list. The first sentence of the quotation describes Oneida's automation program from the 1970s. The next sentences are present tense."
+    },
+    {
+      "id": "chief-2020",
+      "title": "Sherrill Manufacturing Co-Founders Step Up As Co-Leaders During Pandemic",
+      "publisher": "Chief Executive, Dale Buss",
+      "date": "2020-03-20",
+      "url": "https://chiefexecutive.net/sherrill-manufacturing-co-founders-step-up-as-co-leaders-during-pandemic/",
+      "kind": "news",
+      "note": "Read September 27, 2026. The line about high levels of factory automation is the writer's description of the business model, not a quotation from Owens or Roberts."
+    },
+    {
+      "id": "rome-2025",
+      "title": "Sherrill Manufacturing continues proud flatware tradition",
+      "publisher": "Rome Sentinel, Mike Jaquays",
+      "date": "2025-03-02",
+      "url": "https://www.romesentinel.com/news/sherrill-manufacturing-continues-proud-flatware-tradition/article_fd7986ae-e3e2-11ef-882e-bfe2121c4982.html",
+      "kind": "news",
+      "note": "Read September 27, 2026. Describes one MARQ4 Automation stamper at the plant and a February 6, 2025 photo of Owens with it. One machine is not treated as a full survey of the floor."
     }
   ]
 }

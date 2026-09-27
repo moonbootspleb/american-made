@@ -23,12 +23,12 @@ const current = (href: string) => {
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="description" content={description} />
-    <meta name="theme-color" content="#efe6d6" />
+    <meta name="theme-color" content="#232522" />
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,560;9..144,620&family=IBM+Plex+Mono:wght@400;500&family=Source+Sans+3:ital,wght@0,400;0,600;0,700;1,400&display=swap"
+      href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&display=swap"
       rel="stylesheet"
     />
     <title>{fullTitle}</title>
@@ -38,12 +38,13 @@ const current = (href: string) => {
     <header class="site-header">
       <div class="header-inner">
         <a class="wordmark" href="/">
-          <span class="mark" aria-hidden="true"><span></span><span></span><span></span></span>
+          <span class="mark" aria-hidden="true"><span class="mark__rivet"></span><span class="mark__rivet"></span></span>
           <strong>{siteName}</strong>
         </a>
         <nav class="nav" aria-label="Primary">
           <a href="/" aria-current={current('/')}>Home</a>
           <a href="/manufacturers" aria-current={current('/manufacturers')}>Manufacturers</a>
+          <a href="/about" aria-current={current('/about')}>How this works</a>
         </nav>
       </div>
     </header>
@@ -52,8 +53,8 @@ const current = (href: string) => {
     </main>
     <footer class="site-footer">
       <div class="footer-inner">
-        <p style="margin:0">{siteName}. Manufacturer records, with the sources left in view.</p>
-        <p style="margin:0"><a href="/manufacturers">Manufacturer index</a></p>
+        <p style="margin:0">Manufacturer records. The sources stay on the page.</p>
+        <p style="margin:0"><a href="/about">How this works</a></p>
       </div>
     </footer>
   </body>

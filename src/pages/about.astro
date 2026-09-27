@@ -1,0 +1,79 @@
+---
+import Base from '../layouts/Base.astro';
+---
+
+<Base
+  title="How this works"
+  description="How this site records who owns a manufacturer, where the work happens, and when a shop is heavily automated."
+>
+  <p class="crumb">
+    <a href="/">Home</a>
+    <span aria-hidden="true"> / </span>
+    <span>How this works</span>
+  </p>
+  <div class="page-intro">
+    <p class="eyebrow">About</p>
+    <h1>How this works</h1>
+    <p class="lede">A file on each manufacturer. Two facts, kept apart.</p>
+  </div>
+
+  <section class="section" aria-labelledby="two-lines">
+    <h2 id="two-lines">The two lines</h2>
+    <div class="questions" style="margin-top:1.25rem">
+      <article class="question">
+        <p class="kicker">01</p>
+        <h3>Who owns and runs it</h3>
+        <p>
+          Who owns the company, and who runs it day to day. A plant in the United States with a foreign parent stays on the foreign-parent side of this line. The factory address does not change the owner.
+        </p>
+      </article>
+      <article class="question">
+        <p class="kicker">02</p>
+        <h3>Where it is made</h3>
+        <p>
+          Where the manufacturing happens. A company owned in the United States and producing abroad is recorded as not made in the USA, or as split when the work really is in more than one place.
+        </p>
+      </article>
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="filed">
+    <h2 id="filed">What gets filed</h2>
+    <div class="stack" style="margin-top:1rem">
+      <p class="prose">
+        Each company is a JSON file in this site’s repository. The page is that file. Profiles are not kept in Netlify Blobs.
+      </p>
+      <p class="prose">
+        The page stays on the manufacturer: owners, plant, dated changes, sources. Patterns and prices stay on the company’s own site.
+      </p>
+      <p class="prose">
+        A made-in-USA directory can put a name on a lead list. It does not fill this one, and this site does not copy that directory’s filters or product grids.
+      </p>
+      <p class="prose">
+        If a document is missing, or two accounts disagree, the profile says so. A fact that was not read is not written up as established.
+      </p>
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="automation">
+    <h2 id="automation">When a shop is heavily automated</h2>
+    <div class="stack" style="margin-top:1rem">
+      <p class="prose">
+        Some companies are American-founded, American-owned, and American-run, and the plant is also heavily automated. When the sources support that, the file can include a short note: a label, a sentence or two, and the source ids.
+      </p>
+      <p class="prose">
+        The note is a fact about the shop. It is not a warning. It does not move the company down the list or off it. The list on the front page is alphabetical.
+      </p>
+      <p class="prose">
+        If the sources do not establish how automated the plant is, leave the field off. An empty field means not established. It does not mean someone verified a fully manual shop, and the file should not store <span class="path">heavilyAutomated: false</span>.
+      </p>
+      <p class="prose">
+        Set the note only when the ownership line is already American-owned and American-run, and the write-up supports an American founding. A foreign-owned plant does not get this note. Using some machines is not enough. The sources have to support calling the shop heavily automated.
+      </p>
+    </div>
+  </section>
+
+  <p style="margin-top:2rem">
+    <a href="/">Back to the list</a>
+  </p>
+</Base>

@@ -1,89 +1,53 @@
 ---
 import Base from '../layouts/Base.astro';
-import StatusBadges from '../components/StatusBadges.astro';
-import { getFeaturedManufacturers, placeLine } from '../lib/manufacturers';
+import ManufacturerCard from '../components/ManufacturerCard.astro';
+import { getAllManufacturers } from '../lib/manufacturers';
 
-const featured = getFeaturedManufacturers();
+const profiles = getAllManufacturers();
+const countLabel =
+  profiles.length === 1 ? '1 manufacturer on the list.' : `${profiles.length} manufacturers on the list.`;
 ---
 
 <Base
-  description="A sourced record of American manufacturers. Two separate questions: who owns and runs the company, and where the manufacturing happens."
+  description="A list of manufacturers. Each record separates who owns and runs the company from where the manufacturing happens."
 >
-  <p class="eyebrow">A manufacturer record</p>
-  <h1>American Made Accountability</h1>
-  <div class="stack" style="margin-top:1.25rem">
-    <p class="lede">
-      This is a public record of manufacturers. Every profile asks two questions, and each answer has to stand on its own: who owns and runs the company, and where the manufacturing happens.
-    </p>
-    <p class="prose">
-      The pages are written for adults. The tone can be warm. The claims stay tied to sources. When a document is missing, or two accounts disagree, the page says so in plain language.
+  <div class="page-intro">
+    <p class="eyebrow">The list</p>
+    <h1>Manufacturers</h1>
+    <p class="lede">Who owns and runs the company, and where the manufacturing happens.</p>
+    <p class="page-intro__meta">
+      <span>{countLabel}</span>
+      <a href="/about">How this works</a>
     </p>
   </div>
 
-  <section class="section" aria-labelledby="two-questions">
-    <p class="kicker">The standard</p>
-    <h2 id="two-questions">Two badges, read apart</h2>
-    <div class="questions" style="margin-top:1.25rem">
-      <article class="question">
-        <p class="kicker">01</p>
-        <h3>Ownership and control</h3>
-        <p>
-          Who owns the company, and who runs it day to day. A U.S. plant with a foreign parent takes the foreign-parent result on this badge. Making goods inside the United States does not change the owner.
-        </p>
-      </article>
-      <article class="question">
-        <p class="kicker">02</p>
-        <h3>Where the work happens</h3>
-        <p>
-          Where the manufacturing actually takes place. A company owned in the United States and producing abroad takes the made-abroad result on this badge. That result is recorded as made abroad.
-        </p>
-      </article>
-    </div>
-  </section>
+  {
+    profiles.length === 0 ? (
+      <p class="prose">No manufacturers are filed yet.</p>
+    ) : (
+      <div class="card-grid" id="list">
+        {profiles.map((profile) => (
+          <ManufacturerCard profile={profile} />
+        ))}
+      </div>
+    )
+  }
 
-  <section class="section" aria-labelledby="featured">
-    <p class="kicker">On the record</p>
-    <h2 id="featured">Featured manufacturer</h2>
-    {
-      featured.length === 0 ? (
-        <p class="prose">No featured profile is published yet.</p>
-      ) : (
-        <div class="card-grid" style="margin-top:1.25rem">
-          {featured.map((profile) => (
-            <a class="card" href={`/manufacturers/${profile.slug}`}>
-              <p class="eyebrow">{profile.category}</p>
-              <h2>{profile.name}</h2>
-              <p class="quiet" style="margin:0">
-                {profile.legalName} · {placeLine(profile)}
-              </p>
-              <StatusBadges ownership={profile.ownership} manufacturing={profile.manufacturing} />
-              <p class="deck" style="margin:0">
-                {profile.deck}
-              </p>
-              <p style="margin:0;font-weight:700">Read the full profile</p>
-            </a>
-          ))}
-        </div>
-      )
-    }
-    <p class="prose" style="margin-top:1.25rem">
-      <a href="/manufacturers">Go to the manufacturer index</a>
-    </p>
-  </section>
-
-  <section class="section" aria-labelledby="how">
-    <p class="kicker">How a name gets here</p>
-    <h2 id="how">Files in the repository, not a shopping directory</h2>
-    <div class="stack" style="margin-top:1rem">
-      <p class="prose">
-        Each manufacturer is a JSON file in this site’s repository. The published page is that file, rendered. Profiles are not stored in Netlify Blobs, and they are not pulled from a live catalog.
+  <details class="fold">
+    <summary>How a record is written</summary>
+    <div class="stack">
+      <p>
+        The two lines on a card are separate. A plant in the United States does not make a foreign parent American. A U.S. owner does not make an overseas factory domestic.
       </p>
-      <p class="prose">
-        Made-in-USA directories are lead lists. A name found there can be worth a look. It is not a profile, and this site does not copy a directory’s layout, filters, or product grids.
+      <p>
+        A company is added as a JSON file in this repository. Factual sentences carry sources. If a document is missing, or two accounts disagree, the profile says so.
       </p>
-      <p class="prose">
-        A profile stays on the manufacturer: the company, the plant, the owners, the dated changes, and the sources. Patterns and prices stay on the company’s own website.
+      <p>
+        When the sources support it, an American-founded, American-owned, American-run company can also carry a short note that the shop is heavily automated. The note does not change that company’s place on the list.
+      </p>
+      <p>
+        <a href="/about">The full version</a>
       </p>
     </div>
-  </section>
+  </details>
 </Base>

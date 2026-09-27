@@ -1,0 +1,25 @@
+---
+import CitedText from './CitedText.astro';
+import type { Manufacturer } from '../lib/manufacturers';
+
+interface Props {
+  label: string;
+  note: string;
+  sources?: string[];
+  profile?: Manufacturer;
+}
+
+const { label, note, sources, profile } = Astro.props;
+const cited = Boolean(sources?.length && profile);
+---
+
+<aside class="shop-note">
+  <p class="shop-note__label">{label}</p>
+  {
+    cited && profile && sources ? (
+      <CitedText class="shop-note__text" text={note} sources={sources} profile={profile} />
+    ) : (
+      <p class="shop-note__text">{note}</p>
+    )
+  }
+</aside>

@@ -63,6 +63,28 @@ export const manufacturerSchema = z.object({
     short: z.string().min(1),
     confidence,
   }),
+  /**
+   * Optional shop note for an American-founded, American-owned, American-run
+   * manufacturer whose plant is heavily automated.
+   *
+   * Omit the object when that is not established. Do not set
+   * `heavilyAutomated` to false: absence means "not established," not
+   * "verified as a hand shop."
+   *
+   * The note is a sourced fact. It is not a warning, and it must not change
+   * list order or keep a company off the list. `label` is the short stamp
+   * (for example "Heavily automated"). `note` is one or two concrete sentences.
+   * `sources` must cite ids in `sources` and are required whenever the object
+   * is present.
+   */
+  automation: z
+    .object({
+      heavilyAutomated: z.boolean(),
+      label: z.string().min(1).max(40),
+      note: z.string().min(1).max(320),
+      sources: z.array(z.string().min(1)).min(1),
+    })
+    .optional(),
   lede: z.array(cited).min(1),
   sections: z
     .array(
@@ -145,6 +167,19 @@ function loadManufacturers(): Manufacturer[] {
     for (const block of profile.openQuestions) {
       take(block.sources, 'open question');
     }
+    if (profile.automation) {
+      if (!profile.automation.heavilyAutomated) {
+        throw new Error(
+          `${path} sets automation.heavilyAutomated to false. Omit automation when it is not established.`,
+        );
+      }
+      if (profile.ownership.code !== 'american-owned-and-run') {
+        throw new Error(
+          `${path} has an automation note, which is only for a company already recorded as American-owned and American-run. Ownership code is "${profile.ownership.code}".`,
+        );
+      }
+      take(profile.automation.sources, 'automation note');
+    }
 
     for (const id of sourceIds) {
       if (!citedIds.has(id)) {
@@ -155,6 +190,7 @@ function loadManufacturers(): Manufacturer[] {
     return profile;
   });
 
+  // Alphabetical by name. `featured` and `automation` do not change order.
   return profiles.sort((a, b) => a.name.localeCompare(b.name));
 }
 
