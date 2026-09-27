@@ -1,5 +1,6 @@
 ---
 import Base from '../layouts/Base.astro';
+import CategoryStrip from '../components/CategoryStrip.astro';
 import ManufacturerCard from '../components/ManufacturerCard.astro';
 import { getAllManufacturers } from '../lib/manufacturers';
 
@@ -9,17 +10,20 @@ const countLabel =
 ---
 
 <Base
-  description="A list of manufacturers. Each record separates who owns and runs the company from where the manufacturing happens."
+  description="A list of manufacturers, with shelves for what they make. Each card shows who owns the company, where the work happens, and a sourced American rating."
 >
   <div class="page-intro">
     <p class="eyebrow">The list</p>
     <h1>Manufacturers</h1>
-    <p class="lede">Who owns and runs the company, and where the manufacturing happens.</p>
+    <p class="lede">Who makes it, who owns the company, and where the work happens.</p>
     <p class="page-intro__meta">
       <span>{countLabel}</span>
+      <a href="/how-we-rate">How we rate</a>
       <a href="/about">How this works</a>
     </p>
   </div>
+
+  <CategoryStrip />
 
   {
     profiles.length === 0 ? (
@@ -43,7 +47,10 @@ const countLabel =
         A company is added as a JSON file in this repository. Factual sentences carry sources. If a document is missing, or two accounts disagree, the profile says so.
       </p>
       <p>
-        When the sources support it, an American-founded, American-owned, American-run company can also carry a short note that the shop is heavily automated. The note does not change that company’s place on the list.
+        When the sources support it, an American-founded, American-owned, American-run company can also carry a short note that the shop is heavily automated. The note does not change that company’s place on the list. The number on a card is three sourced lines. Automation is shown on that number and worth zero.
+      </p>
+      <p>
+        <a href="/how-we-rate">How the number is built</a>
       </p>
       <p>
         <a href="/about">The full version</a>

@@ -27,17 +27,36 @@ const manufacturingCode = z.enum([
   'unverified',
 ]);
 
+const inputsCode = z.enum(['american', 'partial', 'not-american', 'unknown']);
+
+const slug = z.string().regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/);
+
+export const categorySchema = z.object({
+  slug,
+  name: z.string().min(1),
+  description: z.string().min(1),
+  shopper: z.string().min(1),
+});
+
 const cited = z.object({
   text: z.string().min(1),
   sources: z.array(z.string().min(1)).min(1),
 });
 
 export const manufacturerSchema = z.object({
-  slug: z.string().regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/),
+  slug,
   name: z.string().min(1),
   legalName: z.string().min(1),
   featured: z.boolean(),
-  category: z.string().min(1),
+  categories: z.array(slug).min(1),
+  products: z
+    .array(
+      z.object({
+        name: z.string().min(1).max(80),
+        category: slug,
+      }),
+    )
+    .min(1),
   deck: z.string().min(1),
   lastReviewed: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
   location: z.object({
@@ -63,6 +82,21 @@ export const manufacturerSchema = z.object({
     short: z.string().min(1),
     confidence,
   }),
+  /**
+   * Where the materials come from. Omit when that is not established.
+   * `partial` means the sources support an incomplete American-inputs account.
+   * `unknown` is allowed on the object, and so is omitting the object.
+   * Either way the rating leaves the line out or marks it unknown. Do not invent a full score.
+   */
+  inputs: z
+    .object({
+      code: inputsCode,
+      label: z.string().min(1).max(80),
+      short: z.string().min(1).max(320),
+      confidence,
+      sources: z.array(z.string().min(1)).min(1),
+    })
+    .optional(),
   /**
    * Optional shop note for an American-founded, American-owned, American-run
    * manufacturer whose plant is heavily automated.
@@ -112,7 +146,45 @@ export const manufacturerSchema = z.object({
 });
 
 export type Manufacturer = z.infer<typeof manufacturerSchema>;
+export type Category = z.infer<typeof categorySchema>;
 export type CitedBlock = z.infer<typeof cited>;
+
+const categoryModules = import.meta.glob('../data/categories/*.json', {
+  eager: true,
+  import: 'default',
+});
+
+function loadCategories(): Category[] {
+  const categories = Object.entries(categoryModules).map(([path, raw]) => {
+    const parsed = categorySchema.safeParse(raw);
+    if (!parsed.success) {
+      const detail = parsed.error.issues
+        .map((issue) => `${issue.path.join('.')}: ${issue.message}`)
+        .join('\n');
+      throw new Error(`Invalid category ${path}\n${detail}`);
+    }
+    const fileSlug = path.split('/').pop()?.replace(/\.json$/, '');
+    if (fileSlug !== parsed.data.slug) {
+      throw new Error(
+        `${path} must use slug "${fileSlug}" so the filename and the shelf match. Found "${parsed.data.slug}".`,
+      );
+    }
+    return parsed.data;
+  });
+
+  const seen = new Set<string>();
+  for (const category of categories) {
+    if (seen.has(category.slug)) {
+      throw new Error(`Category slug "${category.slug}" is repeated.`);
+    }
+    seen.add(category.slug);
+  }
+
+  return categories.sort((a, b) => a.name.localeCompare(b.name));
+}
+
+const categories = loadCategories();
+const categoryBySlug = new Map(categories.map((category) => [category.slug, category]));
 
 const modules = import.meta.glob('../data/manufacturers/*.json', {
   eager: true,
@@ -167,6 +239,33 @@ function loadManufacturers(): Manufacturer[] {
     for (const block of profile.openQuestions) {
       take(block.sources, 'open question');
     }
+    const categorySlugs = new Set<string>();
+    for (const categorySlug of profile.categories) {
+      if (!categoryBySlug.has(categorySlug)) {
+        throw new Error(`${path} uses unknown category "${categorySlug}". Add src/data/categories/${categorySlug}.json.`);
+      }
+      if (categorySlugs.has(categorySlug)) {
+        throw new Error(`${path} repeats category "${categorySlug}".`);
+      }
+      categorySlugs.add(categorySlug);
+    }
+    const productNames = new Set<string>();
+    for (const product of profile.products) {
+      if (!categorySlugs.has(product.category)) {
+        throw new Error(
+          `${path} lists "${product.name}" under "${product.category}", which is not one of this manufacturer's categories.`,
+        );
+      }
+      const key = product.name.toLowerCase();
+      if (productNames.has(key)) {
+        throw new Error(`${path} repeats product "${product.name}".`);
+      }
+      productNames.add(key);
+    }
+
+    if (profile.inputs) {
+      take(profile.inputs.sources, 'inputs');
+    }
     if (profile.automation) {
       if (!profile.automation.heavilyAutomated) {
         throw new Error(
@@ -190,14 +289,32 @@ function loadManufacturers(): Manufacturer[] {
     return profile;
   });
 
-  // Alphabetical by name. `featured` and `automation` do not change order.
+  // Alphabetical by name. Rating, category, `featured`, and `automation` do not change order.
   return profiles.sort((a, b) => a.name.localeCompare(b.name));
 }
 
 const manufacturers = loadManufacturers();
 
+export function getAllCategories(): Category[] {
+  return categories;
+}
+
+export function getCategory(slug: string): Category | undefined {
+  return categoryBySlug.get(slug);
+}
+
+export function categoryNameList(profile: Manufacturer): string {
+  return profile.categories
+    .map((slug) => categoryBySlug.get(slug)?.name ?? slug)
+    .join(', ');
+}
+
 export function getAllManufacturers(): Manufacturer[] {
   return manufacturers;
+}
+
+export function getManufacturersInCategory(slug: string): Manufacturer[] {
+  return manufacturers.filter((profile) => profile.categories.includes(slug));
 }
 
 export function getFeaturedManufacturers(): Manufacturer[] {

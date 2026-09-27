@@ -2,9 +2,11 @@
 import Base from '../../layouts/Base.astro';
 import AutomationNote from '../../components/AutomationNote.astro';
 import CitedText from '../../components/CitedText.astro';
+import RatingBreakdown from '../../components/RatingBreakdown.astro';
 import StatusBadges from '../../components/StatusBadges.astro';
 import {
   getAllManufacturers,
+  getCategory,
   placeLine,
   sourceKindLabel,
   type Manufacturer,
@@ -22,22 +24,36 @@ interface Props {
 }
 
 const { profile } = Astro.props;
-const description = `${profile.name}, ${profile.legalName} in ${placeLine(profile)}. Ownership and manufacturing location, with a dated change log and sources.`;
+const description = `${profile.name}, ${profile.legalName} in ${placeLine(profile)}. ${profile.products.map((product) => product.name).join(', ')}. Ownership, plant, inputs, and a sourced American rating.`;
+const shelves = profile.categories
+  .map((slug) => getCategory(slug))
+  .filter((category) => category !== undefined);
 ---
 
 <Base title={profile.name} description={description}>
   <p class="crumb">
     <a href="/manufacturers">Manufacturers</a>
     <span aria-hidden="true"> / </span>
+    {
+      shelves.map((category) => (
+        <>
+          <a href={`/categories/${category.slug}`}>{category.name}</a>
+          <span aria-hidden="true"> / </span>
+        </>
+      ))
+    }
     <span>{profile.name}</span>
   </p>
-  <p class="eyebrow">Profile</p>
+  <p class="eyebrow">{profile.products.map((product) => product.name).join(', ')}</p>
   <h1>{profile.name}</h1>
   <p class="lede" style="margin-top:0.8rem">
     {profile.legalName} · {placeLine(profile)}, {profile.location.country}
   </p>
 
   <div style="margin-top:1.4rem">
+    <RatingBreakdown profile={profile} showNotes />
+  </div>
+  <div style="margin-top:1.1rem">
     <StatusBadges ownership={profile.ownership} manufacturing={profile.manufacturing} />
   </div>
   <p class="quiet" style="margin-top:0.75rem">

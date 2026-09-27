@@ -1,22 +1,26 @@
 ---
 import AutomationNote from './AutomationNote.astro';
+import RatingBreakdown from './RatingBreakdown.astro';
 import StatusBadges from './StatusBadges.astro';
-import { placeLine, type Manufacturer } from '../lib/manufacturers';
+import { categoryNameList, placeLine, type Manufacturer } from '../lib/manufacturers';
 
 interface Props {
   profile: Manufacturer;
 }
 
 const { profile } = Astro.props;
+const products = profile.products.map((product) => product.name).join(', ');
 ---
 
 <a class="card" href={`/manufacturers/${profile.slug}`}>
   <div class="card__top">
-    <p class="eyebrow">{profile.category}</p>
+    <p class="eyebrow">{categoryNameList(profile)}</p>
     <p class="eyebrow">{placeLine(profile)}</p>
   </div>
   <h2>{profile.name}</h2>
   <p class="quiet" style="margin:0">{profile.legalName}</p>
+  <p class="product-line">{products}</p>
+  <RatingBreakdown profile={profile} />
   <StatusBadges ownership={profile.ownership} manufacturing={profile.manufacturing} />
   <p class="deck" style="margin:0">{profile.deck}</p>
   {

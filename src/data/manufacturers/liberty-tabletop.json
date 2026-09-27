@@ -3,7 +3,13 @@
   "name": "Liberty Tabletop",
   "legalName": "Sherrill Manufacturing, Inc.",
   "featured": true,
-  "category": "Flatware manufacturing",
+  "categories": ["flatware"],
+  "products": [
+    {
+      "name": "Stainless flatware",
+      "category": "flatware"
+    }
+  ],
   "deck": "Consumer brand of Sherrill Manufacturing in Sherrill, New York. Published accounts describe an American-owned, American-run company whose stainless flatware is made there. A bankruptcy-era contract shift to Toluca, Mexico is part of the record.",
   "lastReviewed": "2026-09-27",
   "location": {
@@ -28,6 +34,13 @@
     "label": "Flatware made in Sherrill, New York",
     "short": "Current stainless flatware. Contract work ran in Toluca, Mexico, during the bankruptcy years, and reporting says it returned in 2014.",
     "confidence": "reported"
+  },
+  "inputs": {
+    "code": "partial",
+    "label": "American steel and packaging, as reported",
+    "short": "Company pages and two interviews describe U.S. steel and U.S. packaging. Named mills are examples, not every heat. No mill certificate was reviewed.",
+    "confidence": "reported",
+    "sources": ["pr-2025", "about", "bi-2021", "aam"]
   },
   "automation": {
     "heavilyAutomated": true,
@@ -255,6 +268,10 @@
     {
       "text": "The share of today's work that is automated is not established. Owens's October 2016 line, Chief Executive's March 2020 description, and the March 2025 report of one robotic stamper do not say what portion of the current line runs without a person. The company still describes hand packing and polishers. No floor audit was reviewed.",
       "sources": ["spectrum-2016", "chief-2020", "rome-2025", "pr-2025", "about"]
+    },
+    {
+      "text": "Inputs are scored half, not full. The September 9, 2025 press release says the steel is poured and forged in America and the packaging is produced in the United States. The about page says the 18/10 stainless comes from American suppliers. Owens told Business Insider and Alliance for American Manufacturing about U.S. mills, and the mill names in the AAM interview were examples he offered. No mill certificate was reviewed, and this file does not claim every input in the building.",
+      "sources": ["pr-2025", "about", "bi-2021", "aam"]
     }
   ],
   "sources": [

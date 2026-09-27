@@ -43,7 +43,9 @@ const current = (href: string) => {
         </a>
         <nav class="nav" aria-label="Primary">
           <a href="/" aria-current={current('/')}>Home</a>
+          <a href="/categories" aria-current={current('/categories')}>Categories</a>
           <a href="/manufacturers" aria-current={current('/manufacturers')}>Manufacturers</a>
+          <a href="/how-we-rate" aria-current={current('/how-we-rate')}>How we rate</a>
           <a href="/about" aria-current={current('/about')}>How this works</a>
         </nav>
       </div>
@@ -54,7 +56,13 @@ const current = (href: string) => {
     <footer class="site-footer">
       <div class="footer-inner">
         <p style="margin:0">Manufacturer records. The sources stay on the page.</p>
-        <p style="margin:0"><a href="/about">How this works</a></p>
+        <p style="margin:0">
+          <a href="/categories">Categories</a>
+          <span aria-hidden="true"> · </span>
+          <a href="/how-we-rate">How we rate</a>
+          <span aria-hidden="true"> · </span>
+          <a href="/about">How this works</a>
+        </p>
       </div>
     </footer>
   </body>

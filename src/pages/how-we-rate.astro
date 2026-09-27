@@ -1,0 +1,126 @@
+---
+import Base from '../layouts/Base.astro';
+import { RATING_WEIGHTS } from '../lib/rating';
+
+const ownership = RATING_WEIGHTS.ownership;
+const manufacturing = RATING_WEIGHTS.manufacturing;
+const inputs = RATING_WEIGHTS.inputs;
+const halfOwnership = ownership / 2;
+const halfManufacturing = manufacturing / 2;
+const halfInputs = inputs / 2;
+---
+
+<Base
+  title="How we rate"
+  description="The American rating is a sum of three sourced lines: who owns and runs the company, where it is made, and whether the inputs are American. Automation is shown and worth zero."
+>
+  <p class="crumb">
+    <a href="/">Home</a>
+    <span aria-hidden="true"> / </span>
+    <span>How we rate</span>
+  </p>
+  <div class="page-intro">
+    <p class="eyebrow">The number</p>
+    <h1>How we rate</h1>
+    <p class="lede">
+      A sum of three sourced lines, out of {ownership + manufacturing + inputs}. It is not a product review, and it does not sort the list.
+    </p>
+  </div>
+
+  <section class="section" aria-labelledby="weights">
+    <h2 id="weights">The three lines that count</h2>
+    <div class="stack" style="margin-top:1rem">
+      <p class="prose">
+        Each line is full, half, none, or unknown. Full takes the whole weight. Half takes half. None is zero. Unknown is left out of the total, so a missing fact does not look like a failing grade.
+      </p>
+    </div>
+    <div class="table-wrap">
+      <table class="weight-table">
+        <caption class="sr-only">Weights</caption>
+        <thead>
+          <tr>
+            <th scope="col">Line</th>
+            <th scope="col">Full</th>
+            <th scope="col">Half</th>
+            <th scope="col">None</th>
+            <th scope="col">Unknown</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <th scope="row">Who owns and runs it</th>
+            <td>{ownership}</td>
+            <td>{halfOwnership}</td>
+            <td>0</td>
+            <td>Left out</td>
+          </tr>
+          <tr>
+            <th scope="row">Where it is made</th>
+            <td>{manufacturing}</td>
+            <td>{halfManufacturing}</td>
+            <td>0</td>
+            <td>Left out</td>
+          </tr>
+          <tr>
+            <th scope="row">Inputs from America</th>
+            <td>{inputs}</td>
+            <td>{halfInputs}</td>
+            <td>0</td>
+            <td>Left out</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="means">
+    <h2 id="means">What each line means</h2>
+    <div class="questions" style="margin-top:1.25rem">
+      <article class="question">
+        <p class="kicker">{ownership} points</p>
+        <h3>Who owns and runs it</h3>
+        <p>
+          Full when the record is American-owned and American-run, and the confidence is “reported.” Half when that same code is only partly sourced. None when a foreign parent or foreign control is established. Unknown when the ownership code is unverified, or the confidence is unverified.
+        </p>
+      </article>
+      <article class="question">
+        <p class="kicker">{manufacturing} points</p>
+        <h3>Where it is made</h3>
+        <p>
+          Full when the goods this record covers are made in the United States, reported. Half when that account is only partial, or when production is split across countries. None when the manufacturing is abroad. Unknown when the plant is unverified. A past chapter that the record says has ended stays in the change log. It does not by itself cut a current “made here” line in half.
+        </p>
+      </article>
+      <article class="question">
+        <p class="kicker">{inputs} points</p>
+        <h3>Inputs from America</h3>
+        <p>
+          Full when the materials are established as American. Half when the code is <span class="path">partial</span>: the sources support an American-inputs account that is incomplete, such as company pages and interviews without a mill certificate. Half also when a full code is only partly sourced. None when the inputs are established as foreign. Unknown when the field is left off, or the code or confidence is unverified. Reported on a partial code means the partial account is what the sources support. It does not mean the inputs are fully American.
+        </p>
+      </article>
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="automation-score">
+    <h2 id="automation-score">Automation is on the card and worth zero</h2>
+    <div class="stack" style="margin-top:1rem">
+      <p class="prose">
+        The fourth line is automation. If the sources support a heavily automated shop, and the company is already American-owned and American-run, the breakdown says so. That line is worth 0. It does not add points. It does not take points off. The company stays in alphabetical order.
+      </p>
+      <p class="prose">
+        If automation is not established, the line says “Not established” and the figure stays “Not in the score.” An empty field is not a penalty, and it is not a claim that the shop is all hand work.
+      </p>
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="not">
+    <h2 id="not">What the number is not</h2>
+    <div class="stack" style="margin-top:1rem">
+      <p class="prose">
+        It does not sort the home list or a category shelf. It does not measure whether the fork feels good in your hand. It does not stand in for a cap table, a mill certificate, or a floor audit. When a line is thin, the points follow the record that is actually there.
+      </p>
+      <p class="prose">
+        <a href="/about">How a record is written</a>
+      </p>
+    </div>
+  </section>
+</Base>
