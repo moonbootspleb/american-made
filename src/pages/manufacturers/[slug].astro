@@ -1,0 +1,210 @@
+---
+import Base from '../../layouts/Base.astro';
+import CitedText from '../../components/CitedText.astro';
+import StatusBadges from '../../components/StatusBadges.astro';
+import {
+  getAllManufacturers,
+  placeLine,
+  sourceKindLabel,
+  type Manufacturer,
+} from '../../lib/manufacturers';
+
+export function getStaticPaths() {
+  return getAllManufacturers().map((profile) => ({
+    params: { slug: profile.slug },
+    props: { profile },
+  }));
+}
+
+interface Props {
+  profile: Manufacturer;
+}
+
+const { profile } = Astro.props;
+const description = `${profile.name}, ${profile.legalName} in ${placeLine(profile)}. Ownership and manufacturing location, with a dated change log and sources.`;
+---
+
+<Base title={profile.name} description={description}>
+  <p class="crumb">
+    <a href="/manufacturers">Manufacturers</a>
+    <span aria-hidden="true"> / </span>
+    <span>{profile.name}</span>
+  </p>
+  <p class="eyebrow">Manufacturer profile</p>
+  <h1>{profile.name}</h1>
+  <p class="lede" style="margin-top:0.8rem">
+    {profile.legalName} · {placeLine(profile)}, {profile.location.country}
+  </p>
+
+  <div style="margin-top:1.4rem">
+    <StatusBadges ownership={profile.ownership} manufacturing={profile.manufacturing} />
+  </div>
+  <p class="quiet" style="margin-top:0.75rem">Read the badges as two answers. Ownership does not establish the plant, and the plant does not establish the owner.</p>
+
+  <div class="layout" style="margin-top:1.75rem">
+    <div>
+      <div class="stack">
+        {
+          profile.lede.map((block) => (
+            <CitedText text={block.text} sources={block.sources} profile={profile} class="lede" />
+          ))
+        }
+      </div>
+
+      {
+        profile.sections.map((section) => (
+          <section class="section" aria-labelledby={section.id}>
+            <p class="kicker">{section.kicker}</p>
+            <h2 id={section.id}>{section.heading}</h2>
+            <div class="stack" style="margin-top:0.9rem">
+              {section.paragraphs.map((block) => (
+                <CitedText text={block.text} sources={block.sources} profile={profile} />
+              ))}
+            </div>
+          </section>
+        ))
+      }
+    </div>
+
+    <aside class="aside">
+      <p class="kicker">At a glance</p>
+      <dl>
+        <div>
+          <dt>Legal name</dt>
+          <dd>{profile.legalName}</dd>
+        </div>
+        <div>
+          <dt>Brand</dt>
+          <dd>{profile.name}</dd>
+        </div>
+        <div>
+          <dt>Place</dt>
+          <dd>
+            {profile.location.city}, {profile.location.region}
+          </dd>
+        </div>
+        {
+          profile.location.publicContact && (
+            <div>
+              <dt>Published contact address</dt>
+              <dd>
+                {profile.location.publicContact}
+                {profile.location.publicContactNote && (
+                  <span class="quiet" style="display:block;margin-top:0.35rem">
+                    {profile.location.publicContactNote}
+                  </span>
+                )}
+              </dd>
+            </div>
+          )
+        }
+        {
+          profile.location.phone && (
+            <div>
+              <dt>Phone</dt>
+              <dd>
+                <a href={`tel:${profile.location.phone.replace(/[^\d+]/g, '')}`}>{profile.location.phone}</a>
+              </dd>
+            </div>
+          )
+        }
+        {
+          profile.location.email && (
+            <div>
+              <dt>Email</dt>
+              <dd>
+                <a href={`mailto:${profile.location.email}`}>{profile.location.email}</a>
+              </dd>
+            </div>
+          )
+        }
+        <div>
+          <dt>Official site</dt>
+          <dd>
+            <a href={profile.website} rel="noopener noreferrer">{profile.websiteLabel}</a>
+          </dd>
+        </div>
+        <div>
+          <dt>Record file</dt>
+          <dd class="path">src/data/manufacturers/{profile.slug}.json</dd>
+        </div>
+        <div>
+          <dt>Last reviewed</dt>
+          <dd>{profile.lastReviewed}</dd>
+        </div>
+      </dl>
+    </aside>
+  </div>
+
+  <section class="section" aria-labelledby="changelog">
+    <p class="kicker">Change log</p>
+    <h2 id="changelog">What changed, and who said so</h2>
+    <p class="prose">Oldest first. Each entry is dated as precisely as the sources allow.</p>
+    <ol class="log">
+      {
+        profile.changelog.map((entry) => (
+          <li class="log-item">
+            <p class="eyebrow">{entry.dateLabel}</p>
+            <h3>{entry.title}</h3>
+            <CitedText text={entry.text} sources={entry.sources} profile={profile} />
+          </li>
+        ))
+      }
+    </ol>
+  </section>
+
+  <section class="section" aria-labelledby="gaps">
+    <p class="kicker">Limits of this record</p>
+    <h2 id="gaps">Not established</h2>
+    <div class="gaps" style="margin-top:1rem">
+      {
+        profile.openQuestions.map((block) => (
+          <div class="gap">
+            <CitedText text={block.text} sources={block.sources} profile={profile} />
+          </div>
+        ))
+      }
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="sources">
+    <p class="kicker">Sources</p>
+    <h2 id="sources">Where the claims come from</h2>
+    <p class="prose">
+      Read for this profile on {profile.lastReviewed}. Numbered notes in the text point here.
+    </p>
+    <ol class="source-list">
+      {
+        profile.sources.map((source, index) => (
+          <li class="source" id={`source-${source.id}`}>
+            <p>
+              <span class="kind">{sourceKindLabel(source.kind)}</span>
+              <span class="eyebrow">Source {index + 1}</span>
+              {source.date && <span class="quiet"> · {source.date}</span>}
+            </p>
+            <h3>
+              <a href={source.url} rel="noopener noreferrer">
+                {source.title}
+              </a>
+            </h3>
+            <p class="quiet">{source.publisher}</p>
+            {source.note && <p>{source.note}</p>}
+          </li>
+        ))
+      }
+    </ol>
+  </section>
+
+  <section class="section panel support" aria-labelledby="support">
+    <div>
+      <p class="kicker">Company site</p>
+      <h2 id="support">Buy from them, on their site</h2>
+      <p>
+        {profile.name} sells through its own website. This page lists the manufacturer. It does not list patterns, prices, or a cart.
+      </p>
+    </div>
+    <a class="button" href={profile.website} rel="noopener noreferrer">
+      {profile.websiteLabel}
+    </a>
+  </section>
+</Base>

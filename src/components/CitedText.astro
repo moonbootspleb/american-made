@@ -1,0 +1,27 @@
+---
+import type { Manufacturer } from '../lib/manufacturers';
+import { sourceNumber } from '../lib/manufacturers';
+
+interface Props {
+  text: string;
+  sources: string[];
+  profile: Manufacturer;
+  class?: string;
+}
+
+const { text, sources, profile } = Astro.props;
+const className = Astro.props.class ?? 'prose';
+---
+
+<p class={className}>
+  {text}{' '}
+  <span class="cites">
+    {
+      sources.map((id) => (
+        <a class="cite" href={`#source-${id}`}>
+          {sourceNumber(profile, id)}
+        </a>
+      ))
+    }
+  </span>
+</p>

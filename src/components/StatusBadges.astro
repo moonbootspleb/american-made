@@ -1,0 +1,43 @@
+---
+interface Badge {
+  code: string;
+  label: string;
+  short: string;
+  confidence: 'reported' | 'partial' | 'unverified';
+}
+
+interface Props {
+  ownership: Badge;
+  manufacturing: Badge;
+}
+
+const { ownership, manufacturing } = Astro.props;
+
+const toneFor = (code: string) => {
+  if (code === 'american-owned-and-run') return 'yes';
+  if (code === 'made-in-usa') return 'place';
+  if (code === 'not-american-owned-and-run' || code === 'not-made-in-usa') return 'no';
+  return 'mixed';
+};
+
+const confidenceCopy: Record<Badge['confidence'], string> = {
+  reported: 'Reported, not audited',
+  partial: 'Partly sourced',
+  unverified: 'Not established',
+};
+---
+
+<div class="badges">
+  <div class:list={['badge', `badge--${toneFor(ownership.code)}`]}>
+    <p class="badge__kicker">Ownership and control</p>
+    <p class="badge__label">{ownership.label}</p>
+    <p class="badge__short">{ownership.short}</p>
+    <p class="badge__confidence">{confidenceCopy[ownership.confidence]}</p>
+  </div>
+  <div class:list={['badge', `badge--${toneFor(manufacturing.code)}`]}>
+    <p class="badge__kicker">Where manufacturing happens</p>
+    <p class="badge__label">{manufacturing.label}</p>
+    <p class="badge__short">{manufacturing.short}</p>
+    <p class="badge__confidence">{confidenceCopy[manufacturing.confidence]}</p>
+  </div>
+</div>
