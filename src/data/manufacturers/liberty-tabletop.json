@@ -1,0 +1,327 @@
+{
+  "slug": "liberty-tabletop",
+  "name": "Liberty Tabletop",
+  "legalName": "Sherrill Manufacturing, Inc.",
+  "featured": true,
+  "category": "Flatware manufacturing",
+  "deck": "Consumer brand of Sherrill Manufacturing in Sherrill, New York. Published accounts describe an American-owned, American-run company whose stainless flatware is made there. A bankruptcy-era contract shift to Toluca, Mexico is part of the record.",
+  "lastReviewed": "2026-09-27",
+  "location": {
+    "city": "Sherrill",
+    "region": "New York",
+    "country": "United States",
+    "publicContact": "102 East Seneca Street, Suite 510, Sherrill, NY 13461",
+    "publicContactNote": "This is the customer-service address printed on the company site. The suite number is an office address. It is not verified here as the street address of the production floor.",
+    "phone": "1-844-386-2338",
+    "email": "customerservice@libertytabletop.com"
+  },
+  "website": "https://libertytabletop.com/",
+  "websiteLabel": "libertytabletop.com",
+  "ownership": {
+    "code": "american-owned-and-run",
+    "label": "American-owned and American-run",
+    "short": "Co-founders are reported in Sherrill. Outside U.S. equity is mentioned. No cap table was reviewed.",
+    "confidence": "reported"
+  },
+  "manufacturing": {
+    "code": "made-in-usa",
+    "label": "Flatware made in Sherrill, New York",
+    "short": "Current stainless flatware. Contract work ran in Toluca, Mexico, during the bankruptcy years, and reporting says it returned in 2014.",
+    "confidence": "reported"
+  },
+  "lede": [
+    {
+      "text": "Liberty Tabletop is the consumer brand of Sherrill Manufacturing, a private company in Sherrill, New York. Greg Owens and Matthew Roberts, both former Oneida Ltd. managers, started it in 2005 and took up flatware work in the former Oneida plant after Oneida stopped production there.",
+      "sources": ["about", "blog-20", "aam", "wikipedia"]
+    },
+    {
+      "text": "The company says the stainless flatware is made in Sherrill. During a Chapter 11 case that began in 2010, Syracuse.com reported that production left Sherrill for a contract plant in Toluca, Mexico, and later came back. The badges above keep ownership and the plant as separate answers.",
+      "sources": ["history", "pr-2025", "syracuse-2014"]
+    }
+  ],
+  "sections": [
+    {
+      "id": "ownership",
+      "kicker": "Ownership and control",
+      "heading": "Who owns it, and who runs it",
+      "paragraphs": [
+        {
+          "text": "The company describes itself as family-owned and operated in Sherrill. Its April 15, 2025 anniversary post calls Matt Roberts co-owner and president and Greg Owens co-owner and CEO, and says that at the founding Roberts was managing the Sherrill factory while Owens was working for a steel mill in Mexico, having previously managed a factory in Toluca. An earlier Alliance for American Manufacturing interview says the two met playing basketball in Mexico City while working at Oneida's Toluca plant, then returned home. That interview presents the two of them as the owners of the plant. Both accounts put the same two men at the start of the company. They do not describe the same job for Owens in the months just before the purchase.",
+          "sources": ["about", "blog-20", "aam"]
+        },
+        {
+          "text": "In that AAM interview Owens called the company a 50-50 operation, with himself as CEO and Roberts as president. He also described family investors and a local Syracuse group that put in equity. The article does not name the group. Outside equity is part of the record. A full owner list is not. Wikipedia's summary gives the legal style Sherrill Manufacturing, Inc., lists the type as private, and places the headquarters in Sherrill, New York, with Owens and Roberts as the named executives.",
+          "sources": ["aam", "wikipedia"]
+        },
+        {
+          "text": "Later company materials use different titles. The September 9, 2025 press release calls Owens co-founder and chairman and Roberts CEO. In that release Roberts says his wife Alice, his son Andrew, and his brother-in-law Tim still work in the building, and that his grandfather, mother-in-law, and brother-in-law worked there before them. That is his account of his own family on the floor. A June 12, 2026 Small Business Administration release also identifies Roberts as co-founder and CEO. None of the sources reviewed names a foreign parent. A cap table, stock ledger, and New York entity record were not pulled for this profile. The ownership badge follows that published record.",
+          "sources": ["pr-2025", "sba-2026", "wikipedia"]
+        }
+      ]
+    },
+    {
+      "id": "plant",
+      "kicker": "Where manufacturing happens",
+      "heading": "Where the flatware is made",
+      "paragraphs": [
+        {
+          "text": "The manufacturing badge covers stainless flatware, which is the product the company's own pages describe. The September 9, 2025 press release says Liberty Tabletop flatware is designed, tooled, forged, finished, and hand-packed in Sherrill, New York, using steel that is poured and forged in America, with packaging sourced and produced in the United States. The about page says the 18/10 stainless comes from American suppliers held to ASTM standards. Those sentences are the company's account, not a mill certificate filed here.",
+          "sources": ["pr-2025", "about"]
+        },
+        {
+          "text": "Two earlier interviews give the steel trail in the company's words. On December 4, 2021, Business Insider quoted Owens, then called CEO: the products start as coil or bar made in Western New York, Pittsburgh, or Tennessee, are turned into forks or knives in Sherrill, and are boxed with locally sourced packaging. Owens told AAM that the steel had to be melted and manufactured in the United States, and he named Allegheny Ludlum, AK Steel, NASS, and a mill in Birmingham as places it could come from. Those are examples he offered, not a list of every heat in the building. Read together, the interviews put the melt at U.S. mills and the flatware forming in Sherrill. They do not say the steel is poured inside the Sherrill building.",
+          "sources": ["bi-2021", "aam"]
+        },
+        {
+          "text": "Other goods the brand has talked about selling sit outside this badge. Owens told AAM the company was starting to sell other American tabletop items, including glassware and plates. That describes goods from other makers. Business Insider's 2021 article also calls the line flatware and cookware. The company pages read for this profile describe stainless flatware. Cookware, glass, and plates are not badged as made in this plant.",
+          "sources": ["aam", "bi-2021", "about"]
+        },
+        {
+          "text": "The badge is the current plant, and the Mexico chapter stays visible. The company history page describes the 2010 Chapter 11 case and a late-2013 exit, and it does not mention Toluca. Syracuse.com reported in May 2014 that the company had stopped production in Sherrill during the bankruptcy, shifted it to a contract manufacturer in Toluca, and was bringing that work back. Wikipedia, summarizing local coverage, places the return of government and contract manufacturing in June 2014. The customer-service address on the company site is a suite at 102 East Seneca Street. This profile does not treat that suite as the verified street address of the factory floor.",
+          "sources": ["history", "syracuse-2014", "wikipedia", "about"]
+        }
+      ]
+    },
+    {
+      "id": "last-maker",
+      "kicker": "A claim with a paper trail",
+      "heading": "The \"last U.S. flatware maker\" line",
+      "paragraphs": [
+        {
+          "text": "The company says it is the last flatware manufacturer in the United States. The about page, the history page, and the September 9, 2025 press release all say so. The press release also says The Wall Street Journal profiled the company on September 1, 2025 in that role. This profile did not retrieve the Journal article, so the Journal is noted as the company's description of a story, not as a text we read.",
+          "sources": ["about", "history", "pr-2025"]
+        },
+        {
+          "text": "Independent reporting uses the same description, with a narrower proof attached to federal purchasing. Syracuse.com's May 2014 article, as indexed, called Sherrill the only company still making flatware in the United States. In March 2016 Syracuse.com reported that Senator Charles Schumer had been told the General Services Administration finished an initial review of Made-in-America claims on the GSA Advantage site. Eleven companies would no longer be able to call their flatware American-made there, because the review found those goods were made overseas. Schumer's conclusion, as reported, was that Liberty Tabletop was left as the only brand made in the United States on that marketplace. That is a review of federal listings. It is not a door-to-door census of every shop in the country.",
+          "sources": ["syracuse-2014", "syracuse-2016"]
+        },
+        {
+          "text": "On June 12, 2026, the U.S. Small Business Administration and the General Services Administration announced that 22 foreign-made flatware offerings had been removed from GSA Advantage after Sherrill Manufacturing raised false origin listings. The SBA release calls Sherrill the only U.S. manufacturer of stainless steel flatware that is 100 percent made in America. That sentence is the agency's characterization in a press release. The release does not include a public inspection report of the Sherrill floor. This site repeats the \"last maker\" claim with those sources attached. It did not survey every U.S. facility.",
+          "sources": ["sba-2026", "syracuse-2016", "pr-2025"]
+        }
+      ]
+    }
+  ],
+  "changelog": [
+    {
+      "sortDate": "1900-01-01",
+      "dateLabel": "Before 2005",
+      "title": "The factory is older than the company",
+      "text": "The company treats the Sherrill works as a long-running flatware factory. Its about-page title says \"American Made Flatware Since 1900,\" and the page says the factory has produced flatware for more than a century. In the June 2026 SBA release, Roberts dates the building's manufacturing history to supplying U.S. forces in World War I. AAM describes Oneida opening in Sherrill in the early 1900s and later moving production overseas. Sherrill Manufacturing as a company starts in 2005. This record does not pick a construction year.",
+      "sources": ["about", "sba-2026", "aam"]
+    },
+    {
+      "sortDate": "2005-03-21",
+      "dateLabel": "March 21, 2005",
+      "title": "Sherrill Manufacturing is founded",
+      "text": "The company's April 15, 2025 anniversary post dates the founding to March 21, 2005, while Oneida was preparing to shut the plant down. It says Roberts was managing the Sherrill factory and Owens was working for a steel mill in Mexico, after earlier managing a factory in Toluca. AAM's earlier interview says the two became friends playing basketball in Mexico City while both worked at Oneida's Toluca facility, then returned home. Syracuse.com's May 2014 article, as indexed, says the company was founded in March 2005 by Owens and Matthew Roberts, former Oneida executives, who bought Oneida's factory and equipment.",
+      "sources": ["blog-20", "aam", "syracuse-2014"]
+    },
+    {
+      "sortDate": "2005-05-01",
+      "dateLabel": "2005, month told two ways",
+      "title": "Production restarts the day after Oneida stops",
+      "text": "AAM says the Sherrill plant reopened as Sherrill Manufacturing the day after Oneida closed it. Wikipedia places that restart in May 2005. The March 21 founding date and a May restart can both be true: a company formed in March, and a line that started again when Oneida's last shift ended. This page keeps both claims. It does not collapse them into a single day the sources do not share. Owens told AAM they made an offer to buy the place \"for pretty much nothing.\" That is his phrase. A purchase price is not stated here.",
+      "sources": ["aam", "wikipedia"]
+    },
+    {
+      "sortDate": "2007-01-01",
+      "dateLabel": "2007–2010 · dates disagree",
+      "title": "The Oneida contract winds down on conflicting clocks",
+      "text": "Three accounts do not match. The April 2025 company post says Oneida pulled its contract in 2007, ceased U.S. production, and Sherrill turned to government flatware contracts. The company history page says that in 2008, after loans and a grant, the company moved from a single OEM customer to several. Owens told AAM the packaging and silver-plating work for Oneida lasted about three years. Wikipedia says an exclusive contract ran about three years, was extended, and expired in 2010. This log records the disagreement and does not pick a winner.",
+      "sources": ["blog-20", "history", "aam", "wikipedia"]
+    },
+    {
+      "sortDate": "2010-01-01",
+      "dateLabel": "2010",
+      "title": "Chapter 11, and a shift to Toluca",
+      "text": "The company history page says Sherrill filed for Chapter 11 in 2010, creditors accepted a plan, and the company emerged in late 2013 after paying most of what it owed. Syracuse.com reported that the filing came with a stop to production in Sherrill, a shift to a contract manufacturer in Toluca, near Mexico City, and layoffs from a crew the article put at 120. Wikipedia says production stopped for a time, full-time staff was cut to six, and excess equipment and inventory were sold. The company's history page does not mention the Mexico contract work. The local reporting does, so the move is on this record.",
+      "sources": ["history", "syracuse-2014", "wikipedia"]
+    },
+    {
+      "sortDate": "2011-01-01",
+      "dateLabel": "2011 · brand; 2012 · site",
+      "title": "Liberty Tabletop becomes the consumer name",
+      "text": "The April 2025 company post says Liberty Tabletop launched in 2011, after a period when the founders say they were not allowed to field their own brand. Owens told AAM the website started in earnest in 2012, and that \"Sherrill Manufacturing\" was the factory name, not a brand that carried. In the same interview he said the company was starting to sell other American tabletop items, including glassware and plates. Those items are not logged here as products of the Sherrill flatware plant.",
+      "sources": ["blog-20", "aam"]
+    },
+    {
+      "sortDate": "2013-11-06",
+      "dateLabel": "November 2013",
+      "title": "Out of Chapter 11",
+      "text": "The company says it emerged in late 2013. Wikipedia says November 2013. Syracuse.com's May 2014 article, as indexed, says the exit was November 6, that secured creditors were paid $4 million, and that a plan remained to pay $2 million to unsecured creditors. The day and the dollar figures are that article's reporting. The live page did not return full text when this profile was built.",
+      "sources": ["history", "wikipedia", "syracuse-2014"]
+    },
+    {
+      "sortDate": "2014-05-01",
+      "dateLabel": "May–June 2014",
+      "title": "Contract work comes back from Mexico",
+      "text": "Syracuse.com reported in May 2014 that a $1 million convertible loan from Drummond LLC was letting the company bring tableware production back from Toluca to Sherrill. Wikipedia, citing the local coverage, places the return of government and contract manufacturing in June 2014 and puts the workforce then at 42. From that point the published record describes flatware production in Sherrill again. The Toluca chapter stays in the log so the current badge is not read as \"this plant never left.\"",
+      "sources": ["syracuse-2014", "wikipedia"]
+    },
+    {
+      "sortDate": "2015-10-01",
+      "dateLabel": "About 2015–2016",
+      "title": "Domestic steel, and a much smaller crew than the old plant",
+      "text": "The AAM profile has no date on the page. It refers to an October New York Times feature, so it falls after October 2015. Owens told AAM the Sherrill plant then employed 36 people. The article sets an earlier plant workforce at 2,800, which reads as the old Oneida-era scale, not a Sherrill Manufacturing payroll this site can date. He required steel melted and manufactured in the United States and named Allegheny Ludlum, AK Steel, NASS, and Birmingham as possible sources.",
+      "sources": ["aam"]
+    },
+    {
+      "sortDate": "2016-03-01",
+      "dateLabel": "March 2016",
+      "title": "GSA Advantage drops other \"Made in America\" flatware claims",
+      "text": "Syracuse.com reported that Senator Charles Schumer said GSA had finished an initial review of flatware sold on GSA Advantage. Eleven companies could no longer claim those products were American-made, because the review found they were made overseas. The article presents Liberty Tabletop as the brand left standing on that site, says the federal government then bought about 500,000 utensils a year from the company, mostly for military bases, and puts employment at about 40. The month comes from the article's URL. The live page did not return full text during this build.",
+      "sources": ["syracuse-2016"]
+    },
+    {
+      "sortDate": "2021-12-04",
+      "dateLabel": "December 4, 2021",
+      "title": "Owens describes the steel route and a sales surge",
+      "text": "Business Insider quoted Owens as CEO. Steel came from Western New York, Pittsburgh, or Tennessee, was formed in Sherrill, and was packed locally. He said flatware sales doubled in 2020 as more people ate at home, then rose another 50 percent year over year in 2021, and that filling 25 added jobs had taken a long time. Those figures belong to that interview. They are not a current headcount or a current sales number.",
+      "sources": ["bi-2021"]
+    },
+    {
+      "sortDate": "2025-04-15",
+      "dateLabel": "April 15, 2025",
+      "title": "The company publishes its 20-year account",
+      "text": "A company post by Nichole Grant marks 20 years, repeats the March 21, 2005 founding date, and still calls Roberts president and Owens CEO. It quotes Roberts on keeping manufacturing in Sherrill. It also repeats the 2007 Oneida-contract date that other sources contradict. That conflict is logged with the contract entry above.",
+      "sources": ["blog-20"]
+    },
+    {
+      "sortDate": "2025-09-09",
+      "dateLabel": "September 9, 2025",
+      "title": "The company states the plant, the steel, and new titles",
+      "text": "Sherrill Manufacturing's press release calls Owens co-founder and chairman and Roberts CEO. It says design, tooling, forging, finishing, and hand packing happen in Sherrill, and that the steel and packaging are American. It repeats the last-manufacturer claim and says The Wall Street Journal profiled the company on September 1, 2025. The Journal article was not read for this profile. Roberts's quotation describes three generations of his family in the building.",
+      "sources": ["pr-2025"]
+    },
+    {
+      "sortDate": "2026-06-12",
+      "dateLabel": "June 12, 2026",
+      "title": "SBA and GSA remove foreign flatware listings",
+      "text": "The Small Business Administration announced that it and GSA had removed 22 foreign-made flatware offerings from GSA Advantage after Sherrill raised false Made-in-America listings. The release calls Sherrill the only U.S. maker of stainless flatware that is 100 percent made in America, and it quotes Roberts as co-founder and CEO. Recorded here as a federal purchasing action and as a dated use of the \"only maker\" line. It is not logged as a new inspection of the factory.",
+      "sources": ["sba-2026"]
+    }
+  ],
+  "openQuestions": [
+    {
+      "text": "Current percentage ownership is not on this page. Owens told AAM about a 50-50 partnership between the founders, family investors, and an unnamed local Syracuse equity group. No cap table, stock ledger, or New York Department of State entity record was pulled. The ownership badge is the published record, not a title search.",
+      "sources": ["aam", "wikipedia"]
+    },
+    {
+      "text": "Officer titles in the company's own 2025 materials do not match. The April 15 post calls Owens CEO and Roberts president. The September 9 release calls Owens chairman and Roberts CEO. The June 12, 2026 SBA release also calls Roberts CEO. No corporate filing of a title change was reviewed, so the later company statement is treated as the newer self-description, not as a confirmed board action.",
+      "sources": ["blog-20", "pr-2025", "sba-2026"]
+    },
+    {
+      "text": "The end of the Oneida contract is unresolved. Company materials have said both 2007 and a 2008 shift to multiple customers. Owens told AAM the plating and packaging work lasted about three years. Wikipedia carries the contract through 2010. See the change log.",
+      "sources": ["blog-20", "history", "aam", "wikipedia"]
+    },
+    {
+      "text": "A purchase price and a sale-leaseback of the old plant are not stated as findings. Wikipedia's summary of a 2013 Syracuse.com bankruptcy story includes a $1 million purchase and a later sale of a one-million-square-foot plant with a partial leaseback. That 2013 article was not opened for this profile. Owens's \"pretty much nothing\" line in the AAM interview is a phrase, not a price.",
+      "sources": ["wikipedia", "aam"]
+    },
+    {
+      "text": "The street address of the production floor is not separately verified. The only street address read on the company site is the Suite 510 customer-service line. Sources agree the flatware work is in Sherrill. They do not, in the pages read here, pin the factory door to that suite.",
+      "sources": ["about", "pr-2025"]
+    },
+    {
+      "text": "No current headcount is stated. Published numbers are tied to the source that printed them: six and then 42 in Wikipedia's summary of the bankruptcy years, 36 in the AAM profile, about 40 in the March 2016 Syracuse.com report, 120 laid off during the Mexico shift in the May 2014 report, and 25 added jobs mentioned to Business Insider in 2021.",
+      "sources": ["wikipedia", "aam", "syracuse-2016", "syracuse-2014", "bi-2021"]
+    },
+    {
+      "text": "The Wall Street Journal profile of September 1, 2025, was not read. Anything this page says about that story comes from the company's September 9 press release describing it.",
+      "sources": ["pr-2025"]
+    },
+    {
+      "text": "The two Syracuse.com articles did not return full text to our reader while this profile was built. Facts taken from them follow the articles as published and indexed, and where Wikipedia summarizes the same reporting that is noted in the entry. Dollar figures, the Drummond loan, and the headcounts from those stories should be read with that limit.",
+      "sources": ["syracuse-2014", "syracuse-2016", "wikipedia"]
+    }
+  ],
+  "sources": [
+    {
+      "id": "about",
+      "title": "About Liberty Tabletop",
+      "publisher": "Liberty Tabletop / Sherrill Manufacturing",
+      "url": "https://libertytabletop.com/pages/about-us",
+      "kind": "company",
+      "note": "Company account. Read September 27, 2026. The page title uses \"Since 1900\" for the flatware tradition. The company itself dates to 2005."
+    },
+    {
+      "id": "history",
+      "title": "Sherrill Manufacturing",
+      "publisher": "Liberty Tabletop / Sherrill Manufacturing",
+      "url": "https://libertytabletop.com/pages/sherrill-manufacturing",
+      "kind": "company",
+      "note": "Company history page. Read September 27, 2026. It covers the 2005 start, the Oneida OEM years, the 2010 Chapter 11 case, and the late-2013 exit. It does not mention the Toluca contract work."
+    },
+    {
+      "id": "blog-20",
+      "title": "Sherrill Manufacturing Turns 20! Celebrating Two Decades of American Craftsmanship",
+      "publisher": "Liberty Tabletop, post by Nichole Grant",
+      "date": "2025-04-15",
+      "url": "https://libertytabletop.com/blogs/news-1/sherrill-manufacturing-turns-20-celebrating-two-decades-of-american-craftsmanship",
+      "kind": "company",
+      "note": "Company account of the founding date, the 2011 brand launch, and the titles in use on the day of the post."
+    },
+    {
+      "id": "pr-2025",
+      "title": "Liberty Tabletop, America's Last Flatware Manufacturer, Responds to Expanded U.S. Tariffs",
+      "publisher": "Sherrill Manufacturing, via PR Newswire",
+      "date": "2025-09-09",
+      "url": "https://www.prnewswire.com/news-releases/liberty-tabletop-americas-last-flatware-manufacturer-responds-to-expanded-us-tariffs-confirms-100-us-made-supply-chain-shields-customers-from-import-surcharges-302551220.html",
+      "kind": "company",
+      "note": "Company statement. Used for the Sherrill process description, the American-steel claim, and the chairman/CEO titles. The Wall Street Journal piece it mentions was not read."
+    },
+    {
+      "id": "aam",
+      "title": "Liberty Sets the Table for Growth",
+      "publisher": "Alliance for American Manufacturing",
+      "url": "https://www.americanmanufacturing.org/blog/liberty-sets-the-table-for-growth/",
+      "kind": "news",
+      "note": "Interview profile with Greg Owens. No date is printed on the page. It refers to an October New York Times feature, so it is after October 2015. The Times article was not used as a source of facts here."
+    },
+    {
+      "id": "bi-2021",
+      "title": "Sellers of American-made goods are thriving amid supply-chain chaos — but they can't escape labor and cost pressures",
+      "publisher": "Business Insider, Avery Hartmans",
+      "date": "2021-12-04",
+      "url": "https://www.businessinsider.com/us-manufacturers-supply-chain-crisis-impacts-2021-12",
+      "kind": "news",
+      "note": "Owens is quoted on steel origin, packaging, sales, and hiring. The article also calls the line flatware and cookware; cookware is not treated as verified plant output."
+    },
+    {
+      "id": "syracuse-2014",
+      "title": "USA's last tableware maker bringing jobs from Mexico back to Central New York",
+      "publisher": "syracuse.com",
+      "date": "2014-05",
+      "url": "https://www.syracuse.com/news/2014/05/usas_last_tableware_maker_bringing_jobs_from_mexico_back_to_central_new_york_1.html",
+      "kind": "news",
+      "note": "The live page did not return full text during this build. Details attributed to it follow the article as published and indexed: the Toluca contract shift, the return, the Drummond loan, and the bankruptcy figures."
+    },
+    {
+      "id": "syracuse-2016",
+      "title": "America's last flatware maker, CNY firm, wins 'Made in USA' dispute",
+      "publisher": "syracuse.com",
+      "date": "2016-03",
+      "url": "https://www.syracuse.com/politics/2016/03/americas_last_flatware_maker_cny_firm_wins_made_in_usa_dispute.html",
+      "kind": "news",
+      "note": "The live page did not return full text during this build. Used for the reported GSA Advantage review of 11 other flatware claims. The month is taken from the URL."
+    },
+    {
+      "id": "sba-2026",
+      "title": "Following White House Small Business Summit, SBA and GSA Take Action to Prioritize American-Made Products in Federal Purchasing",
+      "publisher": "U.S. Small Business Administration",
+      "date": "2026-06-12",
+      "url": "https://www.sba.gov/article/2026/06/12/following-white-house-small-business-summit-sba-gsa-take-action-prioritize-american-made-products",
+      "kind": "government",
+      "note": "Agency press release. Used for the removal of 22 flatware offerings from GSA Advantage and for the release's description of Sherrill. Not treated as a factory inspection report."
+    },
+    {
+      "id": "wikipedia",
+      "title": "Sherrill Manufacturing",
+      "publisher": "Wikipedia",
+      "url": "https://en.wikipedia.org/wiki/Sherrill_Manufacturing",
+      "kind": "reference",
+      "note": "Encyclopedia summary, read September 27, 2026. Used where it adds the May 2005 restart, the private-company styling, and workforce figures it draws from local news. Prefer the company pages and the news articles where those were read directly. The underlying 2013 Syracuse.com bankruptcy story was not opened, so Wikipedia's purchase-price and sale-leaseback details stay in the limits section."
+    }
+  ]
+}

@@ -1,0 +1,44 @@
+---
+import Base from '../../layouts/Base.astro';
+import StatusBadges from '../../components/StatusBadges.astro';
+import { getAllManufacturers, placeLine } from '../../lib/manufacturers';
+
+const profiles = getAllManufacturers();
+---
+
+<Base
+  title="Manufacturers"
+  description="Manufacturer index for American Made Accountability. Each record carries separate badges for ownership and for where manufacturing happens."
+>
+  <p class="eyebrow">Index</p>
+  <h1>Manufacturers</h1>
+  <div class="stack" style="margin-top:1.15rem">
+    <p class="lede">
+      One company at a time. Each card carries two badges: who owns and runs the firm, and where the manufacturing happens.
+    </p>
+    <p class="prose">
+      {profiles.length === 1 ? 'One profile is on the record.' : `${profiles.length} profiles are on the record.`}
+      The next ones are added as JSON files in <span class="path">src/data/manufacturers</span>.
+      A made-in-USA directory can suggest a name. It does not fill this list.
+    </p>
+  </div>
+
+  <div class="card-grid" style="margin-top:1.75rem">
+    {
+      profiles.map((profile) => (
+        <a class="card" href={`/manufacturers/${profile.slug}`}>
+          <p class="eyebrow">{profile.category}</p>
+          <h2>{profile.name}</h2>
+          <p class="quiet" style="margin:0">
+            {profile.legalName} · {placeLine(profile)}
+          </p>
+          <StatusBadges ownership={profile.ownership} manufacturing={profile.manufacturing} />
+          <p class="deck" style="margin:0">
+            {profile.deck}
+          </p>
+          <p style="margin:0;font-weight:700">Open profile</p>
+        </a>
+      ))
+    }
+  </div>
+</Base>
