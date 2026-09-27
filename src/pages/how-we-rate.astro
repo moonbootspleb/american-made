@@ -12,10 +12,10 @@ const halfInputs = inputs / 2;
 
 <Base
   title="How we rate"
-  description="The American rating is a sum of three sourced lines: who owns and runs the company, where it is made, and whether the inputs are American. Automation is shown and worth zero."
+  description="The American rating is a sum of three sourced lines: who owns and runs the company, where it is made, and whether the inputs are American. Automation is shown and worth zero. The same page says how a record is written."
 >
   <p class="crumb">
-    <a href="/">Home</a>
+    <a href="/">Manufacturers</a>
     <span aria-hidden="true"> / </span>
     <span>How we rate</span>
   </p>
@@ -119,7 +119,80 @@ const halfInputs = inputs / 2;
         It does not sort the home list or a category shelf. It does not measure whether the fork feels good in your hand. It does not stand in for a cap table, a mill certificate, or a floor audit. When a line is thin, the points follow the record that is actually there.
       </p>
       <p class="prose">
-        <a href="/about">How a record is written</a>
+        <a href="#record">How a record is written</a>
+      </p>
+    </div>
+  </section>
+
+  <section class="section" id="record" aria-labelledby="record-heading">
+    <h2 id="record-heading">How a record is written</h2>
+    <p class="lede" style="margin-top:0.75rem">A file on each manufacturer. Two facts, kept apart.</p>
+  </section>
+
+  <section class="section" aria-labelledby="two-lines">
+    <h2 id="two-lines">The two lines</h2>
+    <div class="questions" style="margin-top:1.25rem">
+      <article class="question">
+        <p class="kicker">01</p>
+        <h3>Who owns and runs it</h3>
+        <p>
+          Who owns the company, and who runs it day to day. A plant in the United States with a foreign parent stays on the foreign-parent side of this line. The factory address does not change the owner.
+        </p>
+      </article>
+      <article class="question">
+        <p class="kicker">02</p>
+        <h3>Where it is made</h3>
+        <p>
+          Where the manufacturing happens. A company owned in the United States and producing abroad is recorded as not made in the USA, or as split when the work really is in more than one place.
+        </p>
+      </article>
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="filed">
+    <h2 id="filed">What gets filed</h2>
+    <div class="stack" style="margin-top:1rem">
+      <p class="prose">
+        Each company is a JSON file in this site’s repository. The page is that file. Profiles are not kept in Netlify Blobs.
+      </p>
+      <p class="prose">
+        The page stays on the manufacturer: owners, plant, dated changes, sources. Patterns and prices stay on the company’s own site.
+      </p>
+      <p class="prose">
+        A made-in-USA directory can put a name on a lead list. It does not fill this one, and this site does not copy that directory’s filters or product grids.
+      </p>
+      <p class="prose">
+        If a document is missing, or two accounts disagree, the profile says so. A fact that was not read is not written up as established.
+      </p>
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="automation">
+    <h2 id="automation">When a shop is heavily automated</h2>
+    <div class="stack" style="margin-top:1rem">
+      <p class="prose">
+        Some companies are American-founded, American-owned, and American-run, and the plant is also heavily automated. When the sources support that, the file can include a short note: a label, a sentence or two, and the source ids.
+      </p>
+      <p class="prose">
+        The note is a fact about the shop. It is not a warning. It does not move the company down the list or off it. The list on the front page is alphabetical.
+      </p>
+      <p class="prose">
+        If the sources do not establish how automated the plant is, leave the field off. An empty field means not established. It does not mean someone verified a fully manual shop, and the file should not store <span class="path">heavilyAutomated: false</span>.
+      </p>
+      <p class="prose">
+        Set the note only when the ownership line is already American-owned and American-run, and the write-up supports an American founding. A foreign-owned plant does not get this note. Using some machines is not enough. The sources have to support calling the shop heavily automated.
+      </p>
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="shelves">
+    <h2 id="shelves">Shelves, then the file</h2>
+    <div class="stack" style="margin-top:1rem">
+      <p class="prose">
+        Categories are how a shopper browses: flatware now, and another shelf when a company is filed under it. The category page names the goods and the manufacturer. The profile is still the company, with the change log and the sources.
+      </p>
+      <p class="prose">
+        Three lines are scored, in the table above. Automation is the fourth line, shown, and worth zero.
       </p>
     </div>
   </section>
