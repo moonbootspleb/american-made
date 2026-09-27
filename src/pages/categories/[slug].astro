@@ -1,0 +1,81 @@
+---
+import Base from '../../layouts/Base.astro';
+import CategoryStrip from '../../components/CategoryStrip.astro';
+import ManufacturerCard from '../../components/ManufacturerCard.astro';
+import { getAllCategories, getManufacturersInCategory, placeLine, type Category } from '../../lib/manufacturers';
+import { rateManufacturer } from '../../lib/rating';
+
+export function getStaticPaths() {
+  return getAllCategories().map((category) => ({
+    params: { slug: category.slug },
+    props: { category },
+  }));
+}
+
+interface Props {
+  category: Category;
+}
+
+const { category } = Astro.props;
+const makers = getManufacturersInCategory(category.slug);
+const goods = makers.flatMap((maker) =>
+  maker.products
+    .filter((product) => product.category === category.slug)
+    .map((product) => ({
+      name: product.name,
+      maker,
+      rating: rateManufacturer(maker).headline,
+    })),
+);
+---
+
+<Base title={category.name} description={`${category.name}. ${category.description} ${category.shopper}`}>
+  <p class="crumb">
+    <a href="/">Home</a>
+    <span aria-hidden="true"> / </span>
+    <a href="/categories">Categories</a>
+    <span aria-hidden="true"> / </span>
+    <span>{category.name}</span>
+  </p>
+  <div class="page-intro">
+    <p class="eyebrow">Category</p>
+    <h1>{category.name}</h1>
+    <p class="lede">{category.description}</p>
+    <p class="prose" style="margin-top:0.75rem">{category.shopper}</p>
+  </div>
+
+  <CategoryStrip current={category.slug} />
+
+  {
+    goods.length === 0 ? (
+      <p class="prose">No manufacturer is filed on this shelf yet.</p>
+    ) : (
+      <section class="section" aria-labelledby="goods" style="margin-top:0">
+        <h2 id="goods">What you can find</h2>
+        <ul class="goods">
+          {goods.map((item) => (
+            <li>
+              <a href={`/manufacturers/${item.maker.slug}`}>
+                <span class="goods__name">{item.name}</span>
+                <span class="quiet">
+                  {item.maker.name} · {placeLine(item.maker)}
+                </span>
+                <span class="goods__score">{item.rating}</span>
+              </a>
+            </li>
+          ))}
+        </ul>
+      </section>
+    )
+  }
+
+  {
+    makers.length > 0 && (
+      <div class="card-grid" style="margin-top:1.5rem">
+        {makers.map((profile) => (
+          <ManufacturerCard profile={profile} />
+        ))}
+      </div>
+    )
+  }
+</Base>

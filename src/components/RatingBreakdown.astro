@@ -1,0 +1,52 @@
+---
+import CitedText from './CitedText.astro';
+import type { Manufacturer } from '../lib/manufacturers';
+import { rateManufacturer } from '../lib/rating';
+
+interface Props {
+  profile: Manufacturer;
+  showNotes?: boolean;
+}
+
+const { profile, showNotes = false } = Astro.props;
+const rating = rateManufacturer(profile);
+---
+
+<section class="rating" aria-label={`American rating ${rating.headline}`}>
+  <div class="rating__head">
+    <p class="rating__kicker">American rating</p>
+    <p class="rating__score">{rating.headline}</p>
+  </div>
+  <p class="rating__caption">{rating.caption}</p>
+  <ul class="rating__rows">
+    {
+      rating.rows.map((row) => (
+        <li class="rating__row">
+          <span class="rating__name">{row.name}</span>
+          <span class="rating__detail">
+            {row.detail}
+            {row.note !== 'Full' && <span class="rating__note"> · {row.note}</span>}
+          </span>
+          <span class="rating__figure">{row.figure}</span>
+        </li>
+      ))
+    }
+  </ul>
+  {
+    showNotes && profile.inputs && (
+      <CitedText
+        class="rating__inputs"
+        text={profile.inputs.short}
+        sources={profile.inputs.sources}
+        profile={profile}
+      />
+    )
+  }
+  {
+    showNotes && (
+      <p class="rating__method">
+        <a href="/how-we-rate">How this number is built</a>
+      </p>
+    )
+  }
+</section>

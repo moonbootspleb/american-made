@@ -1,0 +1,54 @@
+---
+import Base from '../../layouts/Base.astro';
+import CategoryStrip from '../../components/CategoryStrip.astro';
+import { getAllCategories, getManufacturersInCategory } from '../../lib/manufacturers';
+
+const shelves = getAllCategories();
+---
+
+<Base
+  title="Categories"
+  description="Browse manufacturers by what they make. Flatware is the shelf on the list now. Others are added when a company is filed."
+>
+  <p class="crumb">
+    <a href="/">Home</a>
+    <span aria-hidden="true"> / </span>
+    <span>Categories</span>
+  </p>
+  <div class="page-intro">
+    <p class="eyebrow">Shelves</p>
+    <h1>Categories</h1>
+    <p class="lede">
+      Shop by what the company makes. The profile behind the name is still the company: owners, plant, change log, sources.
+    </p>
+  </div>
+
+  <CategoryStrip />
+
+  <ul class="shelf-index">
+    {
+      shelves.map((category) => {
+        const makers = getManufacturersInCategory(category.slug);
+        const goods = [
+          ...new Set(makers.flatMap((maker) => maker.products.filter((product) => product.category === category.slug).map((product) => product.name))),
+        ];
+        return (
+          <li>
+            <a class="shelf-index__link" href={`/categories/${category.slug}`}>
+              <span class="shelf-index__name">{category.name}</span>
+              <span class="quiet">
+                {makers.length === 1 ? '1 manufacturer' : `${makers.length} manufacturers`}
+                {goods.length > 0 && ` · ${goods.join(', ')}`}
+              </span>
+            </a>
+            <p>{category.description}</p>
+          </li>
+        );
+      })
+    }
+  </ul>
+
+  <p class="prose" style="margin-top:1.5rem">
+    Tools, apparel, and other shelves show up the same way, when a manufacturer is filed under them. An empty shelf is not a claim that nobody in the country makes that thing.
+  </p>
+</Base>
