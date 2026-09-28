@@ -1,0 +1,30 @@
+---
+import { getAllCategories, getManufacturersInCategory } from '../lib/manufacturers';
+
+interface Props {
+  current?: string;
+}
+
+const { current } = Astro.props;
+const shelves = getAllCategories();
+---
+
+<nav class="shelves" aria-label="Categories">
+  {
+    shelves.map((category) => {
+      const count = getManufacturersInCategory(category.slug).length;
+      const countLabel = count === 1 ? '1 maker' : `${count} makers`;
+      return (
+        <a
+          class="shelf"
+          href={`/categories/${category.slug}`}
+          aria-current={current === category.slug ? 'page' : undefined}
+        >
+          <span>{category.name}</span>
+          <span class="shelf__count">{countLabel}</span>
+        </a>
+      );
+    })
+  }
+  <a class="shelf shelf--index" href="/categories">All categories</a>
+</nav>

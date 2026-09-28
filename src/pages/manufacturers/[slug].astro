@@ -1,9 +1,12 @@
 ---
 import Base from '../../layouts/Base.astro';
+import AutomationNote from '../../components/AutomationNote.astro';
 import CitedText from '../../components/CitedText.astro';
+import RatingBreakdown from '../../components/RatingBreakdown.astro';
 import StatusBadges from '../../components/StatusBadges.astro';
 import {
   getAllManufacturers,
+  getCategory,
   placeLine,
   sourceKindLabel,
   type Manufacturer,
@@ -21,25 +24,53 @@ interface Props {
 }
 
 const { profile } = Astro.props;
-const description = `${profile.name}, ${profile.legalName} in ${placeLine(profile)}. Ownership and manufacturing location, with a dated change log and sources.`;
+const description = `${profile.name}, ${profile.legalName} in ${placeLine(profile)}. ${profile.products.map((product) => product.name).join(', ')}. Ownership, plant, inputs, and a sourced American rating.`;
+const shelves = profile.categories
+  .map((slug) => getCategory(slug))
+  .filter((category) => category !== undefined);
 ---
 
 <Base title={profile.name} description={description}>
   <p class="crumb">
-    <a href="/manufacturers">Manufacturers</a>
+    <a href="/">Manufacturers</a>
     <span aria-hidden="true"> / </span>
+    {
+      shelves.map((category) => (
+        <>
+          <a href={`/categories/${category.slug}`}>{category.name}</a>
+          <span aria-hidden="true"> / </span>
+        </>
+      ))
+    }
     <span>{profile.name}</span>
   </p>
-  <p class="eyebrow">Manufacturer profile</p>
+  <p class="eyebrow">{profile.products.map((product) => product.name).join(', ')}</p>
   <h1>{profile.name}</h1>
   <p class="lede" style="margin-top:0.8rem">
     {profile.legalName} · {placeLine(profile)}, {profile.location.country}
   </p>
 
   <div style="margin-top:1.4rem">
+    <RatingBreakdown profile={profile} showNotes />
+  </div>
+  <div style="margin-top:1.1rem">
     <StatusBadges ownership={profile.ownership} manufacturing={profile.manufacturing} />
   </div>
-  <p class="quiet" style="margin-top:0.75rem">Read the badges as two answers. Ownership does not establish the plant, and the plant does not establish the owner.</p>
+  <p class="quiet" style="margin-top:0.75rem">
+    Read these as two answers. The owner does not establish the plant. The plant does not establish the owner.
+  </p>
+  {
+    profile.automation?.heavilyAutomated && (
+      <div style="margin-top:1rem">
+        <AutomationNote
+          label={profile.automation.label}
+          note={profile.automation.note}
+          sources={profile.automation.sources}
+          profile={profile}
+        />
+      </div>
+    )
+  }
 
   <div class="layout" style="margin-top:1.75rem">
     <div>
@@ -139,7 +170,7 @@ const description = `${profile.name}, ${profile.legalName} in ${placeLine(profil
   <section class="section" aria-labelledby="changelog">
     <p class="kicker">Change log</p>
     <h2 id="changelog">What changed, and who said so</h2>
-    <p class="prose">Oldest first. Each entry is dated as precisely as the sources allow.</p>
+    <p class="prose">Oldest first. Dates only go as far as the sources do.</p>
     <ol class="log">
       {
         profile.changelog.map((entry) => (
@@ -198,9 +229,9 @@ const description = `${profile.name}, ${profile.legalName} in ${placeLine(profil
   <section class="section panel support" aria-labelledby="support">
     <div>
       <p class="kicker">Company site</p>
-      <h2 id="support">Buy from them, on their site</h2>
+      <h2 id="support">On the company site</h2>
       <p>
-        {profile.name} sells through its own website. This page lists the manufacturer. It does not list patterns, prices, or a cart.
+        {profile.name} sells there. This page does not list patterns, prices, or a cart.
       </p>
     </div>
     <a class="button" href={profile.website} rel="noopener noreferrer">
