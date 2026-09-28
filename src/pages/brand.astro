@@ -2,15 +2,21 @@
 import Base from '../layouts/Base.astro';
 
 const candidates = [
-  { src: '/brand/brand-shield-cleanup.png', label: 'Shield cleanup' },
-  { src: '/brand/brand-shield-fill-wrap.png', label: 'Boots restart fill-wrap' },
-  { src: '/brand/brand-boots-restart-source.png', label: 'Boots restart source' },
+  {
+    src: '/brand/brand-boots-grok-imagine-target.jpg',
+    label: 'Boots Grok Imagine target (2026-09-28) — stripes to shield bottom, no wispy pixels',
+    width: 1792,
+    height: 1008,
+  },
+  { src: '/brand/brand-shield-cleanup.png', label: 'Shield cleanup', width: 1280, height: 720 },
+  { src: '/brand/brand-shield-fill-wrap.png', label: 'Boots restart fill-wrap', width: 1280, height: 720 },
+  { src: '/brand/brand-boots-restart-source.png', label: 'Boots restart source', width: 1280, height: 720 },
 ];
 
 const earlier = [
-  { src: '/brand/brand-favicon-clean.png', label: 'Favicon-clean' },
-  { src: '/brand/brand-compact-arc.png', label: 'Compact arc' },
-  { src: '/brand/brand-hammer-strike.png', label: 'Hammer strike' },
+  { src: '/brand/brand-favicon-clean.png', label: 'Favicon-clean', width: 1280, height: 720 },
+  { src: '/brand/brand-compact-arc.png', label: 'Compact arc', width: 1280, height: 720 },
+  { src: '/brand/brand-hammer-strike.png', label: 'Hammer strike', width: 1280, height: 720 },
 ];
 ---
 
@@ -28,7 +34,7 @@ const earlier = [
       candidates.map((mark) => (
         <li>
           <p class="kicker">{mark.label}</p>
-          <img src={mark.src} alt={mark.label} width="1280" height="720" />
+          <img src={mark.src} alt={mark.label} width={mark.width} height={mark.height} />
         </li>
       ))
     }
@@ -39,7 +45,7 @@ const earlier = [
       earlier.map((mark) => (
         <li>
           <p class="kicker">{mark.label}</p>
-          <img src={mark.src} alt={mark.label} width="1280" height="720" />
+          <img src={mark.src} alt={mark.label} width={mark.width} height={mark.height} />
         </li>
       ))
     }
