@@ -1,0 +1,16 @@
+---
+import Base from '../../layouts/Base.astro';
+import PageSubmission from '../../components/PageSubmission.astro';
+---
+
+<Base
+  title="A review or a correction"
+  description="Send a review or a proposed edit for a page on The American Forge. Submissions are read by a person. They do not appear on the site from the form."
+>
+  <p class="crumb">
+    <a href="/">Manufacturers</a>
+    <span aria-hidden="true"> / </span>
+    <span>A review or a correction</span>
+  </p>
+  <PageSubmission asPage />
+</Base>

@@ -1,0 +1,147 @@
+---
+interface Props {
+  /** Site path submitted with the form. When set, the field is filled and locked. */
+  pagePath?: string;
+  /** Manufacturer or page name, used only in the visible introduction. */
+  pageName?: string;
+  /** Render the title as the page h1. Manufacturer profiles use an h2. */
+  asPage?: boolean;
+}
+
+const { pagePath, pageName, asPage = false } = Astro.props;
+const pageLocked = Boolean(pagePath);
+---
+
+<section
+  class:list={['submission', asPage ? 'submission--page' : 'section']}
+  id="submission"
+  aria-labelledby="submission-heading"
+>
+  <p class={asPage ? 'eyebrow' : 'kicker'}>In the queue</p>
+  {
+    asPage ? (
+      <h1 id="submission-heading">A review or a correction</h1>
+    ) : (
+      <h2 id="submission-heading">A review or a correction</h2>
+    )
+  }
+  <div class="stack submission__copy">
+    <p class="lede">
+      {
+        pageName ? (
+          <>This is for the {pageName} record. Sending it does not change the page.</>
+        ) : (
+          <>For a page on The American Forge. Sending it does not change the page.</>
+        )
+      }
+    </p>
+    <p>
+      What you send sits in a queue. A person reads it before anything is done with it. A proposed edit is written into a manufacturer file only later, in the repository, and only if it holds up. A review is not posted on the site from this form.
+    </p>
+    <p>
+      A review is your account of the company or of the page. A proposed edit names a fact the page has wrong. If you have a filing, an article, or a company page that shows it, put the address in the evidence field. One address per line.
+    </p>
+  </div>
+
+  <form
+    class="submission-form"
+    name="page-submission"
+    method="POST"
+    action="/submit/received"
+    data-netlify="true"
+    data-netlify-honeypot="bot-field"
+    netlify-honeypot="bot-field"
+    accept-charset="UTF-8"
+  >
+    <input type="hidden" name="form-name" value="page-submission" />
+    <div class="hp" aria-hidden="true">
+      <label>
+        Leave this empty
+        <input name="bot-field" tabindex="-1" autocomplete="off" />
+      </label>
+    </div>
+
+    <fieldset class="field choices">
+      <legend>What you are sending</legend>
+      <label class="choice">
+        <input type="radio" name="type" value="review" required />
+        <span class="choice__text">
+          <span class="choice__label">Review</span>
+          <span class="hint">Your account of the company or of the page.</span>
+        </span>
+      </label>
+      <label class="choice">
+        <input type="radio" name="type" value="edit" required />
+        <span class="choice__text">
+          <span class="choice__label">Proposed edit</span>
+          <span class="hint">A change to a fact already on the record.</span>
+        </span>
+      </label>
+    </fieldset>
+
+    <div class="field">
+      <label for="submission-page">Page</label>
+      <input
+        id="submission-page"
+        name="page"
+        type="text"
+        required
+        value={pagePath}
+        readonly={pageLocked}
+        autocomplete="off"
+        spellcheck="false"
+        maxlength="300"
+        aria-describedby="submission-page-hint"
+      />
+      <p class="hint" id="submission-page-hint">
+        {
+          pageLocked
+            ? 'Filled from this page.'
+            : 'Path on this site, such as /manufacturers/liberty-tabletop.'
+        }
+      </p>
+    </div>
+
+    <div class="field">
+      <label for="submission-name">Name <span class="optional">optional</span></label>
+      <input id="submission-name" name="name" type="text" autocomplete="name" maxlength="120" />
+    </div>
+
+    <div class="field">
+      <label for="submission-email">Email <span class="optional">optional</span></label>
+      <input
+        id="submission-email"
+        name="email"
+        type="email"
+        autocomplete="email"
+        inputmode="email"
+        maxlength="200"
+        aria-describedby="submission-email-hint"
+      />
+      <p class="hint" id="submission-email-hint">Only if you want a reply. It is not published.</p>
+    </div>
+
+    <div class="field">
+      <label for="submission-body">The note</label>
+      <textarea id="submission-body" name="body" required rows="8" maxlength="8000"></textarea>
+    </div>
+
+    <div class="field">
+      <label for="submission-evidence">Evidence <span class="optional">optional</span></label>
+      <textarea
+        id="submission-evidence"
+        name="evidence"
+        rows="4"
+        maxlength="2000"
+        spellcheck="false"
+        aria-describedby="submission-evidence-hint"
+      ></textarea>
+      <p class="hint" id="submission-evidence-hint">Web addresses, one per line.</p>
+    </div>
+
+    <div class="form-actions">
+      <button class="button" type="submit">Send it in</button>
+      <p class="hint">It goes to the queue. It does not go on the site.</p>
+    </div>
+  </form>
+</section>
