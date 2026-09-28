@@ -1,31 +1,31 @@
 ---
 import Base from '../layouts/Base.astro';
 
-const current = [
-  { src: '/brand/brand-shield-cleanup.png', label: 'Provisional header — not locked' },
+const candidates = [
+  { src: '/brand/brand-shield-cleanup.png', label: 'Shield cleanup' },
   { src: '/brand/brand-shield-fill-wrap.png', label: 'Boots restart fill-wrap' },
+  { src: '/brand/brand-boots-restart-source.png', label: 'Boots restart source' },
 ];
 
 const earlier = [
   { src: '/brand/brand-favicon-clean.png', label: 'Favicon-clean' },
   { src: '/brand/brand-compact-arc.png', label: 'Compact arc' },
   { src: '/brand/brand-hammer-strike.png', label: 'Hammer strike' },
-  { src: '/brand/brand-boots-restart-source.png', label: 'Boots restart source' },
 ];
 ---
 
 <Base
   title="Brand marks"
-  description="Boots has not locked a final mark."
+  description="Review only. No mark is locked, and the header is unchanged."
   noindex
 >
   <div class="page-intro">
     <h1>Brand marks</h1>
-    <p class="lede">Boots has not locked a final mark.</p>
+    <p class="lede">Review only. No mark is locked, and the header is unchanged.</p>
   </div>
   <ul class="mark-list">
     {
-      current.map((mark) => (
+      candidates.map((mark) => (
         <li>
           <p class="kicker">{mark.label}</p>
           <img src={mark.src} alt={mark.label} width="1280" height="720" />

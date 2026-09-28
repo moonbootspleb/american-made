@@ -26,8 +26,7 @@ const current = (href: string) => {
     <meta name="description" content={description} />
     {noindex && <meta name="robots" content="noindex" />}
     <meta name="theme-color" content="#232522" />
-    <link rel="icon" href="/favicon.png" type="image/png" sizes="192x192" />
-    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -41,13 +40,7 @@ const current = (href: string) => {
     <header class="site-header">
       <div class="header-inner">
         <a class="wordmark" href="/" aria-current={current('/')}>
-          <img
-            class="wordmark__mark"
-            src="/brand/brand-shield-cleanup-header.png"
-            alt=""
-            width="679"
-            height="664"
-          />
+          <span class="mark" aria-hidden="true"><span class="mark__rivet"></span><span class="mark__rivet"></span></span>
           <strong>{siteName}</strong>
         </a>
         <nav class="nav" aria-label="Primary">
