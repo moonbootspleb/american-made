@@ -21,6 +21,12 @@
     "phone": "1-844-386-2338",
     "email": "customerservice@libertytabletop.com"
   },
+  "logo": {
+    "src": "/manufacturers/liberty-tabletop/logo.png",
+    "width": 600,
+    "height": 160,
+    "alt": "Liberty Tabletop"
+  },
   "website": "https://libertytabletop.com/",
   "websiteLabel": "libertytabletop.com",
   "ownership": {

@@ -67,12 +67,45 @@ Do not add a build step or a function that copies inbox entries into manufacture
 2. Fill both badges. `ownership.code` is one of `american-owned-and-run`, `not-american-owned-and-run`, or `unverified`. `manufacturing.code` is one of `made-in-usa`, `not-made-in-usa`, `split`, or `unverified`.
 3. Add at least one category slug and one product type. The category file is `src/data/categories/<slug>.json`, and the filename has to match the slug. `products` name the kind of goods (stainless flatware), not patterns or prices.
 4. Cite every factual paragraph, change-log entry, open question, inputs line, and automation note. Every source in the `sources` array has to be cited at least once. The build fails if an id is missing or unused.
-5. Keep the page on the manufacturer. Patterns, prices, and shopping carts stay on the company’s own site. Link that site.
-6. When a fact is thin, contradicted, or unread, put it in `openQuestions` instead of stating it as established. Leave `automation` off the file when heavy automation is not established. Leave `inputs` off when the materials are not established. If `inputs` is present and the code is not `unknown`, include `components` whose percentages total exactly 100. Do not invent shares.
+5. Add `logo` and keep `website`. The logo file lives at `public/manufacturers/<slug>/`. The card and the profile show that mark and a company link. Patterns, prices, and shopping carts stay on the company’s own site.
+6. When a fact is thin, contradicted, or unread, put it in `openQuestions` instead of stating it as established. Leave `automation` off the file when heavy automation is not established. Leave `inputs` off when the materials are not established. If `inputs` is present and the code is not `unknown`, include `components` whose percentages total exactly 100. Do not invent shares. Leave `affiliate` off unless a real affiliate or partner URL is already known. Do not invent one.
 
 A foreign parent that manufactures in the United States takes `not-american-owned-and-run` on the ownership badge. A U.S. owner that manufactures abroad takes `not-made-in-usa` (or `split`, when production is genuinely in more than one place). Made-in-USA directories are lead lists only. They do not fill this index.
 
 The public list is alphabetical by `name`, including inside a category. `featured` does not move a company up. An automation note does not move one down. The American rating does not sort the list.
+
+## Logo and company link
+
+Every profile requires `logo` and `website`.
+
+```json
+"logo": {
+  "src": "/manufacturers/example-slug/logo.png",
+  "width": 600,
+  "height": 160,
+  "alt": "Example Company"
+},
+"website": "https://example.com/",
+"websiteLabel": "example.com"
+```
+
+`logo.src` is a path under `public/manufacturers/<slug>/`. The file has to be in the repository. `png`, `jpg`, `jpeg`, `webp`, `gif`, and `svg` are allowed. For a raster file, `width` and `height` are that file’s pixel size. An SVG still needs both so the page can reserve space. `alt` names the mark.
+
+`website` is the company’s own site, and it stays required. The build fails if the logo file is missing on disk, if the recorded raster size does not match the file, or if `website` is not an http or https URL.
+
+The list card still opens our profile from the card body. A separate company link on the card goes to the company’s site. The profile header shows the same mark and the same company link. The line labeled Official site on the profile always uses `website`.
+
+`affiliate` is optional. Omit it when there is no real affiliate or partner URL. Do not invent a program or a URL. The block below is the file shape only. It is not a link on this site.
+
+```json
+"affiliate": {
+  "url": "https://example.com/partner",
+  "disclosure": "We may earn a commission if you buy through this link.",
+  "network": "Optional program name"
+}
+```
+
+When `affiliate` is present, the card, the profile header, and the bottom company button use `url` instead of `website`. `disclosure` is shown beside those links only, in plain language. `network` is an optional label. Those links use `rel="sponsored"`. The Official site line does not.
 
 ## Categories
 
@@ -143,5 +176,7 @@ The note is a fact. The page shows it as a short line under the two badges, on t
 Liberty Tabletop, the consumer brand of Sherrill Manufacturing in Sherrill, New York, is the first profile. Ownership, the Sherrill flatware plant, the bankruptcy, and the Toluca, Mexico contract chapter are sourced in that file. Limits — no cap table, conflicting officer titles and contract dates, Syracuse.com pages that did not return full text — are printed on the profile.
 
 The automation note is set. On October 1, 2016, Greg Owens told Spectrum News that almost every stage of the flatware process was automated to the max. Chief Executive wrote on March 20, 2020 that the business model was based on high levels of factory automation; that sentence is the magazine’s, not a quotation. The Rome Sentinel on March 2, 2025 described a MARQ4 Automation stamper at the plant. The company’s own pages still describe polishers and hand packing. The note says it is not a floor audit, and the profile’s limits section says the share of automated work was not measured. That line is disclosed on the rating and worth zero. No other profile is on the site. A later file leaves `automation` unset unless its own sources clear the same bar.
+
+The list card and the profile header use Liberty Tabletop’s own header mark, saved from libertytabletop.com, and link out to that official site. The file has no `affiliate` object.
 
 Liberty is filed under Flatware, for stainless flatware. Inputs are `unknown` and have no component list: company pages and two interviews describe U.S. steel and U.S. packaging, the named mills are examples, and no source gives shares that total 100. This record does not assign percentages. The rating leaves that line out. Ownership and the Sherrill plant stay on the reported badges. The rating page states the arithmetic. The list stays alphabetical.

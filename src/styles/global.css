@@ -524,7 +524,6 @@ h2 {
   gap: 0.85rem;
   padding: 1.15rem 1.2rem 1.2rem;
   color: inherit;
-  text-decoration: none;
   border-top: 4px solid #2c2a26;
 }
 
@@ -532,6 +531,95 @@ h2 {
   border-color: #2c2a26;
   color: inherit;
   background: #f7f4ee;
+}
+
+.card__main {
+  display: grid;
+  gap: 0.85rem;
+  color: inherit;
+  text-decoration: none;
+}
+
+.card__main:hover {
+  color: inherit;
+}
+
+.card__company {
+  border-top: 1px solid var(--rule);
+  padding-top: 0.15rem;
+}
+
+.profile-head {
+  display: grid;
+  gap: 0.9rem 1.25rem;
+  align-items: center;
+}
+
+.profile-head .company-link {
+  margin-top: 0.85rem;
+}
+
+.maker-logo {
+  display: block;
+  width: auto;
+  height: auto;
+  max-width: min(100%, 270px);
+  max-height: 72px;
+  object-fit: contain;
+  object-position: left center;
+}
+
+.maker-logo--profile {
+  max-width: min(100%, 330px);
+  max-height: 88px;
+}
+
+.company-link {
+  display: grid;
+  gap: 0.15rem;
+  justify-items: start;
+}
+
+.company-link__anchor {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.35rem 0.7rem;
+  min-height: 44px;
+  font-weight: 600;
+}
+
+.company-link__kicker {
+  font-family: var(--mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  font-weight: 500;
+  color: var(--muted);
+}
+
+.company-link__disclosure {
+  margin: 0;
+  max-width: 46ch;
+  color: var(--muted);
+  font-size: 0.92rem;
+}
+
+.company-link__network {
+  display: inline-block;
+  margin-left: 0.45rem;
+  font-family: var(--mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.company-link--button {
+  justify-items: end;
+}
+
+.company-link--button .company-link__disclosure {
+  text-align: left;
 }
 
 .card__top {
@@ -999,9 +1087,17 @@ h2 {
   .goods .quiet {
     grid-column: 1 / -1;
   }
+
+  .company-link--button {
+    justify-items: start;
+  }
 }
 
 @media (min-width: 720px) {
+  .profile-head {
+    grid-template-columns: auto minmax(0, 1fr);
+  }
+
   .questions,
   .badges {
     grid-template-columns: 1fr 1fr;

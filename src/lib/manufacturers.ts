@@ -1,3 +1,6 @@
+import { existsSync, readFileSync, statSync } from 'node:fs';
+import nodePath from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { z } from 'zod';
 
 const sourceKind = z.enum(['company', 'news', 'government', 'reference']);
@@ -70,6 +73,36 @@ export function inputComponentListIssues(inputs: {
 
 const slug = z.string().regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/);
 
+const httpUrl = z
+  .string()
+  .url()
+  .refine((value) => {
+    let url: URL;
+    try {
+      url = new URL(value);
+    } catch {
+      return false;
+    }
+    return (url.protocol === 'http:' || url.protocol === 'https:') && url.hostname.length > 0;
+  }, 'Use an http or https URL with a host.');
+
+const logoSchema = z.object({
+  src: z.string().min(1),
+  width: z.number().int().positive(),
+  height: z.number().int().positive(),
+  alt: z.string().min(1).max(160),
+});
+
+/**
+ * A real affiliate or partner link, when one already exists.
+ * Do not invent a program or a URL. Omit the object when there is none.
+ */
+const affiliateSchema = z.object({
+  url: httpUrl,
+  disclosure: z.string().min(1).max(400),
+  network: z.string().min(1).max(80).optional(),
+});
+
 export const categorySchema = z.object({
   slug,
   name: z.string().min(1),
@@ -107,8 +140,29 @@ export const manufacturerSchema = z.object({
     phone: z.string().min(1).optional(),
     email: z.string().email().optional(),
   }),
-  website: z.string().url(),
+  /**
+   * Company mark on the list card and the profile header.
+   *
+   * `src` is a site path to a file under `public/manufacturers/<slug>/`
+   * (png, jpg, jpeg, webp, gif, or svg). The build fails when that file is
+   * not on disk. For a raster file, `width` and `height` are the pixel size
+   * of that file. An SVG still needs both so the page can reserve space.
+   * `alt` names the mark.
+   */
+  logo: logoSchema,
+  /** The company’s own site. Required. This is not an affiliate URL. */
+  website: httpUrl,
   websiteLabel: z.string().min(1),
+  /**
+   * Optional paid outbound link. Set this only when a real affiliate or
+   * partner URL is already known. Do not invent a program or a URL.
+   *
+   * When present, the card, the profile header, and the bottom company
+   * button use `url` instead of `website`. `disclosure` is the plain-language
+   * note shown beside those links only. `network` is an optional program
+   * label. The profile’s Official site line always stays on `website`.
+   */
+  affiliate: affiliateSchema.optional(),
   ownership: z.object({
     code: ownershipCode,
     label: z.string().min(1),
@@ -261,6 +315,10 @@ function loadManufacturers(): Manufacturer[] {
       );
     }
 
+    for (const message of logoFileIssues(profile)) {
+      throw new Error(`${path} ${message}`);
+    }
+
     const sourceIds = new Set<string>();
     for (const source of profile.sources) {
       if (sourceIds.has(source.id)) {
@@ -348,6 +406,9 @@ function loadManufacturers(): Manufacturer[] {
   return profiles.sort((a, b) => a.name.localeCompare(b.name));
 }
 
+const publicRoot = nodePath.resolve(fileURLToPath(new URL('../../public', import.meta.url)));
+const logoExtensions = new Set(['.png', '.jpg', '.jpeg', '.webp', '.gif', '.svg']);
+
 const manufacturers = loadManufacturers();
 
 export function getAllCategories(): Category[] {
@@ -416,4 +477,173 @@ export function sourceKindLabel(kind: Manufacturer['sources'][number]['kind']): 
 
 export function placeLine(profile: Manufacturer): string {
   return `${profile.location.city}, ${profile.location.region}`;
+}
+
+export interface OutboundTarget {
+  href: string;
+  label: string;
+  affiliate: boolean;
+  disclosure?: string;
+  network?: string;
+}
+
+/** Primary company link: the affiliate URL when one is on the record, otherwise the official site. */
+export function outboundTarget(profile: Manufacturer): OutboundTarget {
+  if (profile.affiliate) {
+    return {
+      href: profile.affiliate.url,
+      label: profile.websiteLabel,
+      affiliate: true,
+      disclosure: profile.affiliate.disclosure,
+      network: profile.affiliate.network,
+    };
+  }
+  return {
+    href: profile.website,
+    label: profile.websiteLabel,
+    affiliate: false,
+  };
+}
+
+export function logoFileIssues(
+  profile: { slug: string; logo: { src: string; width: number; height: number } },
+  root = publicRoot,
+): string[] {
+  const issues: string[] = [];
+  const src = profile.logo.src;
+  const prefix = `/manufacturers/${profile.slug}/`;
+  if (
+    !src.startsWith(prefix) ||
+    src.includes('\\') ||
+    src.includes('..') ||
+    src.includes('//') ||
+    /[?#]/.test(src)
+  ) {
+    issues.push(
+      `logo.src must be a file under public/manufacturers/${profile.slug}/. Found "${src}".`,
+    );
+    return issues;
+  }
+
+  const ext = nodePath.posix.extname(src).toLowerCase();
+  if (!logoExtensions.has(ext)) {
+    issues.push(`logo.src must be a png, jpg, jpeg, webp, gif, or svg file. Found "${src}".`);
+    return issues;
+  }
+
+  const filePath = nodePath.resolve(root, src.slice(1));
+  const slugDir = nodePath.resolve(root, 'manufacturers', profile.slug);
+  if (filePath !== slugDir && !filePath.startsWith(`${slugDir}${nodePath.sep}`)) {
+    issues.push(`logo.src must stay inside public/manufacturers/${profile.slug}/. Found "${src}".`);
+    return issues;
+  }
+
+  if (!existsSync(filePath) || !statSync(filePath).isFile()) {
+    issues.push(`logo file is missing on disk: public${src}`);
+    return issues;
+  }
+
+  if (ext === '.svg') return issues;
+
+  let size: { width: number; height: number };
+  try {
+    size = readRasterSize(filePath, ext);
+  } catch (error) {
+    const detail = error instanceof Error ? error.message : 'Could not read the image.';
+    issues.push(`logo file could not be read (${detail}): public${src}`);
+    return issues;
+  }
+
+  if (size.width !== profile.logo.width || size.height !== profile.logo.height) {
+    issues.push(
+      `logo width and height must match the file. public${src} is ${size.width} by ${size.height}. The record says ${profile.logo.width} by ${profile.logo.height}.`,
+    );
+  }
+
+  return issues;
+}
+
+function readRasterSize(filePath: string, ext: string): { width: number; height: number } {
+  const buf = readFileSync(filePath);
+  if (ext === '.png') return readPngSize(buf);
+  if (ext === '.gif') return readGifSize(buf);
+  if (ext === '.jpg' || ext === '.jpeg') return readJpegSize(buf);
+  if (ext === '.webp') return readWebpSize(buf);
+  throw new Error(`unsupported type ${ext}`);
+}
+
+function readPngSize(buf: Buffer): { width: number; height: number } {
+  if (buf.length < 24 || buf.toString('ascii', 1, 4) !== 'PNG') {
+    throw new Error('not a PNG');
+  }
+  return { width: buf.readUInt32BE(16), height: buf.readUInt32BE(20) };
+}
+
+function readGifSize(buf: Buffer): { width: number; height: number } {
+  const sig = buf.toString('ascii', 0, 6);
+  if (buf.length < 10 || (sig !== 'GIF87a' && sig !== 'GIF89a')) {
+    throw new Error('not a GIF');
+  }
+  return { width: buf.readUInt16LE(6), height: buf.readUInt16LE(8) };
+}
+
+function readJpegSize(buf: Buffer): { width: number; height: number } {
+  if (buf.length < 4 || buf[0] !== 0xff || buf[1] !== 0xd8) {
+    throw new Error('not a JPEG');
+  }
+  let offset = 2;
+  while (offset + 9 < buf.length) {
+    if (buf[offset] !== 0xff) {
+      offset += 1;
+      continue;
+    }
+    const marker = buf[offset + 1];
+    if (marker === 0xc0 || marker === 0xc1 || marker === 0xc2) {
+      return {
+        height: buf.readUInt16BE(offset + 5),
+        width: buf.readUInt16BE(offset + 7),
+      };
+    }
+    if (marker === 0xd8 || marker === 0xd9 || (marker >= 0xd0 && marker <= 0xd7)) {
+      offset += 2;
+      continue;
+    }
+    const length = buf.readUInt16BE(offset + 2);
+    if (length < 2) throw new Error('bad JPEG segment');
+    offset += 2 + length;
+  }
+  throw new Error('JPEG size was not found');
+}
+
+function readWebpSize(buf: Buffer): { width: number; height: number } {
+  if (buf.length < 30 || buf.toString('ascii', 0, 4) !== 'RIFF' || buf.toString('ascii', 8, 12) !== 'WEBP') {
+    throw new Error('not a WebP');
+  }
+  const format = buf.toString('ascii', 12, 16);
+  if (format === 'VP8X') {
+    return {
+      width: 1 + buf.readUIntLE(24, 3),
+      height: 1 + buf.readUIntLE(27, 3),
+    };
+  }
+  if (format === 'VP8 ') {
+    const start = buf.indexOf(Buffer.from([0x9d, 0x01, 0x2a]));
+    if (start < 0 || start + 7 >= buf.length) throw new Error('WebP VP8 size was not found');
+    return {
+      width: buf.readUInt16LE(start + 3) & 0x3fff,
+      height: buf.readUInt16LE(start + 5) & 0x3fff,
+    };
+  }
+  if (format === 'VP8L') {
+    if (buf[20] !== 0x2f) throw new Error('bad WebP lossless signature');
+    const b1 = buf[21];
+    const b2 = buf[22];
+    const b3 = buf[23];
+    const b4 = buf[24];
+    return {
+      width: 1 + (((b2 & 0x3f) << 8) | b1),
+      height: 1 + (((b4 & 0x0f) << 10) | (b3 << 2) | ((b2 & 0xc0) >> 6)),
+    };
+  }
+  throw new Error(`unsupported WebP chunk ${format}`);
 }

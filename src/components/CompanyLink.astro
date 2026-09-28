@@ -1,0 +1,41 @@
+---
+import { outboundTarget, type Manufacturer } from '../lib/manufacturers';
+
+interface Props {
+  profile: Manufacturer;
+  variant?: 'text' | 'button';
+}
+
+const { profile, variant = 'text' } = Astro.props;
+const target = outboundTarget(profile);
+const rel = target.affiliate ? 'sponsored noopener noreferrer' : 'noopener noreferrer';
+const disclosureId = target.affiliate ? `affiliate-${profile.slug}-${variant}` : undefined;
+---
+
+<div class:list={['company-link', variant === 'button' && 'company-link--button']}>
+  <a
+    class:list={[variant === 'button' ? 'button' : 'company-link__anchor']}
+    href={target.href}
+    rel={rel}
+    aria-describedby={disclosureId}
+  >
+    {
+      variant === 'button' ? (
+        target.label
+      ) : (
+        <>
+          <span class="company-link__kicker">{target.affiliate ? 'Shop link' : 'Company site'}</span>
+          <span class="company-link__label">{target.label}</span>
+        </>
+      )
+    }
+  </a>
+  {
+    target.affiliate && target.disclosure && (
+      <p class="company-link__disclosure" id={disclosureId}>
+        {target.disclosure}
+        {target.network && <span class="company-link__network">Network: {target.network}</span>}
+      </p>
+    )
+  }
+</div>
