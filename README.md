@@ -13,7 +13,7 @@ npm install
 npm run dev
 ```
 
-The dev server prints a local URL. Start at `/` (the manufacturer list). The header is the logo, Categories, and How we rate. Open `/categories`, `/how-we-rate`, and `/manufacturers/liberty-tabletop`. `/about` and `/manufacturers` redirect to the rating page and the list.
+The dev server prints a local URL. Start at `/` (the manufacturer list). The header is the logo, Categories, and How we rate. Open `/categories`, `/how-we-rate`, and `/manufacturers/liberty-tabletop`. The footer links to `/submit`. `/about` and `/manufacturers` redirect to the rating page and the list.
 
 ## Build
 
@@ -39,6 +39,27 @@ Settings are also in [`netlify.toml`](netlify.toml).
 | Node version | 22 |
 
 The site is a static Astro build. No serverless functions and no blob store.
+
+## Corrections and reviews
+
+Manufacturer profiles include a form. The same form is at `/submit`. After a successful post, the sender lands on `/submit/received`.
+
+The moderation queue is the **Netlify Forms inbox** for the form named `page-submission`. Netlify detects the form from the static HTML (`data-netlify="true"`). A honeypot field named `bot-field` is on the form. There is no form handler in this repository, and no function that writes a submission anywhere.
+
+A submission does not go live. Nothing in the submission path writes `src/data/manufacturers/*.json` or any Markdown. Public copy changes only when a person later applies an approved edit in git and that commit is deployed. A review is read the same way and is not published from the form.
+
+The page says this in plain language: the note sits in a queue, a person reads it, and the page does not change from the form.
+
+| Field | Required | Notes |
+| --- | --- | --- |
+| `type` | yes | `review` or `edit` |
+| `page` | yes | Path on this site, which includes the slug. Filled and locked on a manufacturer profile. |
+| `name` | no | Not published. |
+| `email` | no | Only if the sender wants a reply. Not published. |
+| `body` | yes | The review or the proposed change. |
+| `evidence` | no | URLs, one per line. |
+
+Do not add a build step or a function that copies inbox entries into manufacturer files. `netlify.toml` does not need a forms block for this. Netlify registers the form from the built HTML.
 
 ## Adding a manufacturer
 

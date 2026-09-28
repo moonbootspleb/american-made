@@ -2,6 +2,7 @@
 import Base from '../../layouts/Base.astro';
 import AutomationNote from '../../components/AutomationNote.astro';
 import CitedText from '../../components/CitedText.astro';
+import PageSubmission from '../../components/PageSubmission.astro';
 import RatingBreakdown from '../../components/RatingBreakdown.astro';
 import StatusBadges from '../../components/StatusBadges.astro';
 import {
@@ -163,6 +164,12 @@ const shelves = profile.categories
           <dt>Last reviewed</dt>
           <dd>{profile.lastReviewed}</dd>
         </div>
+        <div>
+          <dt>Record</dt>
+          <dd>
+            <a href="#submission">Send a correction or a review</a>
+          </dd>
+        </div>
       </dl>
     </aside>
   </div>
@@ -225,6 +232,8 @@ const shelves = profile.categories
       }
     </ol>
   </section>
+
+  <PageSubmission pagePath={`/manufacturers/${profile.slug}`} pageName={profile.name} />
 
   <section class="section panel support" aria-labelledby="support">
     <div>
