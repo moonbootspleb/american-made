@@ -1,0 +1,56 @@
+---
+import Base from '../layouts/Base.astro';
+
+const marks = [
+  { src: '/brand/brand-mark-provisional.png', label: 'Provisional header' },
+  { src: '/brand/brand-shield-cleanup.png', label: 'Shield cleanup' },
+  { src: '/brand/brand-compact-arc.png', label: 'Compact arc' },
+  { src: '/brand/brand-hammer-strike.png', label: 'Hammer strike' },
+  { src: '/brand/brand-boots-restart-source.png', label: 'Boots restart source' },
+];
+---
+
+<Base
+  title="Brand marks"
+  description="Review marks. The header currently uses the provisional mark."
+  noindex
+>
+  <div class="page-intro">
+    <h1>Brand marks</h1>
+    <p class="lede">These are review marks. The header currently uses Provisional.</p>
+  </div>
+  <ul class="mark-list">
+    {
+      marks.map((mark) => (
+        <li>
+          <p class="kicker">{mark.label}</p>
+          <img src={mark.src} alt={mark.label} width="1280" height="720" />
+        </li>
+      ))
+    }
+  </ul>
+</Base>
+
+<style>
+  .mark-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: 1rem;
+  }
+
+  .mark-list li {
+    background: var(--paper-raised);
+    border: 1px solid #b7b0a4;
+    padding: 0.9rem 1rem 1rem;
+  }
+
+  .mark-list img {
+    display: block;
+    width: min(100%, 640px);
+    height: auto;
+    margin-top: 0.65rem;
+    background: #e9e9e9;
+  }
+</style>
