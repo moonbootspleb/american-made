@@ -1,8 +1,8 @@
-# American Made Accountability
+# The American Forge
 
 A static record of manufacturers. Each profile asks two questions separately: who owns and runs the company, and where the manufacturing happens.
 
-The working title is **American Made Accountability**. Profiles are JSON files in this repository. They are not stored in Netlify Blobs.
+The site is called **The American Forge**. Profiles are JSON files in this repository. They are not stored in Netlify Blobs.
 
 ## Local development
 
