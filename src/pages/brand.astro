@@ -1,9 +1,13 @@
 ---
 import Base from '../layouts/Base.astro';
 
-const marks = [
-  { src: '/brand/brand-mark-provisional.png', label: 'Provisional header' },
-  { src: '/brand/brand-shield-cleanup.png', label: 'Shield cleanup' },
+const current = [
+  { src: '/brand/brand-shield-cleanup.png', label: 'Provisional header — not locked' },
+  { src: '/brand/brand-shield-fill-wrap.png', label: 'Boots restart fill-wrap' },
+];
+
+const earlier = [
+  { src: '/brand/brand-favicon-clean.png', label: 'Favicon-clean' },
   { src: '/brand/brand-compact-arc.png', label: 'Compact arc' },
   { src: '/brand/brand-hammer-strike.png', label: 'Hammer strike' },
   { src: '/brand/brand-boots-restart-source.png', label: 'Boots restart source' },
@@ -12,16 +16,27 @@ const marks = [
 
 <Base
   title="Brand marks"
-  description="Review marks. The header currently uses the provisional mark."
+  description="Boots has not locked a final mark."
   noindex
 >
   <div class="page-intro">
     <h1>Brand marks</h1>
-    <p class="lede">These are review marks. The header currently uses Provisional.</p>
+    <p class="lede">Boots has not locked a final mark.</p>
   </div>
   <ul class="mark-list">
     {
-      marks.map((mark) => (
+      current.map((mark) => (
+        <li>
+          <p class="kicker">{mark.label}</p>
+          <img src={mark.src} alt={mark.label} width="1280" height="720" />
+        </li>
+      ))
+    }
+  </ul>
+  <h2 class="earlier-heading">Earlier</h2>
+  <ul class="mark-list">
+    {
+      earlier.map((mark) => (
         <li>
           <p class="kicker">{mark.label}</p>
           <img src={mark.src} alt={mark.label} width="1280" height="720" />
@@ -40,6 +55,11 @@ const marks = [
     gap: 1rem;
   }
 
+  .earlier-heading {
+    margin: 2rem 0 0.75rem;
+    font-size: 1.15rem;
+  }
+
   .mark-list li {
     background: var(--paper-raised);
     border: 1px solid #b7b0a4;
@@ -51,6 +71,6 @@ const marks = [
     width: min(100%, 640px);
     height: auto;
     margin-top: 0.65rem;
-    background: #e9e9e9;
+    background: #fff;
   }
 </style>
