@@ -29,6 +29,45 @@ const manufacturingCode = z.enum([
 
 const inputsCode = z.enum(['american', 'partial', 'not-american', 'unknown']);
 
+export const inputOriginSchema = z.enum(['us', 'foreign', 'mixed', 'unknown']);
+
+export type InputOrigin = z.infer<typeof inputOriginSchema>;
+
+const inputComponentSchema = z.object({
+  name: z.string().min(1).max(80),
+  percent: z.number().positive().max(100),
+  origin: inputOriginSchema,
+  note: z.string().min(1).max(160).optional(),
+});
+
+export function inputComponentsTotal(components: { percent: number }[]): number {
+  return components.reduce((total, component) => total + component.percent, 0);
+}
+
+/**
+ * A scored inputs line needs a component list that totals exactly 100.
+ * `unknown` may omit the list. A list that is present always has to total 100.
+ */
+export function inputComponentListIssues(inputs: {
+  code: string;
+  components?: { percent: number }[];
+}): string[] {
+  const issues: string[] = [];
+  const components = inputs.components;
+  if (inputs.code !== 'unknown' && (!components || components.length === 0)) {
+    issues.push(
+      'When inputs is present and not unknown, components must total exactly 100. Omit inputs when that list is not established.',
+    );
+  }
+  if (components && components.length > 0) {
+    const total = inputComponentsTotal(components);
+    if (total !== 100) {
+      issues.push(`Input components must total exactly 100. They total ${total}.`);
+    }
+  }
+  return issues;
+}
+
 const slug = z.string().regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/);
 
 export const categorySchema = z.object({
@@ -83,10 +122,13 @@ export const manufacturerSchema = z.object({
     confidence,
   }),
   /**
-   * Where the materials come from. Omit when that is not established.
-   * `partial` means the sources support an incomplete American-inputs account.
-   * `unknown` is allowed on the object, and so is omitting the object.
-   * Either way the rating leaves the line out or marks it unknown. Do not invent a full score.
+   * Where the materials come from. Omit the object when that is not established.
+   * When `code` is not `unknown`, `components` is required and the shares must
+   * total exactly 100. `unknown` may omit the list. Do not invent shares.
+   * Each component is a name, a percent, and an origin (`us`, `foreign`,
+   * `mixed`, or `unknown`). `note` is an optional short limit on that row.
+   * The rating derives the inputs level from the component origins when a list
+   * is present. An unknown code or unverified confidence still leaves the line out.
    */
   inputs: z
     .object({
@@ -95,6 +137,16 @@ export const manufacturerSchema = z.object({
       short: z.string().min(1).max(320),
       confidence,
       sources: z.array(z.string().min(1)).min(1),
+      components: z.array(inputComponentSchema).min(1).optional(),
+    })
+    .superRefine((inputs, ctx) => {
+      for (const message of inputComponentListIssues(inputs)) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          path: ['components'],
+          message,
+        });
+      }
     })
     .optional(),
   /**
@@ -265,6 +317,9 @@ function loadManufacturers(): Manufacturer[] {
 
     if (profile.inputs) {
       take(profile.inputs.sources, 'inputs');
+      for (const message of inputComponentListIssues(profile.inputs)) {
+        throw new Error(`${path} ${message}`);
+      }
     }
     if (profile.automation) {
       if (!profile.automation.heavilyAutomated) {
@@ -331,6 +386,19 @@ export function sourceNumber(profile: Manufacturer, id: string): number {
     throw new Error(`Profile ${profile.slug} has no source ${id}.`);
   }
   return index + 1;
+}
+
+export function inputOriginLabel(origin: InputOrigin): string {
+  switch (origin) {
+    case 'us':
+      return 'United States';
+    case 'foreign':
+      return 'Foreign';
+    case 'mixed':
+      return 'Mixed';
+    case 'unknown':
+      return 'Unknown';
+  }
 }
 
 export function sourceKindLabel(kind: Manufacturer['sources'][number]['kind']): string {

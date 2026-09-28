@@ -78,9 +78,22 @@ function manufacturingLevel(profile: Manufacturer): Level {
 function inputsLevel(profile: Manufacturer): Level {
   const inputs = profile.inputs;
   if (!inputs || inputs.code === 'unknown' || inputs.confidence === 'unverified') return 'unknown';
-  if (inputs.code === 'not-american') return 'none';
-  if (inputs.code === 'partial' || inputs.confidence === 'partial') return 'half';
-  return 'full';
+
+  const components = inputs.components;
+  if (!components || components.length === 0) return 'unknown';
+
+  const origins = components.map((component) => component.origin);
+  const allUs = origins.every((origin) => origin === 'us');
+  const allForeign = origins.every((origin) => origin === 'foreign');
+
+  let level: Level;
+  if (allUs) level = 'full';
+  else if (allForeign) level = 'none';
+  else if (origins.every((origin) => origin === 'unknown')) level = 'unknown';
+  else level = 'half';
+
+  if (inputs.confidence === 'partial' && level === 'full') return 'half';
+  return level;
 }
 
 function scoredRow(
