@@ -1,0 +1,32 @@
+---
+import Base from '../../layouts/Base.astro';
+---
+
+<Base
+  title="Donation"
+  description="Back from Stripe. The American Forge does not keep your card number."
+  noindex
+>
+  <p class="crumb">
+    <a href="/">Manufacturers</a>
+    <span aria-hidden="true"> / </span>
+    <a href="/donate">Donate</a>
+    <span aria-hidden="true"> / </span>
+    <span>Donation</span>
+  </p>
+  <div class="page-intro">
+    <p class="eyebrow">Card</p>
+    <h1>Back from Stripe</h1>
+    <p class="lede">This site does not keep your card number.</p>
+  </div>
+  <div class="stack">
+    <p class="prose">
+      If you finished checkout, Stripe has the receipt. This page cannot see whether a payment went through, and it does not store a card.
+    </p>
+    <p class="prose">
+      <a href="/">Back to the list</a>
+      <span aria-hidden="true"> · </span>
+      <a href="/donate">Donate</a>
+    </p>
+  </div>
+</Base>

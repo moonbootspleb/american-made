@@ -4,7 +4,9 @@ import AutomationNote from '../../components/AutomationNote.astro';
 import CitedText from '../../components/CitedText.astro';
 import CompanyLink from '../../components/CompanyLink.astro';
 import PageSubmission from '../../components/PageSubmission.astro';
+import ProductGallery from '../../components/ProductGallery.astro';
 import RatingBreakdown from '../../components/RatingBreakdown.astro';
+import ReviewRequest from '../../components/ReviewRequest.astro';
 import StatusBadges from '../../components/StatusBadges.astro';
 import {
   getAllManufacturers,
@@ -85,6 +87,8 @@ const shelves = profile.categories
       </div>
     )
   }
+
+  <ProductGallery profile={profile} />
 
   <div class="layout" style="margin-top:1.75rem">
     <div>
@@ -178,6 +182,20 @@ const shelves = profile.categories
           <dd>{profile.lastReviewed}</dd>
         </div>
         <div>
+          <dt>Photographs</dt>
+          <dd>
+            <a href="#photographs">
+              {profile.gallery?.length ? `${profile.gallery.length} filed` : 'None filed'}
+            </a>
+          </dd>
+        </div>
+        <div>
+          <dt>Review</dt>
+          <dd>
+            <a href="#review-request">Request a review</a>
+          </dd>
+        </div>
+        <div>
           <dt>Record</dt>
           <dd>
             <a href="#submission">Send a correction or a review</a>
@@ -245,6 +263,12 @@ const shelves = profile.categories
       }
     </ol>
   </section>
+
+  <ReviewRequest
+    company={profile.name}
+    companyUrl={profile.website}
+    pagePath={`/manufacturers/${profile.slug}`}
+  />
 
   <PageSubmission pagePath={`/manufacturers/${profile.slug}`} pageName={profile.name} />
 
