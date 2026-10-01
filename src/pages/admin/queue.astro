@@ -1,0 +1,59 @@
+---
+export const prerender = false;
+
+import AdminQueue from '../../components/AdminQueue.astro';
+import Base from '../../layouts/Base.astro';
+import { safeNextPath } from '../../lib/admin-session.mjs';
+import { loadQueue, sessionFromCookies } from '../../lib/admin-server';
+import { countByForm, filterByForm, selectedForm } from '../../lib/queue-view.mjs';
+
+const form = selectedForm(Astro.url.searchParams.get('form'));
+const nextTarget = safeNextPath(form === 'all' ? '/admin/queue' : `/admin/queue?form=${form}`);
+
+if (!sessionFromCookies(Astro.cookies)) {
+  return Astro.redirect(`/admin/login?next=${encodeURIComponent(nextTarget)}`);
+}
+
+const loaded = await loadQueue();
+const submissions = loaded.ok ? loaded.submissions : [];
+const counts = countByForm(submissions);
+const items = filterByForm(submissions, form);
+
+const siteLabel = loaded.ok
+  ? loaded.siteSource === 'fallback'
+    ? `Reading the production site ${loaded.siteId} because NETLIFY_SITE_ID and SITE_ID are unset.`
+    : `Reading form submissions for site ${loaded.siteId}.`
+  : 'The form inbox has not been read.';
+
+Astro.response.headers.set('Cache-Control', 'private, no-store');
+Astro.response.headers.set('X-Robots-Tag', 'noindex');
+---
+
+<Base
+  title="Review queue"
+  description="Read review requests, company suggestions, and page submissions. Nothing here is published."
+  noindex
+>
+  <div class="page-intro">
+    <p class="eyebrow">Admin</p>
+    <div class="queue-bar">
+      <h1>Review queue</h1>
+      <form method="post" action="/admin/logout">
+        <button class="button button--quiet" type="submit">Log out</button>
+      </form>
+    </div>
+    <p class="lede">
+      Notes from the forms. Reading them does not publish a company, and it does not write a manufacturer file.
+    </p>
+  </div>
+
+  <AdminQueue
+    form={form}
+    counts={counts}
+    items={items}
+    truncated={loaded.ok && loaded.truncated}
+    problem={loaded.ok ? null : loaded.reason}
+    upstreamStatus={loaded.ok ? 0 : (loaded.status ?? 0)}
+    siteLabel={siteLabel}
+  />
+</Base>

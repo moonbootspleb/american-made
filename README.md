@@ -13,7 +13,11 @@ npm install
 npm run dev
 ```
 
-The dev server prints a local URL. Start at `/` (the manufacturer list). The header is the logo, Categories, How we rate, and Donate. Open `/categories`, `/how-we-rate`, `/donate`, and `/manufacturers/liberty-tabletop`. The footer links to `/submit`, `/submit/review`, `/submit/company`, and `/donate`. `/about` and `/manufacturers` redirect to the rating page and the list.
+The dev server prints a local URL. Start at `/` (the manufacturer list). The header is the logo, Categories, How we rate, and Donate. Open `/categories`, `/how-we-rate`, `/donate`, and `/manufacturers/liberty-tabletop`. The footer links to `/submit`, `/submit/review`, `/submit/company`, `/donate`, and a quiet Admin link. `/about` and `/manufacturers` redirect to the rating page and the list.
+
+`/admin/login` needs `ADMIN_PASSWORD` in the environment (see [Admin queue](#admin-queue)). Without `NETLIFY_AUTH_TOKEN`, a signed-in visit says the inbox cannot be read. Neither value is required to build.
+
+The dev server may print a warning about Netlify edge functions when Deno is not installed. The pages still load. That local server is not part of the production deploy.
 
 ## Build
 
@@ -22,11 +26,13 @@ npm install
 npm run build
 ```
 
-`npm run build` writes a static site to `dist/`. Preview that output with:
+`npm run build` writes the public pages to `dist/`. `/admin` is not a file in that folder. The same build prepares the on-demand function Netlify uses for `/admin` and `/api/admin/submissions`. Preview the public pages with:
 
 ```bash
 npm run preview
 ```
+
+Try the queue with `npm run dev`.
 
 ## Netlify
 
@@ -40,11 +46,13 @@ Settings are also in [`netlify.toml`](netlify.toml).
 
 The site is a static Astro build. Profiles are not stored in a blob store. One Netlify function, `netlify/functions/donate.ts`, opens Stripe Checkout for donations. It does not read the form inbox and it does not write manufacturer files. Card donations stay off until the settings in [Donations](#donations) are set.
 
+`/admin` is on-demand. It reads the Netlify Forms inbox after a password check. It does not write manufacturer files either. See [Admin queue](#admin-queue).
+
 ## Corrections and reviews
 
 Manufacturer profiles include a form. The same form is at `/submit`. After a successful post, the sender lands on `/submit/received`.
 
-The moderation queue is the **Netlify Forms** inbox. Netlify detects each form from the static HTML (`data-netlify="true"`). A honeypot field named `bot-field` is on every form. There is no form handler in this repository, and no function that writes a submission anywhere.
+The moderation queue is the **Netlify Forms** inbox. Netlify detects each form from the static HTML (`data-netlify="true"`). A honeypot field named `bot-field` is on every form. Nothing in this repository writes a submission into a manufacturer file. `/admin` only reads the inbox.
 
 A submission does not go live. Nothing in the submission path writes `src/data/manufacturers/*.json` or any Markdown. Public copy changes only when a person later applies an approved edit in git and that commit is deployed. A review, a review request, and a company suggestion are read the same way and are not published from the form.
 
@@ -95,6 +103,26 @@ All three post to `/submit/received`. Do not add a build step or a function that
 | `evidence` | no | URLs, one per line. |
 
 `netlify.toml` does not need a forms block for this. Netlify registers the forms from the built HTML.
+
+## Admin queue
+
+`/admin/login` asks for a password. A correct password sets an HttpOnly cookie for 12 hours. A wrong password does not. If `ADMIN_PASSWORD` is missing, shorter than 12 characters, or a placeholder such as `password`, login stays closed.
+
+`/admin` and `/admin/queue` list the inbox, newest first. Tabs filter `review-request`, `company-suggestion`, and `page-submission`. A visit without the cookie is sent to the login page. `GET /api/admin/submissions` returns 401 without that cookie. The footer link labeled Admin goes to the same gate. It is not in the header.
+
+The page reads Netlify’s submissions API on the server. The token is not sent to the browser. The page does not create `src/data/manufacturers/*.json`, and it does not publish a company.
+
+| Setting | Where it lives | What it does |
+| --- | --- | --- |
+| `ADMIN_PASSWORD` | Netlify environment only. Secret. | At least 12 characters. Compared on the server. A placeholder is ignored. Changing it signs everyone out. |
+| `NETLIFY_AUTH_TOKEN` | Netlify environment only. Secret. | A personal access token that can read this site’s form submissions. [Create one](https://app.netlify.com/user/applications#personal-access-tokens) for the account that owns the site. |
+| `NETLIFY_SITE_ID` | Netlify environment. Optional. | The site id whose inbox is read. Production `american-forge` is `13e8b163-dcb1-4638-8c3f-df186953f5a1`. The develop site `american-forge-develop` is `66681ebf-5a78-4af1-acb7-0d655a8e62a9`. When unset, the page uses Netlify’s `SITE_ID` for the site that is serving the page. The production id is the fallback only when neither is set. |
+
+On Netlify, open the site → **Project configuration** → **Environment variables** → **Add a variable**. Add the three names for the **Production** scope (and on `american-forge-develop` if that site should show its own inbox). Mark the password and the token as secret. Do not prefix them with `PUBLIC_`. Redeploy so the on-demand routes pick them up. The static build succeeds without them.
+
+Copy the names from [`.env.example`](.env.example). Do not commit `.env`, and do not put a real password in the repository.
+
+Log out from the button on the queue. That clears the cookie. The queue is for a person to read. Moving an approved note into a manufacturer file is still a later edit in git.
 
 ## Adding a manufacturer
 

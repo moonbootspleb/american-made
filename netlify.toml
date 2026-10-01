@@ -1,7 +1,8 @@
-# The American Forge — static Astro site, plus one donate function.
+# The American Forge — static Astro site, a donate function, and on-demand admin routes.
 # Netlify: build command `npm run build`, publish directory `dist`.
 # Card checkout: netlify/functions/donate.ts reads STRIPE_SECRET_KEY at runtime.
-# Do not commit that key. The static build does not need it.
+# Admin queue: /admin reads ADMIN_PASSWORD, NETLIFY_AUTH_TOKEN, and NETLIFY_SITE_ID at runtime.
+# Do not commit those secrets. The static build does not need them.
 
 [build]
   command = "npm run build"
