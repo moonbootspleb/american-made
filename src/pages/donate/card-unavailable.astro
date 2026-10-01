@@ -1,0 +1,32 @@
+---
+import Base from '../../layouts/Base.astro';
+---
+
+<Base
+  title="Card donations are not on"
+  description="No card was charged. Card donations on The American Forge are not available from this page."
+  noindex
+>
+  <p class="crumb">
+    <a href="/">Manufacturers</a>
+    <span aria-hidden="true"> / </span>
+    <a href="/donate">Donate</a>
+    <span aria-hidden="true"> / </span>
+    <span>Card</span>
+  </p>
+  <div class="page-intro">
+    <p class="eyebrow">Card</p>
+    <h1>Card donations are not on</h1>
+    <p class="lede">Nothing was charged.</p>
+  </div>
+  <div class="stack">
+    <p class="prose">
+      Stripe did not open a checkout. The payment key is missing, the amount was not one of the listed amounts, or Stripe refused the session. No card number was sent to The American Forge.
+    </p>
+    <p class="prose">
+      <a href="/donate">Back to donate</a>
+      <span aria-hidden="true"> · </span>
+      <a href="/">Back to the list</a>
+    </p>
+  </div>
+</Base>

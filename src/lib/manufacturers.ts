@@ -103,6 +103,22 @@ const affiliateSchema = z.object({
   network: z.string().min(1).max(80).optional(),
 });
 
+/**
+ * A photograph of goods the company published.
+ * The file lives under `public/manufacturers/<slug>/`.
+ * `credit` names the publisher. `sourceUrl` is the page it came from.
+ * Do not point this at a stock picture.
+ */
+const galleryImageSchema = z.object({
+  src: z.string().min(1),
+  width: z.number().int().positive(),
+  height: z.number().int().positive(),
+  alt: z.string().min(1).max(200),
+  caption: z.string().min(1).max(120).optional(),
+  credit: z.string().min(1).max(160),
+  sourceUrl: httpUrl,
+});
+
 export const categorySchema = z.object({
   slug,
   name: z.string().min(1),
@@ -163,6 +179,13 @@ export const manufacturerSchema = z.object({
    * label. The profile’s Official site line always stays on `website`.
    */
   affiliate: affiliateSchema.optional(),
+  /**
+   * Optional photographs of goods the company has published.
+   * Omit the array when none are filed. An empty array is invalid.
+   * At most eight. Do not invent a stock photo. Each `src` is a file
+   * under `public/manufacturers/<slug>/`, and width and height match it.
+   */
+  gallery: z.array(galleryImageSchema).min(1).max(8).optional(),
   ownership: z.object({
     code: ownershipCode,
     label: z.string().min(1),
@@ -317,6 +340,19 @@ function loadManufacturers(): Manufacturer[] {
 
     for (const message of logoFileIssues(profile)) {
       throw new Error(`${path} ${message}`);
+    }
+
+    if (profile.gallery) {
+      const gallerySrcs = new Set<string>();
+      for (const image of profile.gallery) {
+        if (gallerySrcs.has(image.src)) {
+          throw new Error(`${path} repeats gallery image "${image.src}".`);
+        }
+        gallerySrcs.add(image.src);
+        for (const message of imageFileIssues(profile.slug, image, 'gallery')) {
+          throw new Error(`${path} ${message}`);
+        }
+      }
     }
 
     const sourceIds = new Set<string>();
@@ -509,9 +545,18 @@ export function logoFileIssues(
   profile: { slug: string; logo: { src: string; width: number; height: number } },
   root = publicRoot,
 ): string[] {
+  return imageFileIssues(profile.slug, profile.logo, 'logo', root);
+}
+
+export function imageFileIssues(
+  slug: string,
+  image: { src: string; width: number; height: number },
+  field: string,
+  root = publicRoot,
+): string[] {
   const issues: string[] = [];
-  const src = profile.logo.src;
-  const prefix = `/manufacturers/${profile.slug}/`;
+  const src = image.src;
+  const prefix = `/manufacturers/${slug}/`;
   if (
     !src.startsWith(prefix) ||
     src.includes('\\') ||
@@ -520,26 +565,26 @@ export function logoFileIssues(
     /[?#]/.test(src)
   ) {
     issues.push(
-      `logo.src must be a file under public/manufacturers/${profile.slug}/. Found "${src}".`,
+      `${field}.src must be a file under public/manufacturers/${slug}/. Found "${src}".`,
     );
     return issues;
   }
 
   const ext = nodePath.posix.extname(src).toLowerCase();
   if (!logoExtensions.has(ext)) {
-    issues.push(`logo.src must be a png, jpg, jpeg, webp, gif, or svg file. Found "${src}".`);
+    issues.push(`${field}.src must be a png, jpg, jpeg, webp, gif, or svg file. Found "${src}".`);
     return issues;
   }
 
   const filePath = nodePath.resolve(root, src.slice(1));
-  const slugDir = nodePath.resolve(root, 'manufacturers', profile.slug);
+  const slugDir = nodePath.resolve(root, 'manufacturers', slug);
   if (filePath !== slugDir && !filePath.startsWith(`${slugDir}${nodePath.sep}`)) {
-    issues.push(`logo.src must stay inside public/manufacturers/${profile.slug}/. Found "${src}".`);
+    issues.push(`${field}.src must stay inside public/manufacturers/${slug}/. Found "${src}".`);
     return issues;
   }
 
   if (!existsSync(filePath) || !statSync(filePath).isFile()) {
-    issues.push(`logo file is missing on disk: public${src}`);
+    issues.push(`${field} file is missing on disk: public${src}`);
     return issues;
   }
 
@@ -550,13 +595,13 @@ export function logoFileIssues(
     size = readRasterSize(filePath, ext);
   } catch (error) {
     const detail = error instanceof Error ? error.message : 'Could not read the image.';
-    issues.push(`logo file could not be read (${detail}): public${src}`);
+    issues.push(`${field} file could not be read (${detail}): public${src}`);
     return issues;
   }
 
-  if (size.width !== profile.logo.width || size.height !== profile.logo.height) {
+  if (size.width !== image.width || size.height !== image.height) {
     issues.push(
-      `logo width and height must match the file. public${src} is ${size.width} by ${size.height}. The record says ${profile.logo.width} by ${profile.logo.height}.`,
+      `${field} width and height must match the file. public${src} is ${size.width} by ${size.height}. The record says ${image.width} by ${image.height}.`,
     );
   }
 

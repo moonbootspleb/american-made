@@ -1,4 +1,6 @@
 ---
+import SubmissionNav from './SubmissionNav.astro';
+
 interface Props {
   /** Site path submitted with the form. When set, the field is filled and locked. */
   pagePath?: string;
@@ -41,7 +43,19 @@ const pageLocked = Boolean(pagePath);
     <p>
       A review is your account of the company or of the page. A proposed edit names a fact the page has wrong. If you have a filing, an article, or a company page that shows it, put the address in the evidence field. One address per line.
     </p>
+    {
+      asPage ? (
+        <p>
+          To ask for a review of a company, use <a href="/submit/review">Request a review</a>. To name a manufacturer that is not on the list, <a href="/submit/company">suggest a company</a>.
+        </p>
+      ) : (
+        <p>
+          To ask for a review of this company without writing the review yourself, use the form just above. A company that is not listed yet goes through <a href="/submit/company">Suggest a company</a>.
+        </p>
+      )
+    }
   </div>
+  {asPage && <SubmissionNav current="correction" />}
 
   <form
     class="submission-form"
