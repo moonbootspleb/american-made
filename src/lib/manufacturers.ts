@@ -442,7 +442,18 @@ function loadManufacturers(): Manufacturer[] {
   return profiles.sort((a, b) => a.name.localeCompare(b.name));
 }
 
-const publicRoot = nodePath.resolve(fileURLToPath(new URL('../../public', import.meta.url)));
+/**
+ * Logo checks read public/ next to this file. The Netlify adapter bundles the
+ * server build under .netlify/, so that relative URL no longer reaches public/.
+ * Fall back to the project directory, which is the working directory at build time.
+ */
+function resolvePublicRoot(): string {
+  const fromModule = nodePath.resolve(fileURLToPath(new URL('../../public', import.meta.url)));
+  if (existsSync(fromModule)) return fromModule;
+  return nodePath.resolve(process.cwd(), 'public');
+}
+
+const publicRoot = resolvePublicRoot();
 const logoExtensions = new Set(['.png', '.jpg', '.jpeg', '.webp', '.gif', '.svg']);
 
 const manufacturers = loadManufacturers();

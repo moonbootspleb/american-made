@@ -1,0 +1,205 @@
+---
+import { QUEUE_FORMS } from '../lib/queue-view.mjs';
+
+interface LinkPart {
+  type: 'link';
+  href: string;
+  x: boolean;
+}
+
+interface TextPart {
+  type: 'text';
+  value: string;
+}
+
+interface QueueItem {
+  id: string;
+  number: number | null;
+  formName: string;
+  kind: string;
+  submittedAt: string;
+  title: string;
+  companyUrl: string;
+  companyUrlText: string;
+  page: string;
+  pageHref: string;
+  place: string;
+  products: string;
+  name: string;
+  email: string;
+  emailHref: string;
+  body: string;
+  evidenceParts: Array<LinkPart | TextPart>;
+}
+
+interface Props {
+  form: 'all' | 'review-request' | 'company-suggestion' | 'page-submission';
+  counts: Record<string, number>;
+  items: QueueItem[];
+  truncated: boolean;
+  problem: 'not_configured' | 'invalid_site' | 'upstream' | null;
+  upstreamStatus?: number;
+  siteLabel: string;
+}
+
+const { form, counts, items, truncated, problem, upstreamStatus = 0, siteLabel } = Astro.props;
+
+const problemText = (() => {
+  if (problem === 'not_configured') {
+    return 'Set NETLIFY_AUTH_TOKEN on the host so this page can read the form inbox. The token stays on the server. Nothing was published.';
+  }
+  if (problem === 'invalid_site') {
+    return 'NETLIFY_SITE_ID is set, but it is not a site id. Nothing was read.';
+  }
+  if (problem === 'upstream') {
+    if (upstreamStatus === 401 || upstreamStatus === 403) {
+      return 'Netlify refused the token. Check NETLIFY_AUTH_TOKEN. Nothing was published.';
+    }
+    if (upstreamStatus === 404) {
+      return 'Netlify did not find that site. Check NETLIFY_SITE_ID. Nothing was published.';
+    }
+    if (!upstreamStatus) {
+      return 'The form inbox could not be reached. Nothing was published.';
+    }
+    return `The form inbox could not be read (HTTP ${upstreamStatus}). Nothing was published.`;
+  }
+  return '';
+})();
+---
+
+<p class="hint">{siteLabel}</p>
+
+{
+  problem ? (
+    <div class="queue-note" role="alert">
+      <p>{problemText}</p>
+    </div>
+  ) : (
+    <>
+      <nav class="shelves" aria-label="Forms">
+        <a class="shelf" href="/admin/queue" aria-current={form === 'all' ? 'page' : undefined}>
+          All <span class="shelf__count">{counts.all}</span>
+        </a>
+        {QUEUE_FORMS.map((entry) => (
+          <a
+            class="shelf"
+            href={`/admin/queue?form=${entry.id}`}
+            aria-current={form === entry.id ? 'page' : undefined}
+          >
+            {entry.label} <span class="shelf__count">{counts[entry.id] ?? 0}</span>
+          </a>
+        ))}
+      </nav>
+
+      {truncated && (
+        <p class="hint">Showing the newest 500. Older notes stay in the Netlify dashboard.</p>
+      )}
+
+      {items.length === 0 ? (
+        <p class="lede" role="status">Nothing in this queue.</p>
+      ) : (
+        <ol class="queue">
+          {items.map((item) => (
+            <li class="queue-card" id={`submission-${item.id}`}>
+              <header>
+                <p class="kicker">
+                  {item.formName}
+                  {item.number !== null ? ` · #${item.number}` : ''}
+                </p>
+                <p class="hint">{item.kind}</p>
+              </header>
+              <h2>{item.title}</h2>
+              <div class="queue-meta">
+                <div>
+                  <p class="meta-label">Submitted</p>
+                  <p>{item.submittedAt || 'Unknown time'}</p>
+                </div>
+                {(item.companyUrl || item.companyUrlText) && (
+                  <div>
+                    <p class="meta-label">Company link</p>
+                    <p>
+                      {item.companyUrl ? (
+                        <a href={item.companyUrl} rel="noopener noreferrer" target="_blank">
+                          {item.companyUrl}
+                        </a>
+                      ) : (
+                        item.companyUrlText
+                      )}
+                    </p>
+                  </div>
+                )}
+                {item.page && (
+                  <div>
+                    <p class="meta-label">Page</p>
+                    <p>
+                      {item.pageHref ? (
+                        <a href={item.pageHref} target="_blank" rel="noopener noreferrer">
+                          {item.page}
+                        </a>
+                      ) : (
+                        item.page
+                      )}
+                    </p>
+                  </div>
+                )}
+                {item.place && (
+                  <div>
+                    <p class="meta-label">Place</p>
+                    <p>{item.place}</p>
+                  </div>
+                )}
+                {item.products && (
+                  <div>
+                    <p class="meta-label">What they make</p>
+                    <p>{item.products}</p>
+                  </div>
+                )}
+                <div>
+                  <p class="meta-label">Contact</p>
+                  <p>
+                    {item.name || item.email ? (
+                      <>
+                        {item.name}
+                        {item.name && item.email ? ' · ' : ''}
+                        {item.emailHref ? (
+                          <a href={`mailto:${item.emailHref}`}>{item.email}</a>
+                        ) : (
+                          item.email
+                        )}
+                      </>
+                    ) : (
+                      'No contact left.'
+                    )}
+                  </p>
+                </div>
+                <div>
+                  <p class="meta-label">Note</p>
+                  <p class="queue-body">{item.body || 'No note.'}</p>
+                </div>
+                {item.evidenceParts.length > 0 && (
+                  <div>
+                    <p class="meta-label">Evidence</p>
+                    <p class="queue-body">
+                      {item.evidenceParts.map((part) =>
+                        part.type === 'link' ? (
+                          <a href={part.href} rel="noopener noreferrer" target="_blank">
+                            {part.x ? `X · ${part.href}` : part.href}
+                          </a>
+                        ) : (
+                          part.value
+                        )
+                      )}
+                    </p>
+                  </div>
+                )}
+              </div>
+            </li>
+          ))}
+        </ol>
+      )}
+      <p class="hint">
+        The forms are review-request, company-suggestion, and page-submission. This page only reads them.
+      </p>
+    </>
+  )
+}
