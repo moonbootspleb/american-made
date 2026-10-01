@@ -8,7 +8,7 @@ interface Props {
 }
 
 const { title, description, noindex = false } = Astro.props;
-const siteName = 'American Made Accountability';
+const siteName = 'The American Forge';
 const fullTitle = title ? `${title} · ${siteName}` : siteName;
 const path = Astro.url.pathname.replace(/\/$/, '') || '/';
 
@@ -66,6 +66,8 @@ const current = (href: string) => {
           <a href="/categories">Categories</a>
           <span aria-hidden="true"> · </span>
           <a href="/how-we-rate">How we rate</a>
+          <span aria-hidden="true"> · </span>
+          <a href="/submit">Send a correction</a>
         </p>
       </div>
     </footer>

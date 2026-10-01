@@ -2,6 +2,8 @@
 import Base from '../../layouts/Base.astro';
 import AutomationNote from '../../components/AutomationNote.astro';
 import CitedText from '../../components/CitedText.astro';
+import CompanyLink from '../../components/CompanyLink.astro';
+import PageSubmission from '../../components/PageSubmission.astro';
 import RatingBreakdown from '../../components/RatingBreakdown.astro';
 import StatusBadges from '../../components/StatusBadges.astro';
 import {
@@ -44,11 +46,23 @@ const shelves = profile.categories
     }
     <span>{profile.name}</span>
   </p>
-  <p class="eyebrow">{profile.products.map((product) => product.name).join(', ')}</p>
-  <h1>{profile.name}</h1>
-  <p class="lede" style="margin-top:0.8rem">
-    {profile.legalName} · {placeLine(profile)}, {profile.location.country}
-  </p>
+  <header class="profile-head">
+    <img
+      class="maker-logo maker-logo--profile"
+      src={profile.logo.src}
+      alt={profile.logo.alt}
+      width={profile.logo.width}
+      height={profile.logo.height}
+    />
+    <div>
+      <p class="eyebrow">{profile.products.map((product) => product.name).join(', ')}</p>
+      <h1>{profile.name}</h1>
+      <p class="lede" style="margin-top:0.8rem">
+        {profile.legalName} · {placeLine(profile)}, {profile.location.country}
+      </p>
+      <CompanyLink profile={profile} />
+    </div>
+  </header>
 
   <div style="margin-top:1.4rem">
     <RatingBreakdown profile={profile} showNotes />
@@ -163,6 +177,12 @@ const shelves = profile.categories
           <dt>Last reviewed</dt>
           <dd>{profile.lastReviewed}</dd>
         </div>
+        <div>
+          <dt>Record</dt>
+          <dd>
+            <a href="#submission">Send a correction or a review</a>
+          </dd>
+        </div>
       </dl>
     </aside>
   </div>
@@ -226,6 +246,8 @@ const shelves = profile.categories
     </ol>
   </section>
 
+  <PageSubmission pagePath={`/manufacturers/${profile.slug}`} pageName={profile.name} />
+
   <section class="section panel support" aria-labelledby="support">
     <div>
       <p class="kicker">Company site</p>
@@ -234,8 +256,6 @@ const shelves = profile.categories
         {profile.name} sells there. This page does not list patterns, prices, or a cart.
       </p>
     </div>
-    <a class="button" href={profile.website} rel="noopener noreferrer">
-      {profile.websiteLabel}
-    </a>
+    <CompanyLink profile={profile} variant="button" />
   </section>
 </Base>

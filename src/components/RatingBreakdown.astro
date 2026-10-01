@@ -1,6 +1,6 @@
 ---
 import CitedText from './CitedText.astro';
-import type { Manufacturer } from '../lib/manufacturers';
+import { inputOriginLabel, type Manufacturer } from '../lib/manufacturers';
 import { rateManufacturer } from '../lib/rating';
 
 interface Props {
@@ -10,6 +10,7 @@ interface Props {
 
 const { profile, showNotes = false } = Astro.props;
 const rating = rateManufacturer(profile);
+const inputComponents = profile.inputs?.components ?? [];
 ---
 
 <section class="rating" aria-label={`American rating ${rating.headline}`}>
@@ -28,6 +29,20 @@ const rating = rateManufacturer(profile);
             {row.note !== 'Full' && <span class="rating__note"> · {row.note}</span>}
           </span>
           <span class="rating__figure">{row.figure}</span>
+          {showNotes && row.id === 'inputs' && inputComponents.length > 0 && (
+            <ul class="rating__components" aria-label="Inputs from America">
+              {inputComponents.map((component) => (
+                <li>
+                  <span class="rating__component-name">{component.name}</span>
+                  {' · '}
+                  <span class="rating__component-share">{component.percent}%</span>
+                  {' · '}
+                  <span class="rating__component-origin">{inputOriginLabel(component.origin)}</span>
+                  {component.note && <span class="rating__component-note"> · {component.note}</span>}
+                </li>
+              ))}
+            </ul>
+          )}
         </li>
       ))
     }
