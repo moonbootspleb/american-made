@@ -10,7 +10,7 @@
     "dev": "astro dev",
     "build": "astro build",
     "preview": "astro preview",
-    "test": "node --test src/lib/admin-session.test.mjs src/lib/admin-config.test.mjs src/lib/queue-view.test.mjs"
+    "test": "node --test src/lib/admin-session.test.mjs src/lib/admin-config.test.mjs src/lib/queue-view.test.mjs src/lib/publication.test.mjs"
   },
   "dependencies": {
     "@astrojs/netlify": "^6.6.5",

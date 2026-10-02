@@ -108,7 +108,7 @@ All three post to `/submit/received`. Do not add a build step or a function that
 
 `/admin/login` asks for a password. A correct password sets an HttpOnly cookie for 12 hours. A wrong password does not. If `ADMIN_PASSWORD` is missing, shorter than 12 characters, or a placeholder such as `password`, login stays closed.
 
-`/admin` and `/admin/queue` list the inbox, newest first. Tabs filter `review-request`, `company-suggestion`, and `page-submission`. A visit without the cookie is sent to the login page. `GET /api/admin/submissions` returns 401 without that cookie. The footer link labeled Admin goes to the same gate. It is not in the header.
+`/admin` and `/admin/queue` list the inbox, newest first. Tabs filter `review-request`, `company-suggestion`, and `page-submission`. A visit without the cookie is sent to the login page. `GET /api/admin/submissions` returns 401 without that cookie. The footer link labeled Admin goes to the same gate. It is not in the header. Draft companies are a separate page, [Draft preview](#draft-preview). The queue link labeled Drafts opens it.
 
 The page reads Netlify’s submissions API on the server. The token is not sent to the browser. The page does not create `src/data/manufacturers/*.json`, and it does not publish a company.
 
@@ -124,9 +124,27 @@ Copy the names from [`.env.example`](.env.example). Do not commit `.env`, and do
 
 Log out from the button on the queue. That clears the cookie. The queue is for a person to read. Moving an approved note into a manufacturer file is still a later edit in git.
 
+## Draft preview
+
+A manufacturer file can set `"status": "draft"`. Omit `status`, or set `"published"`, and the company is on the public list. A draft stays in this repository. It does not appear on the manufacturer list, on a category shelf, or at `/manufacturers/<slug>`. The site does not build a sitemap, so there is no sitemap URL for it either. The preview page sends `noindex`.
+
+Sign in at `/admin/login`. That needs `ADMIN_PASSWORD` on the host (at least 12 characters, and not a placeholder). `NETLIFY_AUTH_TOKEN` is only for the form inbox. A draft preview does not read the inbox, so that token is not required. If `ADMIN_PASSWORD` is unset, login stays closed and the preview stays closed with it.
+
+After sign-in, open `/admin/drafts`. Each draft links to its preview:
+
+`/admin/preview/manufacturers/<slug>`
+
+The review queue links to Drafts. A visit without the admin cookie is sent to `/admin/login`, then back to that draft or preview. The footer Admin link is the same gate. These pages are not in the public header.
+
+To put the company on the public list, set `"status"` to `"published"` (or remove the field) and deploy. The develop site is not required for that reading.
+
+The logo file remains a static file at `public/manufacturers/<slug>/`. The profile page and the lists do not link it while the record is a draft.
+
+Appalachian Manufacturing Co. is on file as a draft, under Coffee makers for drip coffee makers. It is not on the public list. Open it at `/admin/preview/manufacturers/appalachian-manufacturing` after signing in, or from `/admin/drafts`. The company page names Nevade Eby as founder and maker, says the company started in 2026, and says each Heritage Drip is built by hand in a Pennsylvania workshop. It also uses the words made in the USA. The .com registry record shows the domain was registered on February 26, 2026, and it does not name a registrant. No charter, city, or street address was retrieved. A Salem, Ohio trailer business on the Better Business Bureau site uses the same name and is not this company. An indexed Luthersburg, Pennsylvania record under the same name did not return its article, so that page’s owner is not adopted. Ownership and the plant are both `unverified`, and both lines are left out of the rating. Inputs are omitted: the page names walnut, brass-coated stainless steel, glass, an aluminum element, stainless piping, and a food-grade silicone junction, and it gives no origins and no shares. Automation is omitted. The hand-built sentences are the company’s, not a measured shop note. The public list stays Liberty Tabletop until this file’s `status` is `published`.
+
 ## Adding a manufacturer
 
-1. Add `src/data/manufacturers/<slug>.json`. The filename and the `slug` field must match.
+1. Add `src/data/manufacturers/<slug>.json`. The filename and the `slug` field must match. Set `"status": "draft"` to keep it off the public list until it is ready. See [Draft preview](#draft-preview).
 2. Fill both badges. `ownership.code` is one of `american-owned-and-run`, `not-american-owned-and-run`, or `unverified`. `manufacturing.code` is one of `made-in-usa`, `not-made-in-usa`, `split`, or `unverified`.
 3. Add at least one category slug and one product type. The category file is `src/data/categories/<slug>.json`, and the filename has to match the slug. `products` name the kind of goods (stainless flatware), not patterns or prices.
 4. Cite every factual paragraph, change-log entry, open question, inputs line, and automation note. Every source in the `sources` array has to be cited at least once. The build fails if an id is missing or unused.
@@ -202,7 +220,7 @@ A profile with no `gallery` shows that none are filed, and it names the two path
 
 A shopper browses shelves at `/categories`. Each shelf is a JSON file in `src/data/categories/`. A manufacturer lists `categories` and `products`. The product name is the kind of goods, so someone can find flatware and the company that makes it. The profile stays the manufacturer record.
 
-A shelf is added when a company is filed under it. Do not add an empty Tools or Apparel shelf to imply those markets were surveyed.
+A shelf is added when a company is filed under it. A shelf whose only companies are drafts is not shown on the public category list. Do not add an empty Tools or Apparel shelf to imply those markets were surveyed.
 
 ## American rating
 
@@ -273,8 +291,6 @@ The list card and the profile header use Liberty Tabletop’s own header mark, s
 The profile also files six photographs saved from Liberty Tabletop’s own shop on 2026-09-30: Betsy Ross, Annapolis, Kensington, American Industrial, Honey Bee, and American Garden. Each credit links to the shop page the file came from. They are not a catalog, and they are not prices. A company with no `gallery` array does not get stand-in pictures.
 
 Liberty is filed under Flatware, for stainless flatware. Inputs are `unknown` and have no component list: company pages and two interviews describe U.S. steel and U.S. packaging, the named mills are examples, and no source gives shares that total 100. This record does not assign percentages. The rating leaves that line out. Ownership and the Sherrill plant stay on the reported badges. The rating page states the arithmetic. The list stays alphabetical.
-
-Appalachian Manufacturing Co. is the second profile, filed under Coffee makers for drip coffee makers. The company page names Nevade Eby as founder and maker, says the company started in 2026, and says each Heritage Drip is built by hand in a Pennsylvania workshop. It also uses the words made in the USA. The .com registry record shows the domain was registered on February 26, 2026, and it does not name a registrant. No charter, city, or street address was retrieved. A Salem, Ohio trailer business on the Better Business Bureau site uses the same name and is not this company. An indexed Luthersburg, Pennsylvania record under the same name did not return its article, so that page’s owner is not adopted. Ownership and the plant are both `unverified`, and both lines are left out of the rating. Inputs are omitted: the page names walnut, brass-coated stainless steel, glass, an aluminum element, stainless piping, and a food-grade silicone junction, and it gives no origins and no shares. Automation is omitted. The hand-built sentences are the company’s, not a measured shop note. The list stays alphabetical.
 
 ## Donations
 

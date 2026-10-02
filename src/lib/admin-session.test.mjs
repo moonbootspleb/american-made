@@ -58,4 +58,19 @@ test('next paths stay on the queue', () => {
   assert.equal(safeNextPath('/admin/queue?form=javascript:alert(1)'), '/admin/queue');
   assert.equal(safeNextPath('/donate'), '/admin/queue');
   assert.equal(safeNextPath(undefined), '/admin/queue');
+  assert.equal(safeNextPath('/admin/drafts'), '/admin/drafts');
+  assert.equal(safeNextPath('/admin/drafts/'), '/admin/drafts');
+  assert.equal(safeNextPath('/admin/drafts?next=/donate'), '/admin/queue');
+  assert.equal(
+    safeNextPath('/admin/preview/manufacturers/appalachian-manufacturing'),
+    '/admin/preview/manufacturers/appalachian-manufacturing',
+  );
+  assert.equal(
+    safeNextPath('/admin/preview/manufacturers/appalachian-manufacturing/'),
+    '/admin/preview/manufacturers/appalachian-manufacturing',
+  );
+  assert.equal(safeNextPath('/admin/preview/manufacturers/appalachian-manufacturing?x=1'), '/admin/queue');
+  assert.equal(safeNextPath('/admin/preview/manufacturers/../liberty-tabletop'), '/admin/queue');
+  assert.equal(safeNextPath('/admin/preview/manufacturers/Not-A-Slug'), '/admin/queue');
+  assert.equal(safeNextPath('/admin/preview'), '/admin/queue');
 });

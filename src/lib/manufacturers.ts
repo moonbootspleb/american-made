@@ -2,6 +2,11 @@ import { existsSync, readFileSync, statSync } from 'node:fs';
 import nodePath from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { z } from 'zod';
+import {
+  draftManufacturers,
+  isPublishedManufacturer,
+  publishedManufacturers,
+} from './publication.mjs';
 
 const sourceKind = z.enum(['company', 'news', 'government', 'reference']);
 
@@ -136,6 +141,13 @@ export const manufacturerSchema = z.object({
   name: z.string().min(1),
   legalName: z.string().min(1),
   featured: z.boolean(),
+  /**
+   * `draft` stays off the public list, the category shelves, and
+   * `/manufacturers/<slug>`. Omit this field, or set `published`, to put the
+   * company on the list. An admin reads a draft at
+   * `/admin/preview/manufacturers/<slug>` after signing in at `/admin/login`.
+   */
+  status: z.enum(['published', 'draft']).default('published'),
   categories: z.array(slug).min(1),
   products: z
     .array(
@@ -462,6 +474,16 @@ export function getAllCategories(): Category[] {
   return categories;
 }
 
+/** Shelves that have at least one published manufacturer. Draft-only shelves stay off the public site. */
+export function getPublicCategories(): Category[] {
+  const used = new Set<string>();
+  for (const profile of manufacturers) {
+    if (!isPublishedManufacturer(profile)) continue;
+    for (const categorySlug of profile.categories) used.add(categorySlug);
+  }
+  return categories.filter((category) => used.has(category.slug));
+}
+
 export function getCategory(slug: string): Category | undefined {
   return categoryBySlug.get(slug);
 }
@@ -473,19 +495,31 @@ export function categoryNameList(profile: Manufacturer): string {
 }
 
 export function getAllManufacturers(): Manufacturer[] {
-  return manufacturers;
+  return publishedManufacturers(manufacturers);
+}
+
+export function getDraftManufacturers(): Manufacturer[] {
+  return draftManufacturers(manufacturers);
 }
 
 export function getManufacturersInCategory(slug: string): Manufacturer[] {
-  return manufacturers.filter((profile) => profile.categories.includes(slug));
+  return manufacturers.filter(
+    (profile) => isPublishedManufacturer(profile) && profile.categories.includes(slug),
+  );
 }
 
 export function getFeaturedManufacturers(): Manufacturer[] {
-  return manufacturers.filter((profile) => profile.featured);
+  return manufacturers.filter((profile) => profile.featured && isPublishedManufacturer(profile));
+}
+
+/** Any manufacturer file, including a draft. Admin preview uses this. Public pages do not. */
+export function getManufacturerRecord(slug: string): Manufacturer | undefined {
+  return manufacturers.find((profile) => profile.slug === slug);
 }
 
 export function getManufacturer(slug: string): Manufacturer | undefined {
-  return manufacturers.find((profile) => profile.slug === slug);
+  const profile = getManufacturerRecord(slug);
+  return profile && isPublishedManufacturer(profile) ? profile : undefined;
 }
 
 export function sourceNumber(profile: Manufacturer, id: string): number {
