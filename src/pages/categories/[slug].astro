@@ -2,11 +2,11 @@
 import Base from '../../layouts/Base.astro';
 import CategoryStrip from '../../components/CategoryStrip.astro';
 import ManufacturerCard from '../../components/ManufacturerCard.astro';
-import { getAllCategories, getManufacturersInCategory, placeLine, type Category } from '../../lib/manufacturers';
+import { getManufacturersInCategory, getPublicCategories, placeLine, type Category } from '../../lib/manufacturers';
 import { rateManufacturer } from '../../lib/rating';
 
 export function getStaticPaths() {
-  return getAllCategories().map((category) => ({
+  return getPublicCategories().map((category) => ({
     params: { slug: category.slug },
     props: { category },
   }));

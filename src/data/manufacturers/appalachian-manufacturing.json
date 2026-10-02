@@ -1,0 +1,207 @@
+{
+  "slug": "appalachian-manufacturing",
+  "name": "Appalachian Manufacturing Co.",
+  "legalName": "Appalachian Manufacturing Company",
+  "featured": false,
+  "status": "draft",
+  "categories": ["coffee-makers"],
+  "products": [
+    {
+      "name": "Drip coffee makers",
+      "category": "coffee-makers"
+    }
+  ],
+  "deck": "One-page site for a drip coffee maker called the Heritage Drip. The page names a founder and says the machines are hand built in Pennsylvania. No charter, plant address, or independent account of this company was retrieved.",
+  "lastReviewed": "2026-10-01",
+  "location": {
+    "city": "Unstated",
+    "region": "Pennsylvania",
+    "country": "United States"
+  },
+  "logo": {
+    "src": "/manufacturers/appalachian-manufacturing/logo.png",
+    "width": 2870,
+    "height": 914,
+    "alt": "Appalachian Manufacturing Company"
+  },
+  "website": "https://www.appalachianmanufacturingco.com/",
+  "websiteLabel": "appalachianmanufacturingco.com",
+  "ownership": {
+    "code": "unverified",
+    "label": "Owner not established",
+    "short": "The site names Nevade Eby as founder and maker. No charter, cap table, or outside account of ownership was retrieved.",
+    "confidence": "unverified"
+  },
+  "manufacturing": {
+    "code": "unverified",
+    "label": "Plant not established",
+    "short": "The company says the coffee makers are built by hand in Pennsylvania and calls them made in the USA. No city, street, or outside account of the shop was retrieved.",
+    "confidence": "unverified"
+  },
+  "lede": [
+    {
+      "text": "Appalachian Manufacturing Co. is the name on a single public page for a drip coffee maker called the Heritage Drip. The page says the company is in Pennsylvania, that it started in 2026, and that Nevade Eby is founder and maker. The footer uses the style Appalachian Manufacturing Company. No state charter was retrieved, so that legal style is the line on the site, not a filing.",
+      "sources": ["home", "pa-dos"]
+    },
+    {
+      "text": "The .com domain was registered on February 26, 2026. The public registry record names the registrar, Namecheap, and does not name a registrant. The badges above leave ownership and the plant unset. The page's own sentences about a founder and a Pennsylvania workshop are quoted below. They are not scored as proved.",
+      "sources": ["rdap", "home"]
+    }
+  ],
+  "sections": [
+    {
+      "id": "ownership",
+      "kicker": "Ownership and control",
+      "heading": "Who owns it, and who runs it",
+      "paragraphs": [
+        {
+          "text": "The page's maker section calls Nevade Eby founder and maker. In his account he was a fine woodworker and a blacksmith from fourteen to twenty-one, then set those hobbies down and went to work in the family construction company. He does not name that company. He says that in 2024 he set out to manufacture a plastic-free coffee maker, and that a great many prototypes later the page's first product was ready, with more to follow. The only quotation set off on the page is his: \"Most manufacturers hate their customers. I decided that with my skills, I could do it better.\"",
+          "sources": ["home"]
+        },
+        {
+          "text": "That is a self-description of a founder. It is not a cap table. The page does not state a percentage, a co-owner, a parent company, or Eby's citizenship. It does not say the words American-owned. A Pennsylvania workshop, if one were shown, would still not answer who holds the equity. The Pennsylvania Department of State business search did not return a filing to this reader. The domain registry record does not name who registered appalachianmanufacturingco.com. The ownership badge stays unverified.",
+          "sources": ["home", "pa-dos", "rdap"]
+        },
+        {
+          "text": "The name is not unique, and this record does not merge the others into this page. A Better Business Bureau profile filed under Salem, Ohio is for an Appalachian Manufacturing Company in trailer sales. That profile says the business started July 1, 1996, that the entity type is a sole proprietorship, and that the local bureau is the BBB of Mahoning Valley. Its phone number is (330) 222-2468. Nothing on that profile mentions coffee, walnut, or this website. A commercial index titles a separate Luthersburg, Pennsylvania record \"Appalachian Manufacturing,\" number 3716414. That page did not return its article, so no owner or street from it is adopted here.",
+          "sources": ["bbb-salem", "pa-index", "home"]
+        }
+      ]
+    },
+    {
+      "id": "plant",
+      "kicker": "Where manufacturing happens",
+      "heading": "Where the coffee maker is made",
+      "paragraphs": [
+        {
+          "text": "The manufacturing badge covers drip coffee makers, which is the kind of goods the page describes. The page says every Heritage Drip is built by hand in a workshop in Pennsylvania, and that the company started in 2026 and will not pretend otherwise. A line under that account reads \"Hand crafted in Appalachia · Trademark Pennsylvania · Estd 2026.\" The footer reads \"Heritage Goods · Made in the USA · Estd 2026,\" and the copyright line is \"© 2026 Appalachian Manufacturing Company · Trademark Pennsylvania.\" Those are the company's words and the lettering on its own mark. This profile did not retrieve a trademark registration, a mill certificate, or a shop inspection.",
+          "sources": ["home"]
+        },
+        {
+          "text": "The page does not give a city or a street. It does not give a phone number or an email address. Plate V, labeled \"The workshop,\" is marked \"Reserved — photography forthcoming.\" The photographs that are on the page are product pictures: the machine on a counter, beside coffee, and a pour from the carafe. The parts diagram is captioned as an engraving, not a photograph. None of those images is offered as a picture of a factory floor. The customer page therefore does not pin a door, and this record does not invent one.",
+          "sources": ["home"]
+        },
+        {
+          "text": "What the page says is built, and what it says the parts are, are different sentences. Walnut for the body, brew deck, base, and carafe handle is \"cut and finished by hand.\" The shower head, lid knob, and feet are stainless steel with a brass coating. The brew cone, water chamber, and carafe are glass, and the carafe makes three cups. The heating element is aluminum, the piping is stainless steel, and the junction between them is food-grade silicone, which the page says is required so those two metals do not corrode. The page says none of that is plastic, and that nothing sheds microplastics. It does not say where the walnut, steel, brass, glass, aluminum, or silicone were made, and it does not say the workshop pours metal or melts glass. \"Built by hand in Pennsylvania\" is the company's account of the machine. It is not a list of input origins, and it is not given here as a proved made-in-USA finding.",
+          "sources": ["home"]
+        }
+      ]
+    }
+  ],
+  "changelog": [
+    {
+      "sortDate": "2024-01-01",
+      "dateLabel": "2024",
+      "title": "Eby dates the start of the coffee-maker project",
+      "text": "On the company page, Nevade Eby says that in 2024 he set out to manufacture a plastic-free coffee maker. The same note says he had worked in a family construction company he does not name, after earlier years as a woodworker and a blacksmith. The page gives the year and not the month. It does not date a prototype, a first sale, or a lease.",
+      "sources": ["home"]
+    },
+    {
+      "sortDate": "2026-02-26",
+      "dateLabel": "February 26, 2026",
+      "title": "The domain is registered",
+      "text": "Verisign's RDAP record for appalachianmanufacturingco.com shows registration on February 26, 2026, a matching expiration in 2027, and registrar Namecheap, Inc. The nameservers are the registrar's. The record returned here does not include a registrant name, an address, or an email. A domain date is not a founding date. It is the date this name was registered in .com.",
+      "sources": ["rdap"]
+    },
+    {
+      "sortDate": "2026",
+      "dateLabel": "2026, month not stated",
+      "title": "The company says it started this year",
+      "text": "The making section says the company is new, that it started in 2026, and that the old-fashioned presentation is how the machines are built rather than a made-up history. The page does not give a month or a day for that start. The only 2026 date read from a registry is the February 26 domain registration above. This entry does not collapse the two into one day.",
+      "sources": ["home", "rdap"]
+    }
+  ],
+  "openQuestions": [
+    {
+      "text": "Current ownership is not on this page. Eby is named as founder and maker. No percentage, co-owner, parent, or citizenship is stated. No cap table and no Pennsylvania entity record were retrieved. The ownership badge is unverified on purpose.",
+      "sources": ["home", "pa-dos", "rdap"]
+    },
+    {
+      "text": "The family construction company in Eby's note is unnamed. This record does not guess which firm that was.",
+      "sources": ["home"]
+    },
+    {
+      "text": "\"Trademark Pennsylvania\" is lettering on the company page and on its wordmark. No United States Patent and Trademark Office registration, and no Pennsylvania trademark filing, was retrieved for this coffee company. The phrase is not treated as a registered mark.",
+      "sources": ["home"]
+    },
+    {
+      "text": "The Pennsylvania Department of State business-search portal did not return a result while this profile was built. A security check stood in front of the search. No entity number, officer, or registered office for the coffee company is stated here.",
+      "sources": ["pa-dos"]
+    },
+    {
+      "text": "A web search result titles pennsylvaniadb.com company 3716414 as Appalachian Manufacturing in Luthersburg, Pennsylvania. The live page did not return its article. Owner names and street addresses from that index are not adopted. That record is not identified here as the coffee company.",
+      "sources": ["pa-index"]
+    },
+    {
+      "text": "The Salem, Ohio trailer business on the Better Business Bureau site shares the words Appalachian Manufacturing Company and is a different operation: trailers, a 1996 start, a sole proprietorship. It is filed here so the names are not merged. It is not evidence about who owns the coffee page.",
+      "sources": ["bbb-salem"]
+    },
+    {
+      "text": "No city or street for the workshop was published. The place line on this site says the city is unstated and the region is Pennsylvania because that is as far as the company page goes. \"Hand crafted in Appalachia\" is an additional company line. It does not name a town.",
+      "sources": ["home"]
+    },
+    {
+      "text": "Made in the USA is the company's claim, on the page and in the mark. No outside article, factory visit, or government origin ruling was retrieved. The manufacturing badge stays unverified. This record does not award a made-in-USA finding from the company's own slogan.",
+      "sources": ["home"]
+    },
+    {
+      "text": "Inputs are left off the file. The page names solid walnut, brass-coated stainless steel, glass, an aluminum heating element, stainless piping, and a food-grade silicone junction, and it says none of that is plastic. It does not say which country made each material, and it does not give shares. No percentage is assigned.",
+      "sources": ["home"]
+    },
+    {
+      "text": "Automation is left off the file. The page says the walnut is cut and finished by hand and that each machine is built by hand. That is the company's description. It is not a count of which steps run unattended, and it is not a finding that a hand shop was audited. Using machines is not established either. Absence of the note means the degree of automation is not established.",
+      "sources": ["home"]
+    },
+    {
+      "text": "The domain registrant is not in the registry record that was read. Registration on February 26, 2026 shows when the .com name was created. It does not show who pays for it, or that the registrant is Eby.",
+      "sources": ["rdap"]
+    },
+    {
+      "text": "No phone number and no email address appear on the page that was read. Dimensions and weight are marked \"to be published.\" The returns policy is marked \"to be published before launch.\" A buy control and a Stripe checkout line are on the page. This record does not treat those lines as a count of machines shipped.",
+      "sources": ["home"]
+    }
+  ],
+  "sources": [
+    {
+      "id": "home",
+      "title": "The Heritage Drip",
+      "publisher": "Appalachian Manufacturing Co.",
+      "url": "https://www.appalachianmanufacturingco.com/",
+      "kind": "company",
+      "note": "The only company page this profile found. Read October 1, 2026. It is the company's account of the founder, the materials, the Pennsylvania workshop, and the made-in-USA line. The wordmark saved for this record is the green wordmark on that page, /brand/wordmark-green.png, which the page labels Appalachian Manufacturing Company."
+    },
+    {
+      "id": "rdap",
+      "title": "RDAP record for appalachianmanufacturingco.com",
+      "publisher": "Verisign",
+      "date": "2026-02-26",
+      "url": "https://rdap.verisign.com/com/v1/domain/appalachianmanufacturingco.com",
+      "kind": "reference",
+      "note": "Read October 1, 2026. Registration event February 26, 2026. Expiration February 26, 2027. Registrar Namecheap, Inc., IANA 1068. Nameservers dns1.registrar-servers.com and dns2.registrar-servers.com. Status client transfer prohibited. The response did not include a registrant name."
+    },
+    {
+      "id": "pa-dos",
+      "title": "Pennsylvania business search",
+      "publisher": "Pennsylvania Department of State",
+      "url": "https://file.dos.pa.gov/search/business",
+      "kind": "government",
+      "note": "Opened October 1, 2026. A security check did not return a business-search result. No entity record for the coffee company was read from this portal."
+    },
+    {
+      "id": "pa-index",
+      "title": "Appalachian Manufacturing, company 3716414",
+      "publisher": "pennsylvaniadb.com",
+      "url": "https://pennsylvaniadb.com/company/3716414/appalachian-manufacturing",
+      "kind": "reference",
+      "note": "The live page did not return its article on October 1, 2026. A security check stood in its place. A web search result titles this URL as Appalachian Manufacturing in Luthersburg, Pennsylvania. Facts that would have been inside the article, including any owner name, are not used."
+    },
+    {
+      "id": "bbb-salem",
+      "title": "Appalachian Manufacturing Company",
+      "publisher": "Better Business Bureau",
+      "url": "https://www.bbb.org/us/oh/salem/profile/trailer-sales/appalachian-manufacturing-company-0432-16000504",
+      "kind": "reference",
+      "note": "Read October 1, 2026. A different business: trailer sales, profile path under Salem, Ohio, business started July 1, 1996, sole proprietorship, BBB of Mahoning Valley, file opened June 3, 1999, phone (330) 222-2468, not BBB accredited. Cited so the shared name is not treated as the coffee company. BBB's own notice says it does not guarantee information supplied by third parties."
+    }
+  ]
+}

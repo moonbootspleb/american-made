@@ -83,8 +83,12 @@ export function sessionIsValid(token, secret, nowMs) {
 
 const ALLOWED_FORMS = new Set(['all', 'review-request', 'company-suggestion', 'page-submission']);
 
+const MANUFACTURER_SLUG = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
+const DRAFT_PREVIEW_PREFIX = '/admin/preview/manufacturers/';
+
 /**
- * Only send people back to the queue. Anything else becomes the queue itself.
+ * Send people back only to the queue, the drafts list, or one draft preview.
+ * Anything else becomes the queue itself.
  * @param {unknown} raw
  */
 export function safeNextPath(raw) {
@@ -105,10 +109,21 @@ export function safeNextPath(raw) {
   if (url.username || url.password || url.hash) return fallback;
 
   const path = url.pathname.replace(/\/+$/, '') || '/';
+  const keys = [...url.searchParams.keys()];
+
+  if (path === '/admin/drafts') {
+    if (keys.length > 0) return fallback;
+    return '/admin/drafts';
+  }
+
+  if (path.startsWith(DRAFT_PREVIEW_PREFIX)) {
+    const slug = path.slice(DRAFT_PREVIEW_PREFIX.length);
+    if (!MANUFACTURER_SLUG.test(slug) || keys.length > 0) return fallback;
+    return `${DRAFT_PREVIEW_PREFIX}${slug}`;
+  }
+
   if (path !== '/admin' && path !== '/admin/queue') return fallback;
   if (url.searchParams.getAll('form').length > 1) return fallback;
-
-  const keys = [...url.searchParams.keys()];
   if (keys.some((key) => key !== 'form')) return fallback;
 
   const form = url.searchParams.get('form');
