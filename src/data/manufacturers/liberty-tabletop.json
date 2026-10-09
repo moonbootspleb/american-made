@@ -21,6 +21,28 @@
     "phone": "1-844-386-2338",
     "email": "customerservice@libertytabletop.com"
   },
+  "hq": {
+    "city": "Sherrill",
+    "region": "NY",
+    "country": "US",
+    "status": "sourced",
+    "sources": ["about", "pr-2025"],
+    "note": "Company and plant are in Sherrill. The street address of the production floor is not separately verified. No source confirms coordinates, so none are set."
+  },
+  "facilities": [
+    {
+      "id": "sherrill-flatware-plant",
+      "name": "Sherrill Manufacturing flatware plant",
+      "kind": "manufacturing",
+      "place": {
+        "city": "Sherrill",
+        "region": "NY",
+        "country": "US",
+        "status": "sourced",
+        "sources": ["pr-2025", "aam"]
+      }
+    }
+  ],
   "logo": {
     "src": "/manufacturers/liberty-tabletop/logo.png",
     "width": 600,

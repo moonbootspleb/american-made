@@ -182,3 +182,32 @@ The list card and the profile header use Liberty Tabletop’s own header mark, s
 Liberty is filed under Flatware, for stainless flatware. Inputs are `unknown` and have no component list: company pages and two interviews describe U.S. steel and U.S. packaging, the named mills are examples, and no source gives shares that total 100. This record does not assign percentages. The rating leaves that line out. Ownership and the Sherrill plant stay on the reported badges. The rating page states the arithmetic. The list stays alphabetical.
 
 Appalachian Manufacturing Co. is the second profile, filed under Coffee makers for drip coffee makers. The company page names Nevade Eby as founder and maker, says the company started in 2026, and says each Heritage Drip is built by hand in a Pennsylvania workshop. It also uses the words made in the USA. The .com registry record shows the domain was registered on February 26, 2026, and it does not name a registrant. No charter, city, or street address was retrieved. A Salem, Ohio trailer business on the Better Business Bureau site uses the same name and is not this company. An indexed Luthersburg, Pennsylvania record under the same name did not return its article, so that page’s owner is not adopted. Ownership and the plant are both `unverified`, and both lines are left out of the rating. Inputs are omitted: the page names walnut, brass-coated stainless steel, glass, an aluminum element, stainless piping, and a food-grade silicone junction, and it gives no origins and no shares. Automation is omitted. The hand-built sentences are the company’s, not a measured shop note. The list stays alphabetical.
+
+## Supply chains and locations
+
+The end goal is a map of each company's supply chain, upstream to the mine, mill, farm, or forest. This section is the data, not a map page.
+
+### Places
+
+`src/lib/places.mjs` defines a place: `city`, `region`, `country` (ISO 3166-1 alpha-2 such as `US`, or `unknown`), optional `lat` and `lng`, `status` (`sourced` or `unverified`), and `sources`. A sourced place needs at least one source id. Coordinates go in only together and only with `coordinateSources`. Do not geocode a guess.
+
+A manufacturer file may add `hq` (one place) and `facilities` (plants, mills, offices, each with an `id`, `name`, `kind`, and `place`). Their source ids must be in the file's `sources` and count as citations.
+
+### Supply links
+
+Each file in `src/data/supply-links/` is one edge: a supplier, a customer, and one input. The filename and `id` match, as `<customer>--<supplier>--<input>`.
+
+| Field | Meaning |
+| --- | --- |
+| `customer` | `type` `manufacturer` (a file in `src/data/manufacturers`) or `supplier` (the supplier slug on another link) |
+| `supplier` | `slug`, `name`, `identified` (false when a source gives only a place), `hq` place, optional `parent` with its own `hq` |
+| `input` | `key` (groups alternative sources of one input), `name`, `origins` (where it is made or extracted, one or more places) |
+| `tier` | 1 for a direct supplier of a manufacturer. A supplier's supplier is that tier plus one. |
+| `flag` | `domestic`, `foreign`, `mixed`, or `unknown`. Must match the origin countries. |
+| `primaryResource` | Optional: `mine`, `mill`, `farm`, `forest`, `well`, or `recycling` once the chain reaches one |
+| `status` | `verified` only when `namingSources` has a source that names this supplier for this customer. Otherwise `unverified`. |
+| `statusNote`, `evidence`, `namingSources`, `sources` | Every listed source must be cited, and every cited id must be listed |
+
+A company saying its steel "could come from" a mill does not verify a link. An unidentified supplier cannot be verified.
+
+`npm run build` fails when a link breaks these rules. `npm run check:supply` prints the same check plus each customer's domestic share, counted by input line, and every link where the chain leaves the United States (foreign origin, foreign supplier headquarters, or foreign parent). `npm test` runs the unit tests.

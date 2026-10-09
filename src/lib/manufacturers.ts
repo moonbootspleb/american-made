@@ -2,6 +2,7 @@ import { existsSync, readFileSync, statSync } from 'node:fs';
 import nodePath from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { z } from 'zod';
+import { facilitySchema, placeIssues, placeSchema, placeSourceIds } from './places.mjs';
 
 const sourceKind = z.enum(['company', 'news', 'government', 'reference']);
 
@@ -140,6 +141,13 @@ export const manufacturerSchema = z.object({
     phone: z.string().min(1).optional(),
     email: z.string().email().optional(),
   }),
+  /**
+   * Optional mappable headquarters. `country` is an ISO code (US). Coordinates
+   * only with `coordinateSources`. See src/lib/places.mjs.
+   */
+  hq: placeSchema.optional(),
+  /** Optional mappable plants, offices, mills. Each place is sourced or marked unverified. */
+  facilities: z.array(facilitySchema).min(1).optional(),
   /**
    * Company mark on the list card and the profile header.
    *
@@ -373,6 +381,21 @@ function loadManufacturers(): Manufacturer[] {
       productNames.add(key);
     }
 
+    const checkPlace = (place: z.infer<typeof placeSchema>, where: string) => {
+      for (const message of placeIssues(place)) {
+        throw new Error(`${path} ${where}: ${message}`);
+      }
+      take(placeSourceIds(place), where);
+    };
+    if (profile.hq) checkPlace(profile.hq, 'hq');
+    if (profile.facilities) {
+      const facilityIds = new Set<string>();
+      for (const facility of profile.facilities) {
+        if (facilityIds.has(facility.id)) throw new Error(`${path} repeats facility "${facility.id}".`);
+        facilityIds.add(facility.id);
+        checkPlace(facility.place, `facility ${facility.id}`);
+      }
+    }
     if (profile.inputs) {
       take(profile.inputs.sources, 'inputs');
       for (const message of inputComponentListIssues(profile.inputs)) {
