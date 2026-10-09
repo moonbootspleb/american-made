@@ -1,0 +1,77 @@
+{
+  "id": "liberty-tabletop--unidentified-western-ny-mill--stainless-steel",
+  "lastReviewed": "2026-10-09",
+  "customer": {
+    "type": "manufacturer",
+    "slug": "liberty-tabletop",
+    "name": "Sherrill Manufacturing (Liberty Tabletop)"
+  },
+  "supplier": {
+    "slug": "unidentified-western-ny-stainless-mill",
+    "name": "Unidentified steel source, Western New York",
+    "identified": false,
+    "hq": {
+      "region": "NY",
+      "country": "US",
+      "status": "sourced",
+      "sources": [
+        "bi-2021"
+      ],
+      "note": "Place of the steel as stated by Owens. The supplier's own headquarters is not known."
+    }
+  },
+  "input": {
+    "key": "stainless-steel",
+    "name": "18/10 stainless steel coil or bar",
+    "origins": [
+      {
+        "region": "NY",
+        "country": "US",
+        "status": "sourced",
+        "sources": [
+          "bi-2021",
+          "aam",
+          "pr-2025"
+        ],
+        "note": "Region as stated in the interviews. Country also per Sherrill's statement that its stainless is melted and made in the United States."
+      }
+    ]
+  },
+  "tier": 1,
+  "flag": "domestic",
+  "status": "unverified",
+  "statusNote": "Business Insider (2021) names Western New York. No company or plant is named.",
+  "evidence": [
+    "bi-2021"
+  ],
+  "namingSources": [],
+  "sources": [
+    {
+      "id": "aam",
+      "title": "Liberty Sets the Table for Growth",
+      "publisher": "Alliance for American Manufacturing",
+      "date": "2015-11-09",
+      "url": "https://www.americanmanufacturing.org/blog/liberty-sets-the-table-for-growth/",
+      "kind": "news",
+      "note": "Greg Owens: Sherrill requires mill reports showing steel melted and manufactured in the United States, and says it \"could come from Allegheny Ludlum, it could come from AK Steel, and it could come from NASS, or another place down in Birmingham.\" These are examples, not a named supplier for any heat."
+    },
+    {
+      "id": "bi-2021",
+      "title": "Sellers of American-made goods are thriving amid supply-chain chaos",
+      "publisher": "Business Insider",
+      "date": "2021-12-04",
+      "url": "https://www.businessinsider.com/us-manufacturers-supply-chain-crisis-impacts-2021-12",
+      "kind": "news",
+      "note": "Owens: products start as a coil or bar of steel made in one of three places: Western New York, Pittsburgh, or Tennessee. Packaging is locally sourced. No mill named."
+    },
+    {
+      "id": "pr-2025",
+      "title": "Liberty Tabletop responds to expanded US tariffs, confirms 100% US-made supply chain",
+      "publisher": "Liberty Tabletop via PR Newswire",
+      "date": "2025-09-09",
+      "url": "https://www.prnewswire.com/news-releases/liberty-tabletop-americas-last-flatware-manufacturer-responds-to-expanded-us-tariffs-confirms-100-us-made-supply-chain-shields-customers-from-import-surcharges-302551220.html",
+      "kind": "press-release",
+      "note": "Company statement: steel poured and forged in America; packaging sourced and produced in the United States. No supplier named."
+    }
+  ]
+}

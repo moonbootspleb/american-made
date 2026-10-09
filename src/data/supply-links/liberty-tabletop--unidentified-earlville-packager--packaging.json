@@ -1,0 +1,76 @@
+{
+  "id": "liberty-tabletop--unidentified-earlville-packager--packaging",
+  "lastReviewed": "2026-10-09",
+  "customer": {
+    "type": "manufacturer",
+    "slug": "liberty-tabletop",
+    "name": "Sherrill Manufacturing (Liberty Tabletop)"
+  },
+  "supplier": {
+    "slug": "unidentified-earlville-packaging-company",
+    "name": "Unidentified family-owned packaging company, Earlville, NY",
+    "identified": false,
+    "hq": {
+      "city": "Earlville",
+      "region": "NY",
+      "country": "US",
+      "status": "sourced",
+      "sources": [
+        "oswego-2021"
+      ]
+    }
+  },
+  "input": {
+    "key": "packaging",
+    "name": "Packaging materials",
+    "origins": [
+      {
+        "country": "US",
+        "status": "sourced",
+        "sources": [
+          "pr-2025",
+          "oswego-2021"
+        ]
+      }
+    ]
+  },
+  "tier": 1,
+  "flag": "domestic",
+  "status": "unverified",
+  "statusNote": "The article gives the town and that the company is family-owned. It does not name it.",
+  "evidence": [
+    "oswego-2021",
+    "bi-2021",
+    "pr-2025"
+  ],
+  "namingSources": [],
+  "sources": [
+    {
+      "id": "pr-2025",
+      "title": "Liberty Tabletop responds to expanded US tariffs, confirms 100% US-made supply chain",
+      "publisher": "Liberty Tabletop via PR Newswire",
+      "date": "2025-09-09",
+      "url": "https://www.prnewswire.com/news-releases/liberty-tabletop-americas-last-flatware-manufacturer-responds-to-expanded-us-tariffs-confirms-100-us-made-supply-chain-shields-customers-from-import-surcharges-302551220.html",
+      "kind": "press-release",
+      "note": "Company statement: steel poured and forged in America; packaging sourced and produced in the United States. No supplier named."
+    },
+    {
+      "id": "bi-2021",
+      "title": "Sellers of American-made goods are thriving amid supply-chain chaos",
+      "publisher": "Business Insider",
+      "date": "2021-12-04",
+      "url": "https://www.businessinsider.com/us-manufacturers-supply-chain-crisis-impacts-2021-12",
+      "kind": "news",
+      "note": "Owens: products start as a coil or bar of steel made in one of three places: Western New York, Pittsburgh, or Tennessee. Packaging is locally sourced. No mill named."
+    },
+    {
+      "id": "oswego-2021",
+      "title": "Sherrill Manufacturing",
+      "publisher": "Oswego County Business Magazine",
+      "date": "2021-06-18",
+      "url": "https://oswegocountybusiness.com/sherrill-manufacturing/",
+      "kind": "news",
+      "note": "Roberts: steel was made in Pittsburgh, Tennessee or Alabama. Packaging materials come from a family-owned company in Earlville, NY (not named). Buffing compounds come from Utica and Detroit (suppliers not named)."
+    }
+  ]
+}
