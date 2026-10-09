@@ -2,6 +2,11 @@ import { existsSync, readFileSync, statSync } from 'node:fs';
 import nodePath from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { z } from 'zod';
+import {
+  draftManufacturers,
+  isPublishedManufacturer,
+  publishedManufacturers,
+} from './publication.mjs';
 
 const sourceKind = z.enum(['company', 'news', 'government', 'reference']);
 
@@ -103,6 +108,22 @@ const affiliateSchema = z.object({
   network: z.string().min(1).max(80).optional(),
 });
 
+/**
+ * A photograph of goods the company published.
+ * The file lives under `public/manufacturers/<slug>/`.
+ * `credit` names the publisher. `sourceUrl` is the page it came from.
+ * Do not point this at a stock picture.
+ */
+const galleryImageSchema = z.object({
+  src: z.string().min(1),
+  width: z.number().int().positive(),
+  height: z.number().int().positive(),
+  alt: z.string().min(1).max(200),
+  caption: z.string().min(1).max(120).optional(),
+  credit: z.string().min(1).max(160),
+  sourceUrl: httpUrl,
+});
+
 export const categorySchema = z.object({
   slug,
   name: z.string().min(1),
@@ -120,6 +141,13 @@ export const manufacturerSchema = z.object({
   name: z.string().min(1),
   legalName: z.string().min(1),
   featured: z.boolean(),
+  /**
+   * `draft` stays off the public list, the category shelves, and
+   * `/manufacturers/<slug>`. Omit this field, or set `published`, to put the
+   * company on the list. An admin reads a draft at
+   * `/admin/preview/manufacturers/<slug>` after signing in at `/admin/login`.
+   */
+  status: z.enum(['published', 'draft']).default('published'),
   categories: z.array(slug).min(1),
   products: z
     .array(
@@ -163,6 +191,13 @@ export const manufacturerSchema = z.object({
    * label. The profile’s Official site line always stays on `website`.
    */
   affiliate: affiliateSchema.optional(),
+  /**
+   * Optional photographs of goods the company has published.
+   * Omit the array when none are filed. An empty array is invalid.
+   * At most eight. Do not invent a stock photo. Each `src` is a file
+   * under `public/manufacturers/<slug>/`, and width and height match it.
+   */
+  gallery: z.array(galleryImageSchema).min(1).max(8).optional(),
   ownership: z.object({
     code: ownershipCode,
     label: z.string().min(1),
@@ -319,6 +354,19 @@ function loadManufacturers(): Manufacturer[] {
       throw new Error(`${path} ${message}`);
     }
 
+    if (profile.gallery) {
+      const gallerySrcs = new Set<string>();
+      for (const image of profile.gallery) {
+        if (gallerySrcs.has(image.src)) {
+          throw new Error(`${path} repeats gallery image "${image.src}".`);
+        }
+        gallerySrcs.add(image.src);
+        for (const message of imageFileIssues(profile.slug, image, 'gallery')) {
+          throw new Error(`${path} ${message}`);
+        }
+      }
+    }
+
     const sourceIds = new Set<string>();
     for (const source of profile.sources) {
       if (sourceIds.has(source.id)) {
@@ -406,13 +454,34 @@ function loadManufacturers(): Manufacturer[] {
   return profiles.sort((a, b) => a.name.localeCompare(b.name));
 }
 
-const publicRoot = nodePath.resolve(fileURLToPath(new URL('../../public', import.meta.url)));
+/**
+ * Logo checks read public/ next to this file. The Netlify adapter bundles the
+ * server build under .netlify/, so that relative URL no longer reaches public/.
+ * Fall back to the project directory, which is the working directory at build time.
+ */
+function resolvePublicRoot(): string {
+  const fromModule = nodePath.resolve(fileURLToPath(new URL('../../public', import.meta.url)));
+  if (existsSync(fromModule)) return fromModule;
+  return nodePath.resolve(process.cwd(), 'public');
+}
+
+const publicRoot = resolvePublicRoot();
 const logoExtensions = new Set(['.png', '.jpg', '.jpeg', '.webp', '.gif', '.svg']);
 
 const manufacturers = loadManufacturers();
 
 export function getAllCategories(): Category[] {
   return categories;
+}
+
+/** Shelves that have at least one published manufacturer. Draft-only shelves stay off the public site. */
+export function getPublicCategories(): Category[] {
+  const used = new Set<string>();
+  for (const profile of manufacturers) {
+    if (!isPublishedManufacturer(profile)) continue;
+    for (const categorySlug of profile.categories) used.add(categorySlug);
+  }
+  return categories.filter((category) => used.has(category.slug));
 }
 
 export function getCategory(slug: string): Category | undefined {
@@ -426,19 +495,31 @@ export function categoryNameList(profile: Manufacturer): string {
 }
 
 export function getAllManufacturers(): Manufacturer[] {
-  return manufacturers;
+  return publishedManufacturers(manufacturers);
+}
+
+export function getDraftManufacturers(): Manufacturer[] {
+  return draftManufacturers(manufacturers);
 }
 
 export function getManufacturersInCategory(slug: string): Manufacturer[] {
-  return manufacturers.filter((profile) => profile.categories.includes(slug));
+  return manufacturers.filter(
+    (profile) => isPublishedManufacturer(profile) && profile.categories.includes(slug),
+  );
 }
 
 export function getFeaturedManufacturers(): Manufacturer[] {
-  return manufacturers.filter((profile) => profile.featured);
+  return manufacturers.filter((profile) => profile.featured && isPublishedManufacturer(profile));
+}
+
+/** Any manufacturer file, including a draft. Admin preview uses this. Public pages do not. */
+export function getManufacturerRecord(slug: string): Manufacturer | undefined {
+  return manufacturers.find((profile) => profile.slug === slug);
 }
 
 export function getManufacturer(slug: string): Manufacturer | undefined {
-  return manufacturers.find((profile) => profile.slug === slug);
+  const profile = getManufacturerRecord(slug);
+  return profile && isPublishedManufacturer(profile) ? profile : undefined;
 }
 
 export function sourceNumber(profile: Manufacturer, id: string): number {
@@ -509,9 +590,18 @@ export function logoFileIssues(
   profile: { slug: string; logo: { src: string; width: number; height: number } },
   root = publicRoot,
 ): string[] {
+  return imageFileIssues(profile.slug, profile.logo, 'logo', root);
+}
+
+export function imageFileIssues(
+  slug: string,
+  image: { src: string; width: number; height: number },
+  field: string,
+  root = publicRoot,
+): string[] {
   const issues: string[] = [];
-  const src = profile.logo.src;
-  const prefix = `/manufacturers/${profile.slug}/`;
+  const src = image.src;
+  const prefix = `/manufacturers/${slug}/`;
   if (
     !src.startsWith(prefix) ||
     src.includes('\\') ||
@@ -520,26 +610,26 @@ export function logoFileIssues(
     /[?#]/.test(src)
   ) {
     issues.push(
-      `logo.src must be a file under public/manufacturers/${profile.slug}/. Found "${src}".`,
+      `${field}.src must be a file under public/manufacturers/${slug}/. Found "${src}".`,
     );
     return issues;
   }
 
   const ext = nodePath.posix.extname(src).toLowerCase();
   if (!logoExtensions.has(ext)) {
-    issues.push(`logo.src must be a png, jpg, jpeg, webp, gif, or svg file. Found "${src}".`);
+    issues.push(`${field}.src must be a png, jpg, jpeg, webp, gif, or svg file. Found "${src}".`);
     return issues;
   }
 
   const filePath = nodePath.resolve(root, src.slice(1));
-  const slugDir = nodePath.resolve(root, 'manufacturers', profile.slug);
+  const slugDir = nodePath.resolve(root, 'manufacturers', slug);
   if (filePath !== slugDir && !filePath.startsWith(`${slugDir}${nodePath.sep}`)) {
-    issues.push(`logo.src must stay inside public/manufacturers/${profile.slug}/. Found "${src}".`);
+    issues.push(`${field}.src must stay inside public/manufacturers/${slug}/. Found "${src}".`);
     return issues;
   }
 
   if (!existsSync(filePath) || !statSync(filePath).isFile()) {
-    issues.push(`logo file is missing on disk: public${src}`);
+    issues.push(`${field} file is missing on disk: public${src}`);
     return issues;
   }
 
@@ -550,13 +640,13 @@ export function logoFileIssues(
     size = readRasterSize(filePath, ext);
   } catch (error) {
     const detail = error instanceof Error ? error.message : 'Could not read the image.';
-    issues.push(`logo file could not be read (${detail}): public${src}`);
+    issues.push(`${field} file could not be read (${detail}): public${src}`);
     return issues;
   }
 
-  if (size.width !== profile.logo.width || size.height !== profile.logo.height) {
+  if (size.width !== image.width || size.height !== image.height) {
     issues.push(
-      `logo width and height must match the file. public${src} is ${size.width} by ${size.height}. The record says ${profile.logo.width} by ${profile.logo.height}.`,
+      `${field} width and height must match the file. public${src} is ${size.width} by ${size.height}. The record says ${image.width} by ${image.height}.`,
     );
   }
 

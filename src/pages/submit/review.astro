@@ -1,0 +1,16 @@
+---
+import Base from '../../layouts/Base.astro';
+import ReviewRequest from '../../components/ReviewRequest.astro';
+---
+
+<Base
+  title="Request a review"
+  description="Ask The American Forge to review a company that already exists. The note goes to a queue. It is not published from the form."
+>
+  <p class="crumb">
+    <a href="/">Manufacturers</a>
+    <span aria-hidden="true"> / </span>
+    <span>Request a review</span>
+  </p>
+  <ReviewRequest asPage />
+</Base>

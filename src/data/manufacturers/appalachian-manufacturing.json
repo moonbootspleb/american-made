@@ -3,6 +3,7 @@
   "name": "Appalachian Manufacturing Co.",
   "legalName": "Appalachian Manufacturing Company",
   "featured": false,
+  "status": "draft",
   "categories": ["coffee-makers"],
   "products": [
     {

@@ -1,0 +1,184 @@
+---
+import SubmissionNav from './SubmissionNav.astro';
+
+interface Props {
+  /** Company name. When pagePath is set, the identity fields are filled and locked. */
+  company?: string;
+  /** The company's own site. */
+  companyUrl?: string;
+  /** Path on this site, when the company is already filed. */
+  pagePath?: string;
+  /** Render the title as the page h1. */
+  asPage?: boolean;
+}
+
+const { company, companyUrl, pagePath, asPage = false } = Astro.props;
+const locked = Boolean(pagePath);
+---
+
+<section
+  class:list={['submission', asPage ? 'submission--page' : 'section']}
+  id="review-request"
+  aria-labelledby="review-request-heading"
+>
+  <p class={asPage ? 'eyebrow' : 'kicker'}>In the queue</p>
+  {
+    asPage ? (
+      <h1 id="review-request-heading">Request a review</h1>
+    ) : (
+      <h2 id="review-request-heading">Request a review</h2>
+    )
+  }
+  <div class="stack submission__copy">
+    <p class="lede">
+      {
+        company ? (
+          <>Ask for a review of {company}. Sending this does not publish a review.</>
+        ) : (
+          <>Ask for a review of a company that already exists. Sending this does not publish a review.</>
+        )
+      }
+    </p>
+    <p>
+      The note sits in a queue. A person reads it. A review is written into a manufacturer file only later, in the repository, and only if the sources hold. The form does not change the page.
+    </p>
+    <p>
+      {
+        locked ? (
+          <>
+            The company, the link, and the page are filled from this record. If you meant a manufacturer that is not on the list, <a href="/submit/company">suggest a company</a> instead.
+          </>
+        ) : (
+          <>
+            Name the company and give a link to its own site. If it is not on this list yet, <a href="/submit/company">suggest a company</a> instead. If you know the page here, put that path in the page field.
+          </>
+        )
+      }
+    </p>
+  </div>
+  {asPage && <SubmissionNav current="review" />}
+
+  <form
+    class="submission-form"
+    name="review-request"
+    method="POST"
+    action="/submit/received"
+    data-netlify="true"
+    data-netlify-honeypot="bot-field"
+    netlify-honeypot="bot-field"
+    accept-charset="UTF-8"
+  >
+    <input type="hidden" name="form-name" value="review-request" />
+    <input type="hidden" name="type" value="review-request" />
+    <div class="hp" aria-hidden="true">
+      <label>
+        Leave this empty
+        <input name="bot-field" tabindex="-1" autocomplete="off" />
+      </label>
+    </div>
+
+    <div class="field">
+      <label for="review-company">Company</label>
+      <input
+        id="review-company"
+        name="company"
+        type="text"
+        required
+        value={company}
+        readonly={locked}
+        autocomplete="organization"
+        maxlength="160"
+      />
+    </div>
+
+    <div class="field">
+      <label for="review-company-url">Company link</label>
+      <input
+        id="review-company-url"
+        name="company_url"
+        type="url"
+        required
+        inputmode="url"
+        value={companyUrl}
+        readonly={locked}
+        spellcheck="false"
+        maxlength="300"
+        aria-describedby="review-company-url-hint"
+      />
+      <p class="hint" id="review-company-url-hint">
+        {locked ? 'Filled from this page. The company’s own site.' : 'The company’s own site, starting with https://.'}
+      </p>
+    </div>
+
+    <div class="field">
+      <label for="review-page">
+        Page on this site {locked ? null : <span class="optional">optional</span>}
+      </label>
+      <input
+        id="review-page"
+        name="page"
+        type="text"
+        value={pagePath}
+        readonly={locked}
+        required={locked}
+        autocomplete="off"
+        spellcheck="false"
+        maxlength="300"
+        aria-describedby="review-page-hint"
+      />
+      <p class="hint" id="review-page-hint">
+        {locked ? 'Filled from this page.' : 'Path on this site, such as /manufacturers/liberty-tabletop, if one exists.'}
+      </p>
+    </div>
+
+    <div class="field">
+      <label for="review-name">Name <span class="optional">optional</span></label>
+      <input id="review-name" name="name" type="text" autocomplete="name" maxlength="120" />
+    </div>
+
+    <div class="field">
+      <label for="review-email">Email <span class="optional">optional</span></label>
+      <input
+        id="review-email"
+        name="email"
+        type="email"
+        autocomplete="email"
+        inputmode="email"
+        maxlength="200"
+        aria-describedby="review-email-hint"
+      />
+      <p class="hint" id="review-email-hint">Only if you want a reply. It is not published.</p>
+    </div>
+
+    <div class="field">
+      <label for="review-body">The note</label>
+      <textarea
+        id="review-body"
+        name="body"
+        required
+        rows="8"
+        maxlength="8000"
+        aria-describedby="review-body-hint"
+      ></textarea>
+      <p class="hint" id="review-body-hint">What you want reviewed, and anything a person would need in order to start.</p>
+    </div>
+
+    <div class="field">
+      <label for="review-evidence">Evidence <span class="optional">optional</span></label>
+      <textarea
+        id="review-evidence"
+        name="evidence"
+        rows="4"
+        maxlength="2000"
+        spellcheck="false"
+        aria-describedby="review-evidence-hint"
+      ></textarea>
+      <p class="hint" id="review-evidence-hint">Web addresses, one per line.</p>
+    </div>
+
+    <div class="form-actions">
+      <button class="button" type="submit">Send it in</button>
+      <p class="hint">It goes to the queue. It does not go on the site.</p>
+    </div>
+  </form>
+</section>

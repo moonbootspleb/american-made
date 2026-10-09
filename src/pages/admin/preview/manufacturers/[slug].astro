@@ -1,0 +1,63 @@
+---
+export const prerender = false;
+
+import Base from '../../../../layouts/Base.astro';
+import ManufacturerProfile from '../../../../components/ManufacturerProfile.astro';
+import { safeNextPath } from '../../../../lib/admin-session.mjs';
+import { sessionFromCookies } from '../../../../lib/admin-server';
+import { getManufacturerRecord, placeLine } from '../../../../lib/manufacturers';
+
+const slug = typeof Astro.params.slug === 'string' ? Astro.params.slug : '';
+const requestedPath = `/admin/preview/manufacturers/${slug}`;
+const nextTarget = safeNextPath(requestedPath);
+
+if (!sessionFromCookies(Astro.cookies)) {
+  return Astro.redirect(`/admin/login?next=${encodeURIComponent(nextTarget)}`);
+}
+
+const profile = getManufacturerRecord(slug);
+if (!profile) Astro.response.status = 404;
+
+const description = profile
+  ? `${profile.name}, ${profile.legalName} in ${placeLine(profile)}. ${profile.products.map((product) => product.name).join(', ')}. Ownership, plant, inputs, and a sourced American rating.`
+  : 'No manufacturer file uses that slug.';
+
+Astro.response.headers.set('Cache-Control', 'private, no-store');
+Astro.response.headers.set('X-Robots-Tag', 'noindex');
+---
+
+<Base title={profile ? `Preview · ${profile.name}` : 'Draft not filed'} description={description} noindex>
+  {
+    profile ? (
+      <>
+        <div class="queue-note">
+          {profile.status === 'draft' ? (
+            <p>
+              Draft. {profile.name} is not on the public list, the category shelves, or{' '}
+              <span class="path">/manufacturers/{profile.slug}</span>. This page is not indexed.
+            </p>
+          ) : (
+            <p>
+              This record is on the public list at{' '}
+              <a href={`/manufacturers/${profile.slug}`}>/manufacturers/{profile.slug}</a>.
+            </p>
+          )}
+          <p style="margin-top:0.65rem">
+            <a href="/admin/drafts">All drafts</a>
+            <span aria-hidden="true"> · </span>
+            <a href="/admin/queue">Review queue</a>
+          </p>
+        </div>
+        <ManufacturerProfile profile={profile} />
+      </>
+    ) : (
+      <>
+        <p class="eyebrow">Admin</p>
+        <h1>No manufacturer file uses that slug</h1>
+        <p class="lede" style="margin-top:1rem">
+          Drafts that are on file are listed at <a href="/admin/drafts">/admin/drafts</a>.
+        </p>
+      </>
+    )
+  }
+</Base>

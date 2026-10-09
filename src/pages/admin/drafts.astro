@@ -1,0 +1,70 @@
+---
+export const prerender = false;
+
+import Base from '../../layouts/Base.astro';
+import { safeNextPath } from '../../lib/admin-session.mjs';
+import { sessionFromCookies } from '../../lib/admin-server';
+import { getDraftManufacturers, placeLine } from '../../lib/manufacturers';
+
+const nextTarget = safeNextPath('/admin/drafts');
+
+if (!sessionFromCookies(Astro.cookies)) {
+  return Astro.redirect(`/admin/login?next=${encodeURIComponent(nextTarget)}`);
+}
+
+const drafts = getDraftManufacturers();
+
+Astro.response.headers.set('Cache-Control', 'private, no-store');
+Astro.response.headers.set('X-Robots-Tag', 'noindex');
+---
+
+<Base
+  title="Drafts"
+  description="Read manufacturer files that are not on the public list."
+  noindex
+>
+  <div class="page-intro">
+    <p class="eyebrow">Admin</p>
+    <div class="queue-bar">
+      <h1>Drafts</h1>
+      <form method="post" action="/admin/logout">
+        <button class="button button--quiet" type="submit">Log out</button>
+      </form>
+    </div>
+    <p class="page-intro__meta">
+      <a href="/admin/queue">Review queue</a>
+      <span aria-hidden="true"> · </span>
+      <a href="/admin/drafts" aria-current="page">Drafts</a>
+    </p>
+    <p class="lede">
+      These companies are in the repository. They are not on the public list, a category shelf, or a public manufacturer page.
+    </p>
+  </div>
+
+  {
+    drafts.length === 0 ? (
+      <div class="queue-note">
+        <p>
+          No draft is on file. Set <code>status</code> to <code>draft</code> on a manufacturer file to read it here. Omit that field, or set it to <code>published</code>, to put the company on the public list.
+        </p>
+      </div>
+    ) : (
+      <ul class="queue">
+        {drafts.map((profile) => (
+          <li class="queue-card">
+            <header>
+              <h2>
+                <a href={`/admin/preview/manufacturers/${profile.slug}`}>{profile.name}</a>
+              </h2>
+            </header>
+            <p>{profile.deck}</p>
+            <p class="quiet">
+              {placeLine(profile)} · Last reviewed {profile.lastReviewed}
+            </p>
+            <p class="path">/admin/preview/manufacturers/{profile.slug}</p>
+          </li>
+        ))}
+      </ul>
+    )
+  }
+</Base>

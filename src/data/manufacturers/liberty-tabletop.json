@@ -29,6 +29,62 @@
   },
   "website": "https://libertytabletop.com/",
   "websiteLabel": "libertytabletop.com",
+  "gallery": [
+    {
+      "src": "/manufacturers/liberty-tabletop/gallery/betsy-ross.jpg",
+      "width": 800,
+      "height": 800,
+      "alt": "Five pieces of Betsy Ross stainless flatware on a white background. Photograph published by Liberty Tabletop.",
+      "caption": "Betsy Ross",
+      "credit": "Liberty Tabletop",
+      "sourceUrl": "https://libertytabletop.com/collections/65-piece-flatware-sets/products/product-207-variation-2"
+    },
+    {
+      "src": "/manufacturers/liberty-tabletop/gallery/annapolis.jpg",
+      "width": 800,
+      "height": 800,
+      "alt": "Five pieces of Annapolis stainless flatware on a white background. Photograph published by Liberty Tabletop.",
+      "caption": "Annapolis",
+      "credit": "Liberty Tabletop",
+      "sourceUrl": "https://libertytabletop.com/collections/65-piece-flatware-sets/products/annapolis-65-pc-set"
+    },
+    {
+      "src": "/manufacturers/liberty-tabletop/gallery/kensington.jpg",
+      "width": 800,
+      "height": 800,
+      "alt": "Five pieces of Kensington stainless flatware with ornamented handles on a white background. Photograph published by Liberty Tabletop.",
+      "caption": "Kensington",
+      "credit": "Liberty Tabletop",
+      "sourceUrl": "https://libertytabletop.com/collections/65-piece-flatware-sets/products/kensington-65-pc-set"
+    },
+    {
+      "src": "/manufacturers/liberty-tabletop/gallery/american-industrial.jpg",
+      "width": 800,
+      "height": 800,
+      "alt": "Five pieces of American Industrial stainless flatware on a white background. Photograph published by Liberty Tabletop.",
+      "caption": "American Industrial",
+      "credit": "Liberty Tabletop",
+      "sourceUrl": "https://libertytabletop.com/collections/65-piece-flatware-sets/products/american-industrial-65-piece-set"
+    },
+    {
+      "src": "/manufacturers/liberty-tabletop/gallery/honey-bee.jpg",
+      "width": 800,
+      "height": 800,
+      "alt": "Five pieces of Honey Bee stainless flatware with bees and honeycomb on the handles. Photograph published by Liberty Tabletop.",
+      "caption": "Honey Bee",
+      "credit": "Liberty Tabletop",
+      "sourceUrl": "https://libertytabletop.com/collections/65-piece-flatware-sets/products/honey-bee-65-piece-set"
+    },
+    {
+      "src": "/manufacturers/liberty-tabletop/gallery/american-garden.jpg",
+      "width": 1200,
+      "height": 1200,
+      "alt": "American Garden stainless flatware with flower engravings, shown with flowers and stones. Photograph published by Liberty Tabletop.",
+      "caption": "American Garden",
+      "credit": "Liberty Tabletop",
+      "sourceUrl": "https://libertytabletop.com/collections/65-piece-flatware-sets/products/american-garden-65-piece-set"
+    }
+  ],
   "ownership": {
     "code": "american-owned-and-run",
     "label": "American-owned and American-run",
