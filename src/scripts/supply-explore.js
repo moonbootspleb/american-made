@@ -138,7 +138,7 @@ export async function initSupplyExplore() {
       .linkWidth(0)
       .linkColor((link) => link.color)
       .linkOpacity(1)
-      .linkDirectionalArrowLength(3.5)
+      .linkDirectionalArrowLength(8)
       .linkDirectionalArrowRelPos(1)
       .linkDirectionalArrowColor((link) => link.color)
       .linkLabel((link) => `${link.supplierName} → ${link.customerName}`)

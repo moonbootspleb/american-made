@@ -114,12 +114,13 @@ export function renderSupplyDetail(container, node, graph) {
     list.append(item);
   }
   container.append(list);
+  const panel = container.closest('.supply-panel');
+  if (panel) panel.scrollTop = 0;
 }
 
 export function markSelected(id) {
   for (const button of document.querySelectorAll('[data-select-node]')) {
     const on = button.getAttribute('data-select-node') === id;
     button.setAttribute('aria-pressed', on ? 'true' : 'false');
-    if (on) button.scrollIntoView({ block: 'nearest' });
   }
 }
