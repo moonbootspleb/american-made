@@ -1,9 +1,9 @@
 ---
 import Base from '../../layouts/Base.astro';
 import CategoryStrip from '../../components/CategoryStrip.astro';
-import { getAllCategories, getManufacturersInCategory } from '../../lib/manufacturers';
+import { getManufacturersInCategory, getPublicCategories } from '../../lib/manufacturers';
 
-const shelves = getAllCategories();
+const shelves = getPublicCategories();
 ---
 
 <Base

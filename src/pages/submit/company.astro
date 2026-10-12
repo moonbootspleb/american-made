@@ -1,0 +1,16 @@
+---
+import Base from '../../layouts/Base.astro';
+import CompanySuggestion from '../../components/CompanySuggestion.astro';
+---
+
+<Base
+  title="Suggest a company"
+  description="Suggest a manufacturer that is not on The American Forge list. The note goes to a queue. It does not add the company."
+>
+  <p class="crumb">
+    <a href="/">Manufacturers</a>
+    <span aria-hidden="true"> / </span>
+    <span>Suggest a company</span>
+  </p>
+  <CompanySuggestion />
+</Base>

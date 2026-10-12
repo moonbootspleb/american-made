@@ -5,9 +5,10 @@ interface Props {
   title?: string;
   description: string;
   noindex?: boolean;
+  wide?: boolean;
 }
 
-const { title, description, noindex = false } = Astro.props;
+const { title, description, noindex = false, wide = false } = Astro.props;
 const siteName = 'The American Forge';
 const fullTitle = title ? `${title} · ${siteName}` : siteName;
 const path = Astro.url.pathname.replace(/\/$/, '') || '/';
@@ -53,10 +54,12 @@ const current = (href: string) => {
         <nav class="nav" aria-label="Primary">
           <a href="/categories" aria-current={current('/categories')}>Categories</a>
           <a href="/how-we-rate" aria-current={current('/how-we-rate')}>How we rate</a>
+          <a href="/supply-chain/map" aria-current={current('/supply-chain')}>Supply chain</a>
+          <a class="nav__donate" href="/donate" aria-current={current('/donate')}>Donate</a>
         </nav>
       </div>
     </header>
-    <main id="content" class="wrap">
+    <main id="content" class:list={['wrap', { 'wrap--wide': wide }]}>
       <slot />
     </main>
     <footer class="site-footer">
@@ -67,7 +70,17 @@ const current = (href: string) => {
           <span aria-hidden="true"> · </span>
           <a href="/how-we-rate">How we rate</a>
           <span aria-hidden="true"> · </span>
+          <a href="/supply-chain/map">Supply chain</a>
+          <span aria-hidden="true"> · </span>
           <a href="/submit">Send a correction</a>
+          <span aria-hidden="true"> · </span>
+          <a href="/submit/review">Request a review</a>
+          <span aria-hidden="true"> · </span>
+          <a href="/submit/company">Suggest a company</a>
+          <span aria-hidden="true"> · </span>
+          <a href="/donate">Donate</a>
+          <span aria-hidden="true"> · </span>
+          <a class="footer-quiet" href="/admin">Admin</a>
         </p>
       </div>
     </footer>

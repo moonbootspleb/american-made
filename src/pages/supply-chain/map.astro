@@ -1,0 +1,130 @@
+---
+import 'leaflet/dist/leaflet.css';
+import Base from '../../layouts/Base.astro';
+import SupplyChainNav from '../../components/SupplyChainNav.astro';
+import SupplyLegend from '../../components/SupplyLegend.astro';
+import { loadSupplyGraphFromDisk } from '../../lib/load-supply-graph.mjs';
+
+const graph = loadSupplyGraphFromDisk();
+const payload = JSON.stringify(graph).replace(/</g, '\\u003c');
+const unlocated = graph.nodes.filter((node) => !node.located);
+const located = graph.nodes.filter((node) => node.located);
+const description =
+  'Supply-chain map. Companies are pinned only where a source confirms coordinates. Lines run from supplier to customer. Unverified links are dashed.';
+---
+
+<Base title="Supply chain map" description={description} wide>
+  <p class="crumb">
+    <a href="/">Manufacturers</a>
+    <span aria-hidden="true"> / </span>
+    <span>Supply chain map</span>
+  </p>
+  <div class="page-intro">
+    <p class="eyebrow">Places on file</p>
+    <h1>Supply chain map</h1>
+    <p class="lede">
+      A pin is a company whose latitude and longitude are on file, with a source for those coordinates. A line runs from a supplier to its customer. Companies without coordinates are listed as location unverified. Their positions are not guessed.
+    </p>
+    <p class="page-intro__meta">
+      {graph.nodes.length} {graph.nodes.length === 1 ? 'company' : 'companies'}. {graph.edges.length} {graph.edges.length === 1 ? 'link' : 'links'}. {unlocated.length} without coordinates.
+    </p>
+    <SupplyChainNav current="map" />
+  </div>
+
+  <SupplyLegend />
+
+  <div class="supply-layout">
+    <div class="supply-map-wrap">
+      <div id="supply-map" class="supply-map" role="region" aria-label="Map"></div>
+      <p class="quiet">
+        The map opens on the United States when nothing is pinned. That view is not a company location. Tiles
+        <a href="https://www.openstreetmap.org/copyright" rel="noopener noreferrer">© OpenStreetMap contributors</a>.
+      </p>
+      <noscript>
+        <p>The map needs JavaScript. The companies and links are listed on this page.</p>
+      </noscript>
+    </div>
+
+    <aside class="supply-panel" aria-label="Companies">
+      <div id="supply-detail" class="supply-detail" aria-live="polite">
+        <p>Select a company.</p>
+      </div>
+
+      {
+        located.length > 0 && (
+          <>
+            <h2>On the map</h2>
+            <ul class="supply-company-list">
+              {located.map((node) => (
+                <li>
+                  <button type="button" data-select-node={node.id} aria-pressed="false">
+                    {node.name}
+                  </button>
+                  <p>{node.placeLabel}</p>
+                </li>
+              ))}
+            </ul>
+          </>
+        )
+      }
+
+      <h2>Location unverified</h2>
+      <p>
+        {unlocated.length === 0
+          ? 'Every company on this page has coordinates a source confirms.'
+          : 'No source confirms a latitude and longitude for these companies, so they are not pinned.'}
+      </p>
+      {
+        unlocated.length > 0 && (
+          <ul class="supply-company-list">
+            {unlocated.map((node) => (
+              <li>
+                <button type="button" data-select-node={node.id} aria-pressed="false">
+                  {node.name}
+                </button>
+                {node.placeLabel && <p>{node.placeLabel}</p>}
+                <p>Location unverified</p>
+              </li>
+            ))}
+          </ul>
+        )
+      }
+    </aside>
+  </div>
+
+  <section class="section" aria-labelledby="supply-links-heading">
+    <h2 id="supply-links-heading">Links</h2>
+    <ul class="supply-link-list">
+      {
+        graph.edges.map((edge) => (
+          <li>
+            <p>
+              <strong>{edge.supplierName}</strong>
+              <span aria-hidden="true"> → </span>
+              {edge.customerName}
+            </p>
+            <p>
+              {edge.inputName}. {edge.flagLabel}. {edge.dashed ? 'Unverified' : 'Verified'}.
+            </p>
+            {edge.statusNote && <p class="quiet">{edge.statusNote}</p>}
+            {edge.exitsUs.length > 0 && <p>Leaves the United States: {edge.exitsUs.join('; ')}.</p>}
+            <ul class="supply-sources">
+              {edge.sources.map((source) => (
+                <li>
+                  <a href={source.url} rel="noopener noreferrer">{source.title}</a>
+                  {source.publisher && <span class="quiet"> · {source.publisher}</span>}
+                </li>
+              ))}
+            </ul>
+          </li>
+        ))
+      }
+    </ul>
+  </section>
+
+  <script id="supply-graph-data" type="application/json" is:inline set:html={payload}></script>
+  <script>
+    import { initSupplyMap } from '../../scripts/supply-map.js';
+    initSupplyMap();
+  </script>
+</Base>

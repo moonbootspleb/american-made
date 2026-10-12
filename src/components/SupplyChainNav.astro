@@ -1,0 +1,12 @@
+---
+interface Props {
+  current: 'map' | 'explore';
+}
+
+const { current } = Astro.props;
+---
+
+<nav class="shelves" aria-label="Supply chain">
+  <a class="shelf" href="/supply-chain/map" aria-current={current === 'map' ? 'page' : undefined}>Map</a>
+  <a class="shelf" href="/supply-chain/explore" aria-current={current === 'explore' ? 'page' : undefined}>Graph</a>
+</nav>

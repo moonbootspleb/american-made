@@ -1,0 +1,63 @@
+---
+import type { Manufacturer } from '../lib/manufacturers';
+
+interface Props {
+  profile: Manufacturer;
+}
+
+const { profile } = Astro.props;
+const images = profile.gallery ?? [];
+---
+
+<section class="section" id="photographs" aria-labelledby="photographs-heading">
+  <p class="kicker">Goods</p>
+  <h2 id="photographs-heading">Photographs</h2>
+  {
+    images.length > 0 ? (
+      <>
+        <p class="prose">
+          Photographs the company published. This is not a catalog. Prices and the cart stay on the company site.
+        </p>
+        <ul class="gallery">
+          {images.map((image) => (
+            <li>
+              <figure>
+                <img
+                  src={image.src}
+                  alt={image.alt}
+                  width={image.width}
+                  height={image.height}
+                  loading="lazy"
+                  decoding="async"
+                />
+                <figcaption>
+                  {image.caption && <span class="gallery__caption">{image.caption}</span>}
+                  <a href={image.sourceUrl} rel="noopener noreferrer">
+                    {image.credit}
+                  </a>
+                </figcaption>
+              </figure>
+            </li>
+          ))}
+        </ul>
+      </>
+    ) : (
+      <div class="panel gallery-empty">
+        <p>No product photographs are filed for {profile.name}.</p>
+        <p>
+          They are added in the repository, not from a form. Put the file in{' '}
+          <span class="path">public/manufacturers/{profile.slug}/</span> and list it under{' '}
+          <span class="path">gallery</span> in{' '}
+          <span class="path">src/data/manufacturers/{profile.slug}.json</span>. Use a photograph the company
+          published, and keep the credit and the page it came from.
+        </p>
+        <p>A stock picture is not a stand-in. Leaving this empty is the right record until a real photograph is filed.</p>
+        <p>
+          If you have the address of a photograph the company published, send it with a{' '}
+          <a href="#submission">correction</a>. That note waits in the queue. It does not attach a file, and it does not
+          put a picture on the site.
+        </p>
+      </div>
+    )
+  }
+</section>
