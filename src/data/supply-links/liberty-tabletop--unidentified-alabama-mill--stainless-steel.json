@@ -1,0 +1,79 @@
+{
+  "id": "liberty-tabletop--unidentified-alabama-mill--stainless-steel",
+  "lastReviewed": "2026-10-09",
+  "customer": {
+    "type": "manufacturer",
+    "slug": "liberty-tabletop",
+    "name": "Sherrill Manufacturing (Liberty Tabletop)"
+  },
+  "supplier": {
+    "slug": "unidentified-alabama-stainless-mill",
+    "name": "Unidentified stainless mill, Alabama (Birmingham area)",
+    "identified": false,
+    "hq": {
+      "region": "AL",
+      "country": "US",
+      "status": "sourced",
+      "sources": [
+        "aam",
+        "oswego-2021"
+      ],
+      "note": "Owens says \"down in Birmingham\"; Roberts says Alabama. The mill's own headquarters is not known."
+    }
+  },
+  "input": {
+    "key": "stainless-steel",
+    "name": "18/10 stainless steel coil or bar",
+    "origins": [
+      {
+        "region": "AL",
+        "country": "US",
+        "status": "sourced",
+        "sources": [
+          "aam",
+          "oswego-2021",
+          "pr-2025"
+        ],
+        "note": "Region as stated in the interviews. Country also per Sherrill's statement that its stainless is melted and made in the United States."
+      }
+    ]
+  },
+  "tier": 1,
+  "flag": "domestic",
+  "status": "unverified",
+  "statusNote": "Two Sherrill interviews place a source mill in Alabama. No company is named. Not to be filled with a guess.",
+  "evidence": [
+    "aam",
+    "oswego-2021"
+  ],
+  "namingSources": [],
+  "sources": [
+    {
+      "id": "aam",
+      "title": "Liberty Sets the Table for Growth",
+      "publisher": "Alliance for American Manufacturing",
+      "date": "2015-11-09",
+      "url": "https://www.americanmanufacturing.org/blog/liberty-sets-the-table-for-growth/",
+      "kind": "news",
+      "note": "Greg Owens: Sherrill requires mill reports showing steel melted and manufactured in the United States, and says it \"could come from Allegheny Ludlum, it could come from AK Steel, and it could come from NASS, or another place down in Birmingham.\" These are examples, not a named supplier for any heat."
+    },
+    {
+      "id": "oswego-2021",
+      "title": "Sherrill Manufacturing",
+      "publisher": "Oswego County Business Magazine",
+      "date": "2021-06-18",
+      "url": "https://oswegocountybusiness.com/sherrill-manufacturing/",
+      "kind": "news",
+      "note": "Roberts: steel was made in Pittsburgh, Tennessee or Alabama. Packaging materials come from a family-owned company in Earlville, NY (not named). Buffing compounds come from Utica and Detroit (suppliers not named)."
+    },
+    {
+      "id": "pr-2025",
+      "title": "Liberty Tabletop responds to expanded US tariffs, confirms 100% US-made supply chain",
+      "publisher": "Liberty Tabletop via PR Newswire",
+      "date": "2025-09-09",
+      "url": "https://www.prnewswire.com/news-releases/liberty-tabletop-americas-last-flatware-manufacturer-responds-to-expanded-us-tariffs-confirms-100-us-made-supply-chain-shields-customers-from-import-surcharges-302551220.html",
+      "kind": "press-release",
+      "note": "Company statement: steel poured and forged in America; packaging sourced and produced in the United States. No supplier named."
+    }
+  ]
+}

@@ -1,0 +1,28 @@
+---
+import { SUPPLY_COLORS } from '../lib/supply-graph.mjs';
+
+const items = [
+  ['domestic', 'Domestic'],
+  ['foreign', 'Foreign'],
+  ['mixed', 'Mixed'],
+  ['unknown', 'Unknown'],
+] as const;
+---
+
+<ul class="supply-legend">
+  {
+    items.map(([key, label]) => (
+      <li>
+        <span class="supply-swatch" style={`background:${SUPPLY_COLORS[key]}`}></span>
+        {label}
+      </li>
+    ))
+  }
+  <li>
+    <span class="supply-dash" aria-hidden="true"></span>
+    Unverified
+  </li>
+</ul>
+<p class="quiet supply-legend__note">
+  A line runs from the supplier to the customer. A dashed line is a link no source has confirmed.
+</p>

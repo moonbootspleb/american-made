@@ -13,7 +13,7 @@ npm install
 npm run dev
 ```
 
-The dev server prints a local URL. Start at `/` (the manufacturer list). The header is the logo, Categories, How we rate, and Donate. Open `/categories`, `/how-we-rate`, `/donate`, and `/manufacturers/liberty-tabletop`. The footer links to `/submit`, `/submit/review`, `/submit/company`, `/donate`, and a quiet Admin link. `/about` and `/manufacturers` redirect to the rating page and the list.
+The dev server prints a local URL. Start at `/` (the manufacturer list). The header is the logo, Categories, How we rate, Supply chain, and Donate. Open `/categories`, `/how-we-rate`, `/donate`, `/supply-chain/map`, `/supply-chain/explore`, and `/manufacturers/liberty-tabletop`. The footer links to `/submit`, `/submit/review`, `/submit/company`, `/donate`, and a quiet Admin link. `/about` and `/manufacturers` redirect to the rating page and the list.
 
 `/admin/login` needs `ADMIN_PASSWORD` in the environment (see [Admin queue](#admin-queue)). Without `NETLIFY_AUTH_TOKEN`, a signed-in visit says the inbox cannot be read. Neither value is required to build.
 
@@ -33,6 +33,20 @@ npm run preview
 ```
 
 Try the queue with `npm run dev`.
+
+## Smoke
+
+`npm run smoke` checks a deployed site. It must be green on the develop deploy before any production promote. After a promote, run it against that production URL as well. Every new bug gets a permanent check in this script.
+
+```bash
+npm run smoke -- --base-url https://american-forge-develop.netlify.app
+```
+
+The command reads `src/data/manufacturers/*.json`. A missing `status`, or `"published"`, is a public company. `"draft"` and any other status must stay off the public pages. The script does not hard-code those names.
+
+It exits non-zero if any check fails. Google Chrome or Chromium has to be installed. Set `CHROME_PATH` when the binary is not on the usual path.
+
+The checks are the home list, each published profile, `/supply-chain/map` (OpenStreetMap tiles, and a pin only for a sourced location in the page’s graph), `/supply-chain/explore` with WebGL and again without it, `/admin/queue` and `/admin/drafts` redirecting to login when signed out, `GET /api/admin/submissions` returning 401, and draft companies absent from those public pages and the graph JSON with their profile URL returning 404.
 
 ## Netlify
 
@@ -291,6 +305,39 @@ The list card and the profile header use Liberty Tabletop’s own header mark, s
 The profile also files six photographs saved from Liberty Tabletop’s own shop on 2026-09-30: Betsy Ross, Annapolis, Kensington, American Industrial, Honey Bee, and American Garden. Each credit links to the shop page the file came from. They are not a catalog, and they are not prices. A company with no `gallery` array does not get stand-in pictures.
 
 Liberty is filed under Flatware, for stainless flatware. Inputs are `unknown` and have no component list: company pages and two interviews describe U.S. steel and U.S. packaging, the named mills are examples, and no source gives shares that total 100. This record does not assign percentages. The rating leaves that line out. Ownership and the Sherrill plant stay on the reported badges. The rating page states the arithmetic. The list stays alphabetical.
+
+## Supply chains and locations
+
+`/supply-chain/map` and `/supply-chain/explore` read the same graph, built in `src/lib/supply-graph.mjs`. A draft manufacturer is left off both pages, and so are links that only reach a draft.
+
+The map pins a company only where `lat` and `lng` are on file with `coordinateSources`. A city name is not turned into a pin. Companies without those coordinates are listed beside the map as location unverified. A line runs from supplier to customer. Domestic and foreign lines use different colors. A dashed line is unverified. The tiles are OpenStreetMap, with attribution on the map.
+
+The other page is a 3D view of the same companies and links. Drag to turn it, scroll or pinch to zoom. Click a company for the name, headquarters country, tier, domestic share, and source links. The same colors and dashes apply. Filters cover tier and domestic or foreign. A search box finds a company by name. If the browser has no WebGL, the page lists the companies instead.
+
+### Places
+
+`src/lib/places.mjs` defines a place: `city`, `region`, `country` (ISO 3166-1 alpha-2 such as `US`, or `unknown`), optional `lat` and `lng`, `status` (`sourced` or `unverified`), and `sources`. A sourced place needs at least one source id. Coordinates go in only together and only with `coordinateSources`. Do not geocode a guess.
+
+A manufacturer file may add `hq` (one place) and `facilities` (plants, mills, offices, each with an `id`, `name`, `kind`, and `place`). Their source ids must be in the file's `sources` and count as citations.
+
+### Supply links
+
+Each file in `src/data/supply-links/` is one edge: a supplier, a customer, and one input. The filename and `id` match, as `<customer>--<supplier>--<input>`.
+
+| Field | Meaning |
+| --- | --- |
+| `customer` | `type` `manufacturer` (a file in `src/data/manufacturers`) or `supplier` (the supplier slug on another link) |
+| `supplier` | `slug`, `name`, `identified` (false when a source gives only a place), `hq` place, optional `parent` with its own `hq` |
+| `input` | `key` (groups alternative sources of one input), `name`, `origins` (where it is made or extracted, one or more places) |
+| `tier` | 1 for a direct supplier of a manufacturer. A supplier's supplier is that tier plus one. |
+| `flag` | `domestic`, `foreign`, `mixed`, or `unknown`. Must match the origin countries. |
+| `primaryResource` | Optional: `mine`, `mill`, `farm`, `forest`, `well`, or `recycling` once the chain reaches one |
+| `status` | `verified` only when `namingSources` has a source that names this supplier for this customer. Otherwise `unverified`. |
+| `statusNote`, `evidence`, `namingSources`, `sources` | Every listed source must be cited, and every cited id must be listed |
+
+A company saying its steel "could come from" a mill does not verify a link. An unidentified supplier cannot be verified.
+
+`npm run build` fails when a link breaks these rules. `npm run check:supply` prints the same check plus each customer's domestic share, counted by input line, and every link where the chain leaves the United States (foreign origin, foreign supplier headquarters, or foreign parent). `npm test` runs the unit tests.
 
 ## Donations
 

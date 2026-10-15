@@ -1,0 +1,95 @@
+{
+  "id": "liberty-tabletop--ati--stainless-steel",
+  "lastReviewed": "2026-10-09",
+  "customer": {
+    "type": "manufacturer",
+    "slug": "liberty-tabletop",
+    "name": "Sherrill Manufacturing (Liberty Tabletop)"
+  },
+  "supplier": {
+    "slug": "ati",
+    "name": "ATI Inc. (Allegheny Ludlum lineage)",
+    "identified": true,
+    "website": "https://www.atimaterials.com/",
+    "hq": {
+      "city": "Dallas",
+      "region": "TX",
+      "country": "US",
+      "status": "sourced",
+      "sources": [
+        "ati-home"
+      ]
+    }
+  },
+  "input": {
+    "key": "stainless-steel",
+    "name": "18/10 stainless steel coil or bar",
+    "origins": [
+      {
+        "country": "US",
+        "status": "sourced",
+        "sources": [
+          "aam",
+          "pr-2025"
+        ],
+        "note": "Sherrill says its stainless is melted and made in the United States. Company statement, not a mill certificate."
+      }
+    ]
+  },
+  "tier": 1,
+  "flag": "domestic",
+  "status": "unverified",
+  "statusNote": "Owens named Allegheny Ludlum as a mill the steel could come from (2015). That is an example, not a named supplier. Pittsburgh, named in 2021, fits Allegheny Ludlum's home region but no source ties ATI to Sherrill.",
+  "evidence": [
+    "aam",
+    "bi-2021",
+    "oswego-2021"
+  ],
+  "namingSources": [],
+  "sources": [
+    {
+      "id": "aam",
+      "title": "Liberty Sets the Table for Growth",
+      "publisher": "Alliance for American Manufacturing",
+      "date": "2015-11-09",
+      "url": "https://www.americanmanufacturing.org/blog/liberty-sets-the-table-for-growth/",
+      "kind": "news",
+      "note": "Greg Owens: Sherrill requires mill reports showing steel melted and manufactured in the United States, and says it \"could come from Allegheny Ludlum, it could come from AK Steel, and it could come from NASS, or another place down in Birmingham.\" These are examples, not a named supplier for any heat."
+    },
+    {
+      "id": "bi-2021",
+      "title": "Sellers of American-made goods are thriving amid supply-chain chaos",
+      "publisher": "Business Insider",
+      "date": "2021-12-04",
+      "url": "https://www.businessinsider.com/us-manufacturers-supply-chain-crisis-impacts-2021-12",
+      "kind": "news",
+      "note": "Owens: products start as a coil or bar of steel made in one of three places: Western New York, Pittsburgh, or Tennessee. Packaging is locally sourced. No mill named."
+    },
+    {
+      "id": "oswego-2021",
+      "title": "Sherrill Manufacturing",
+      "publisher": "Oswego County Business Magazine",
+      "date": "2021-06-18",
+      "url": "https://oswegocountybusiness.com/sherrill-manufacturing/",
+      "kind": "news",
+      "note": "Roberts: steel was made in Pittsburgh, Tennessee or Alabama. Packaging materials come from a family-owned company in Earlville, NY (not named). Buffing compounds come from Utica and Detroit (suppliers not named)."
+    },
+    {
+      "id": "pr-2025",
+      "title": "Liberty Tabletop responds to expanded US tariffs, confirms 100% US-made supply chain",
+      "publisher": "Liberty Tabletop via PR Newswire",
+      "date": "2025-09-09",
+      "url": "https://www.prnewswire.com/news-releases/liberty-tabletop-americas-last-flatware-manufacturer-responds-to-expanded-us-tariffs-confirms-100-us-made-supply-chain-shields-customers-from-import-surcharges-302551220.html",
+      "kind": "press-release",
+      "note": "Company statement: steel poured and forged in America; packaging sourced and produced in the United States. No supplier named."
+    },
+    {
+      "id": "ati-home",
+      "title": "ATI home page",
+      "publisher": "ATI Inc.",
+      "url": "https://www.atimaterials.com/",
+      "kind": "supplier",
+      "note": "Footer: ATI Corporate, 2021 McKinney Avenue Suite 1100, Dallas, TX 75201. Read October 9, 2026."
+    }
+  ]
+}

@@ -1365,3 +1365,253 @@ form.panel {
     scroll-behavior: auto;
   }
 }
+
+/* Supply chain map and graph. Swatch colors match SUPPLY_COLORS in src/lib/supply-graph.mjs. */
+.wrap.wrap--wide {
+  width: min(1200px, calc(100% - 2rem));
+}
+
+.supply-layout,
+.supply-explore {
+  display: grid;
+  gap: 1rem;
+  align-items: start;
+}
+
+.supply-map-wrap,
+.supply-stage,
+.supply-panel {
+  min-width: 0;
+}
+
+.supply-map,
+.supply-stage {
+  height: min(70vh, 680px);
+  min-height: 280px;
+  background: #e6e1d8;
+  border: 1px solid var(--ink);
+}
+
+.supply-stage {
+  position: relative;
+  overflow: hidden;
+}
+
+.supply-map {
+  position: relative;
+  z-index: 0;
+}
+
+.leaflet-container {
+  height: 100%;
+  width: 100%;
+  font-family: var(--sans);
+  background: #e6e1d8;
+}
+
+.leaflet-control-attribution {
+  font-size: 0.75rem;
+  max-width: min(100%, 28rem);
+  white-space: normal;
+  background: rgba(243, 239, 232, 0.92);
+}
+
+.supply-panel {
+  background: var(--paper-raised);
+  border: 1px solid var(--ink);
+  padding: 0.9rem 1rem 1.1rem;
+}
+
+.supply-panel > h2 {
+  margin-top: 1.25rem;
+  font-size: 1.25rem;
+}
+
+.supply-detail h2 {
+  font-size: 1.35rem;
+}
+
+.supply-detail h3 {
+  margin-top: 1rem;
+  font-size: 1.05rem;
+}
+
+.supply-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem 1rem;
+  list-style: none;
+  margin: 0 0 0.35rem;
+  padding: 0;
+}
+
+.supply-legend li {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  min-height: 44px;
+}
+
+.supply-swatch {
+  width: 0.85rem;
+  height: 0.85rem;
+  border: 1px solid var(--ink);
+  flex: none;
+}
+
+.supply-dash {
+  width: 2rem;
+  border-top: 2px dashed var(--ink);
+  flex: none;
+}
+
+.supply-legend__note {
+  margin: 0 0 1rem;
+}
+
+.supply-tools {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem 1rem;
+  margin: 0 0 1rem;
+}
+
+.supply-tools label {
+  display: grid;
+  gap: 0.3rem;
+  flex: 1 1 12rem;
+  font-family: var(--mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.supply-tools input,
+.supply-tools select {
+  font-family: var(--sans);
+  font-size: 1rem;
+  letter-spacing: 0;
+  text-transform: none;
+  color: var(--ink);
+  background: var(--paper-raised);
+  border: 1px solid var(--ink);
+  min-height: 44px;
+  padding: 0.35rem 0.6rem;
+  width: 100%;
+}
+
+.supply-company-list,
+.supply-link-list,
+.supply-detail-links,
+.supply-sources {
+  list-style: none;
+  margin: 0.5rem 0 0;
+  padding: 0;
+}
+
+.supply-company-list {
+  display: grid;
+  gap: 0.85rem;
+}
+
+.supply-company-list button {
+  font: inherit;
+  font-weight: 600;
+  text-align: left;
+  background: transparent;
+  border: 0;
+  padding: 0;
+  color: var(--ink);
+  cursor: pointer;
+  min-height: 44px;
+  text-decoration: underline;
+  text-decoration-color: var(--oxide);
+  text-underline-offset: 0.18em;
+}
+
+.supply-company-list button[aria-pressed='true'] {
+  color: var(--oxide);
+}
+
+.supply-company-list p,
+.supply-link-list p,
+.supply-detail-links p {
+  margin: 0.15rem 0 0;
+}
+
+.supply-company-list p,
+.supply-link-list .quiet {
+  color: var(--muted);
+}
+
+.supply-link-list > li,
+.supply-detail-links > li {
+  border-top: 1px solid var(--rule);
+  padding: 0.8rem 0;
+}
+
+.supply-facts {
+  display: grid;
+  gap: 0.7rem;
+  margin: 0.85rem 0 0;
+}
+
+.supply-facts dt {
+  font-family: var(--mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.supply-facts dd {
+  margin: 0.12rem 0 0;
+}
+
+.supply-unverified {
+  margin: 0.6rem 0 0;
+  font-family: var(--mono);
+  font-size: 0.78rem;
+  letter-spacing: 0.04em;
+  color: var(--oxide);
+}
+
+.supply-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem 1rem;
+  margin: 0.8rem 0 0;
+}
+
+.supply-note {
+  margin: 0 0 1rem;
+  border-left: 2px solid var(--brass);
+  padding-left: 0.8rem;
+}
+
+@media (max-width: 640px) {
+  .supply-map,
+  .supply-stage {
+    height: 58vh;
+    min-height: 240px;
+  }
+}
+
+@media (min-width: 900px) {
+  .wrap.wrap--wide {
+    width: min(1200px, calc(100% - 4rem));
+  }
+
+  .supply-layout,
+  .supply-explore {
+    grid-template-columns: minmax(0, 1fr) minmax(16rem, 22rem);
+  }
+
+  .supply-panel {
+    position: sticky;
+    top: 1rem;
+    max-height: calc(100vh - 2rem);
+    overflow: auto;
+  }
+}

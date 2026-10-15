@@ -70,6 +70,11 @@ const shelves = profile.categories
 <p class="quiet" style="margin-top:0.75rem">
   Read these as two answers. The owner does not establish the plant. The plant does not establish the owner.
 </p>
+<p class="quiet">
+  <a href={`/supply-chain/map?company=${profile.slug}`}>Supply chain map</a>
+  <span aria-hidden="true"> · </span>
+  <a href={`/supply-chain/explore?company=${profile.slug}`}>Supply chain graph</a>
+</p>
 {
   profile.automation?.heavilyAutomated && (
     <div style="margin-top:1rem">

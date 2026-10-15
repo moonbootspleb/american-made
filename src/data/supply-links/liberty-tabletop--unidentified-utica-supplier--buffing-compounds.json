@@ -1,0 +1,58 @@
+{
+  "id": "liberty-tabletop--unidentified-utica-supplier--buffing-compounds",
+  "lastReviewed": "2026-10-09",
+  "customer": {
+    "type": "manufacturer",
+    "slug": "liberty-tabletop",
+    "name": "Sherrill Manufacturing (Liberty Tabletop)"
+  },
+  "supplier": {
+    "slug": "unidentified-utica-buffing-compound-supplier",
+    "name": "Unidentified buffing compound supplier, Utica, NY",
+    "identified": false,
+    "hq": {
+      "city": "Utica",
+      "region": "NY",
+      "country": "US",
+      "status": "sourced",
+      "sources": [
+        "oswego-2021"
+      ],
+      "note": "The article says the compounds come from Utica. Whether that is the supplier's headquarters or its plant is not stated."
+    }
+  },
+  "input": {
+    "key": "buffing-compounds",
+    "name": "Buffing compounds",
+    "origins": [
+      {
+        "city": "Utica",
+        "region": "NY",
+        "country": "US",
+        "status": "sourced",
+        "sources": [
+          "oswego-2021"
+        ]
+      }
+    ]
+  },
+  "tier": 1,
+  "flag": "domestic",
+  "status": "unverified",
+  "statusNote": "Place only. No company named.",
+  "evidence": [
+    "oswego-2021"
+  ],
+  "namingSources": [],
+  "sources": [
+    {
+      "id": "oswego-2021",
+      "title": "Sherrill Manufacturing",
+      "publisher": "Oswego County Business Magazine",
+      "date": "2021-06-18",
+      "url": "https://oswegocountybusiness.com/sherrill-manufacturing/",
+      "kind": "news",
+      "note": "Roberts: steel was made in Pittsburgh, Tennessee or Alabama. Packaging materials come from a family-owned company in Earlville, NY (not named). Buffing compounds come from Utica and Detroit (suppliers not named)."
+    }
+  ]
+}
