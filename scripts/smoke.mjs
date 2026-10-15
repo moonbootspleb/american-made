@@ -1,4 +1,7 @@
-import { existsSync } from 'node:fs';
+import { spawnSync } from 'node:child_process';
+import { createHash } from 'node:crypto';
+import { existsSync, mkdtempSync, readdirSync, readFileSync, rmSync } from 'node:fs';
+import { tmpdir } from 'node:os';
 import nodePath from 'node:path';
 import { fileURLToPath } from 'node:url';
 import puppeteer from 'puppeteer-core';
@@ -7,6 +10,7 @@ import {
   SMOKE_USAGE,
   chromeCandidates,
   findChrome,
+  fillsViewport,
   formatReport,
   graphFromHtml,
   isLoginRedirect,
@@ -16,6 +20,9 @@ import {
   parseBaseUrl,
   pinCount,
 } from '../src/lib/smoke.mjs';
+import { loadSupplyGraphFromDisk } from '../src/lib/load-supply-graph.mjs';
+import { htmlToExcerpt } from '../src/lib/research.mjs';
+import { loadProposalsFromDisk, renderProposalSection } from '../src/lib/supply-proposals.mjs';
 
 const root = nodePath.resolve(nodePath.dirname(fileURLToPath(import.meta.url)), '..');
 
@@ -25,9 +32,14 @@ const root = nodePath.resolve(nodePath.dirname(fileURLToPath(import.meta.url)), 
  */
 async function request(url, options = {}) {
   const response = await fetch(url, {
+    method: options.method ?? 'GET',
+    body: options.body,
     redirect: options.redirect ?? 'follow',
     signal: AbortSignal.timeout(20000),
-    headers: { accept: 'text/html,application/json' },
+    headers: {
+      accept: 'text/html,application/json',
+      ...(options.body ? { 'content-type': 'application/json' } : {}),
+    },
   });
   const text = await response.text();
   return {
@@ -142,13 +154,28 @@ async function checkMap(baseUrl, chromePath, mapPage) {
           attribution: document.querySelector('.leaflet-control-attribution')?.textContent || '',
           buttonName,
           panel: document.querySelector('#supply-detail')?.textContent || '',
+          box: (() => {
+            const rect = document.querySelector('#supply-map')?.getBoundingClientRect();
+            return rect ? { width: rect.width, height: rect.height } : null;
+          })(),
+          viewport: { width: window.innerWidth, height: window.innerHeight },
         };
       }, '[Aa]');
+      const filePins = pinCount(loadSupplyGraphFromDisk(root));
       if (state.tiles < 1) problems.push('no OpenStreetMap tiles loaded');
       if (failedTiles.length > 0 && state.tiles < 1) problems.push('OpenStreetMap tile requests failed');
       if (!/openstreetmap/i.test(state.attribution)) problems.push('map attribution is missing');
       if (state.pins !== expectedPins) {
         problems.push(`pins ${state.pins}, sourced locations ${expectedPins}`);
+      }
+      if (filePins > 0 && state.pins < 1) problems.push('files have sourced coordinates but the map has no pin');
+      if (filePins !== expectedPins) {
+        problems.push(`page lists ${expectedPins} sourced locations, files list ${filePins}`);
+      }
+      if (!fillsViewport(state.box, state.viewport)) {
+        problems.push(
+          `map ${Math.round(state.box?.width || 0)}x${Math.round(state.box?.height || 0)} in a ${state.viewport.width}x${state.viewport.height} viewport`,
+        );
       }
       if (!state.buttonName) {
         if (expectedPins < 1) problems.push('no company button and no pins');
@@ -211,9 +238,18 @@ async function checkExplore(baseUrl, chromePath, explorePage) {
           companies: visible('[data-supply-node]'),
           links: visible('[data-supply-edge]'),
           panel: document.querySelector('#supply-detail')?.textContent || '',
+          box: stage
+            ? { width: stage.getBoundingClientRect().width, height: stage.getBoundingClientRect().height }
+            : null,
+          viewport: { width: window.innerWidth, height: window.innerHeight },
         };
       }, manufacturer?.id ?? '');
       if (state.stageHidden !== false || state.canvasWidth < 1) problems.push('3D view did not draw');
+      if (!fillsViewport(state.box, state.viewport)) {
+        problems.push(
+          `graph ${Math.round(state.box?.width || 0)}x${Math.round(state.box?.height || 0)} in a ${state.viewport.width}x${state.viewport.height} viewport`,
+        );
+      }
       if (state.noteHidden !== true) problems.push('no-WebGL note was showing');
       if (state.companies !== graph.nodes.length || state.links !== graph.edges.length) {
         problems.push(`list ${state.companies} companies and ${state.links} links, graph ${stateDetail(graph)}`);
@@ -275,6 +311,84 @@ async function checkExploreFallback(baseUrl, chromePath, explorePage) {
     problems.push(error instanceof Error ? error.message : String(error));
   }
   return result(name, problems, `list kept, ${stateDetail(graph)}`);
+}
+
+/**
+ * @param {string} directory
+ */
+function supplyLinkDigest(directory) {
+  const dir = nodePath.join(directory, 'src/data/supply-links');
+  const names = existsSync(dir) ? readdirSync(dir).filter((name) => name.endsWith('.json')).sort() : [];
+  const hash = createHash('sha256');
+  for (const name of names) {
+    hash.update(name);
+    hash.update(readFileSync(nodePath.join(dir, name)));
+  }
+  return hash.digest('hex');
+}
+
+/**
+ * @param {string} directory
+ * @param {string[]} args
+ */
+function runResearchScript(directory, args) {
+  return spawnSync(process.execPath, [nodePath.join(directory, 'scripts/research.mjs'), ...args], {
+    cwd: directory,
+    encoding: 'utf8',
+    timeout: 30000,
+  });
+}
+
+/**
+ * Dry-run and fixture mode, plus the proposals schema.
+ * Verify is not invoked against the checkout's supply links.
+ * @param {string} directory
+ */
+function checkResearch(directory) {
+  const name = 'Supply research';
+  /** @type {string[]} */
+  const problems = [];
+  const before = supplyLinkDigest(directory);
+  const dry = runResearchScript(directory, ['--from', 'liberty-tabletop', '--dry-run']);
+  if (dry.status !== 0) problems.push(`dry-run exit ${dry.status}: ${dry.stderr || dry.stdout}`);
+  if (!String(dry.stdout).includes('https://libertytabletop.com/')) problems.push('dry-run omitted the company site');
+  if (!String(dry.stdout).includes('buydirectusa.com')) problems.push('dry-run omitted the trade page');
+  if (!String(dry.stdout).includes('sec.gov')) problems.push('dry-run omitted the SEC filing');
+  if (!String(dry.stdout).includes('uspto.gov')) problems.push('dry-run omitted the USPTO record');
+  if (!String(dry.stdout).includes('dry-run: no files written')) problems.push('dry-run did not say it wrote nothing');
+  if (String(dry.stdout).includes(`${nodePath.sep}supply-links${nodePath.sep}`)) problems.push('dry-run wrote a supply link');
+
+  const out = mkdtempSync(nodePath.join(tmpdir(), 'forge-smoke-research-'));
+  try {
+    const fixture = runResearchScript(directory, ['--from', 'liberty-tabletop', '--fixture', '--out', out]);
+    if (fixture.status !== 0) problems.push(`fixture exit ${fixture.status}: ${fixture.stderr || fixture.stdout}`);
+    const loaded = loadProposalsFromDisk(out);
+    if (loaded.issues.length > 0) problems.push(loaded.issues.join('; '));
+    if (loaded.proposals.length < 1) problems.push('fixture produced no proposal');
+    const html = renderProposalSection(loaded.proposals);
+    if (!html.includes('Fixture Alloy Works')) problems.push('admin section omitted the fixture supplier');
+    if (!html.includes('value="verify"') || !html.includes('value="reject"') || !html.includes('value="needs-source"')) {
+      problems.push('admin section omitted verify, reject, or needs-source');
+    }
+  } finally {
+    rmSync(out, { recursive: true, force: true });
+  }
+
+  const styled = htmlToExcerpt(
+    '<template>:host { --shadow-border-radius-xs: 1rem; }</template><article><p>Liberty Tabletop buys stainless bar from Fixture Alloy Works.</p></article>',
+  );
+  if (styled.includes(':host') || !styled.includes('Fixture Alloy Works')) {
+    problems.push('excerpt kept stylesheet text');
+  }
+
+  const onFile = loadProposalsFromDisk(directory);
+  if (onFile.issues.length > 0) problems.push(onFile.issues.join('; '));
+  if (supplyLinkDigest(directory) !== before) problems.push('supply links changed during research');
+  const detail =
+    onFile.proposals.length === 0
+      ? 'dry-run and fixture exit 0, no proposals on file'
+      : `dry-run and fixture exit 0, ${onFile.proposals.length} proposals on file`;
+  return result(name, problems, detail);
 }
 
 /**
@@ -340,6 +454,17 @@ async function runSmoke(baseUrl) {
   const api = await request(`${baseUrl}/api/admin/submissions`, { redirect: 'manual' });
   const apiProblems = api.status === 401 ? [] : [`HTTP ${api.status}`];
 
+  const linksBefore = supplyLinkDigest(root);
+  const researchCheck = checkResearch(root);
+  const verifyProbe = await request(`${baseUrl}/api/admin/proposals`, {
+    method: 'POST',
+    redirect: 'manual',
+    body: JSON.stringify({ id: 'smoke-probe-does-not-exist', action: 'verify' }),
+  });
+  const verifyProblems = [];
+  if (verifyProbe.status !== 401) verifyProblems.push(`HTTP ${verifyProbe.status}`);
+  if (supplyLinkDigest(root) !== linksBefore) verifyProblems.push('supply links changed during smoke');
+
   /** @type {{ name: string, pass: boolean, detail: string }[]} */
   const browserSkipped = (checkName) =>
     result(checkName, [chromePath ? 'not run' : 'Chrome not found. Set CHROME_PATH.'], '');
@@ -364,6 +489,8 @@ async function runSmoke(baseUrl) {
     fallbackCheck,
     result('Admin queue and drafts', adminProblems, '302 to /admin/login'),
     result('Admin submissions API', apiProblems, '401'),
+    researchCheck,
+    result('Proposal verify stays closed', verifyProblems, '401, supply links unchanged'),
     result(
       'Draft companies',
       draftProblems,

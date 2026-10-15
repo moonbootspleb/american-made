@@ -6,6 +6,7 @@ import test from 'node:test';
 import { fileURLToPath } from 'node:url';
 import {
   chromeCandidates,
+  fillsViewport,
   findChrome,
   formatReport,
   graphFromHtml,
@@ -110,6 +111,12 @@ test('the report names each failure and exits on a failed count', () => {
   assert.match(report, /Home\s+PASS\s+200/);
   assert.match(report, /Company profile\s+FAIL\s+missing name/);
   assert.match(report, /1\/2 passed/);
+});
+
+test('a near-fullscreen map covers most of the viewport', () => {
+  assert.equal(fillsViewport({ width: 1280, height: 820 }, { width: 1280, height: 900 }), true);
+  assert.equal(fillsViewport({ width: 700, height: 400 }, { width: 1280, height: 900 }), false);
+  assert.equal(fillsViewport({ width: 0, height: 0 }, { width: 1280, height: 900 }), false);
 });
 
 test('Chrome is the first candidate that exists', () => {

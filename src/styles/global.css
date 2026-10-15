@@ -1615,3 +1615,151 @@ form.panel {
     overflow: auto;
   }
 }
+
+/* Map and graph pages: the drawing fills the viewport. Header, legend, and the company panel sit on top of it. */
+body.is-stage {
+  overflow: hidden;
+  height: 100dvh;
+}
+
+body.is-stage .site-header {
+  height: 3.25rem;
+  z-index: 1000;
+}
+
+body.is-stage .header-inner,
+body.is-stage .footer-inner,
+body.is-stage .wrap,
+body.is-stage .wrap.wrap--wide {
+  width: 100%;
+  max-width: none;
+}
+
+body.is-stage .header-inner {
+  height: 100%;
+  padding: 0 0.75rem;
+}
+
+body.is-stage .wordmark,
+body.is-stage .nav a {
+  min-height: 0;
+}
+
+body.is-stage .wordmark__mark {
+  height: 28px;
+}
+
+body.is-stage .wrap {
+  padding: 0;
+}
+
+body.is-stage .site-footer {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 800;
+  padding: 0.2rem 0.75rem;
+  background: rgba(35, 37, 34, 0.9);
+  color: #f3efe8;
+  border: 0;
+  font-size: 0.75rem;
+}
+
+body.is-stage .site-footer a,
+body.is-stage .site-footer a.footer-quiet {
+  color: #f3efe8;
+}
+
+body.is-stage .supply-screen {
+  position: relative;
+  height: calc(100dvh - 3.25rem);
+  min-height: 0;
+}
+
+body.is-stage .supply-map,
+body.is-stage .supply-stage {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+  border: 0;
+}
+
+body.is-stage .supply-hud {
+  position: absolute;
+  z-index: 600;
+  top: 0.6rem;
+  left: 0.6rem;
+  width: min(36rem, calc(100% - 24rem));
+  max-height: calc(100% - 4.5rem);
+  overflow: auto;
+  background: rgba(216, 212, 204, 0.94);
+  border: 1px solid var(--ink);
+  padding: 0.55rem 0.75rem 0.35rem;
+}
+
+body.is-stage .supply-hud h1 {
+  font-size: 1.45rem;
+  margin: 0;
+}
+
+body.is-stage .supply-hud .crumb,
+body.is-stage .supply-hud .page-intro__meta,
+body.is-stage .supply-hud .supply-legend__note {
+  margin-bottom: 0.35rem;
+}
+
+body.is-stage .supply-dock {
+  position: absolute;
+  z-index: 600;
+  top: 0.6rem;
+  right: 0.6rem;
+  bottom: 2.4rem;
+  width: min(22rem, calc(100% - 1.2rem));
+  overflow: auto;
+  background: rgba(243, 239, 232, 0.96);
+}
+
+body.is-stage .leaflet-top.leaflet-left {
+  top: auto;
+  bottom: 2.6rem;
+}
+
+body.is-stage .leaflet-bottom.leaflet-right {
+  right: auto;
+  left: 3.4rem;
+  bottom: 2.6rem;
+  max-width: min(28rem, calc(100% - 26rem));
+}
+
+@media (max-width: 800px) {
+  body.is-stage .supply-hud {
+    width: auto;
+    right: 0.6rem;
+    max-height: 34vh;
+  }
+
+  body.is-stage .supply-dock {
+    top: auto;
+    left: 0.6rem;
+    height: 38vh;
+    width: auto;
+  }
+
+  body.is-stage .supply-map,
+  body.is-stage .supply-stage {
+    height: 100%;
+  }
+}
+
+.proposal-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.proposal-actions form {
+  margin: 0;
+}

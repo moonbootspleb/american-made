@@ -12,6 +12,7 @@
     "preview": "astro preview",
     "test": "node --test src/lib/*.test.mjs",
     "check:supply": "node scripts/check-supply-links.mjs",
+    "research": "node scripts/research.mjs",
     "smoke": "node scripts/smoke.mjs"
   },
   "dependencies": {

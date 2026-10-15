@@ -11,111 +11,106 @@ const description =
   'Supply-chain graph. Companies are points and supply links are lines from supplier to customer. Filter by tier and by domestic or foreign.';
 ---
 
-<Base title="Supply chain" description={description} wide>
-  <p class="crumb">
-    <a href="/">Manufacturers</a>
-    <span aria-hidden="true"> / </span>
-    <span>Supply chain</span>
-  </p>
-  <div class="page-intro">
-    <p class="eyebrow">Companies and suppliers</p>
-    <h1>Supply chain</h1>
-    <p class="lede">
-      Each point is a company. A line runs from a supplier to its customer. Drag to turn the view. Scroll or pinch to zoom. Click a company for what the record says. The list under the view is the same graph, and it remains when the browser cannot draw it.
-    </p>
-    <p class="page-intro__meta">
-      {graph.nodes.length} {graph.nodes.length === 1 ? 'company' : 'companies'}. {graph.edges.length} {graph.edges.length === 1 ? 'link' : 'links'}.
-    </p>
-    <SupplyChainNav current="explore" />
-  </div>
-
-  <SupplyLegend />
-
-  <div class="supply-tools">
-    <label>
-      Company
-      <input id="supply-search" type="search" name="company" autocomplete="off" placeholder="Name" />
-    </label>
-    <label>
-      Tier
-      <select id="supply-tier" name="tier">
-        <option value="all">All</option>
-        {tiers.map((tier) => <option value={String(tier)}>Tier {tier}</option>)}
-      </select>
-    </label>
-    <label>
-      Origin
-      <select id="supply-flag" name="origin">
-        <option value="all">All</option>
-        <option value="domestic">Domestic</option>
-        <option value="foreign">Foreign</option>
-        <option value="mixed">Mixed</option>
-        <option value="unknown">Unknown</option>
-      </select>
-    </label>
-  </div>
-
-  <p id="supply-webgl-note" class="supply-note" hidden>
-    This browser cannot draw the 3D view. The companies and links are listed below.
-  </p>
-
-  <div class="supply-explore">
+<Base title="Supply chain" description={description} wide stage>
+  <div class="supply-screen">
     <div id="supply-stage" class="supply-stage" role="region" aria-label="Supply chain graph"></div>
-    <aside id="supply-detail" class="supply-panel supply-detail" aria-live="polite">
-      <p>Select a company.</p>
+
+    <div class="supply-hud">
+      <p class="crumb">
+        <a href="/">Manufacturers</a>
+        <span aria-hidden="true"> / </span>
+        <span>Supply chain</span>
+      </p>
+      <h1>Supply chain</h1>
+      <p class="page-intro__meta">
+        {graph.nodes.length} {graph.nodes.length === 1 ? 'company' : 'companies'}. {graph.edges.length} {graph.edges.length === 1 ? 'link' : 'links'}.
+      </p>
+      <SupplyChainNav current="explore" />
+      <SupplyLegend />
+      <div class="supply-tools">
+        <label>
+          Company
+          <input id="supply-search" type="search" name="company" autocomplete="off" placeholder="Name" />
+        </label>
+        <label>
+          Tier
+          <select id="supply-tier" name="tier">
+            <option value="all">All</option>
+            {tiers.map((tier) => <option value={String(tier)}>Tier {tier}</option>)}
+          </select>
+        </label>
+        <label>
+          Origin
+          <select id="supply-flag" name="origin">
+            <option value="all">All</option>
+            <option value="domestic">Domestic</option>
+            <option value="foreign">Foreign</option>
+            <option value="mixed">Mixed</option>
+            <option value="unknown">Unknown</option>
+          </select>
+        </label>
+      </div>
+      <p id="supply-webgl-note" class="supply-note" hidden>
+        This browser cannot draw the 3D view. The companies and links are listed in the panel.
+      </p>
+      <p id="supply-filter-empty" hidden>No companies match.</p>
+    </div>
+
+    <aside class="supply-dock supply-panel" aria-label="Companies">
+      <div id="supply-detail" class="supply-detail" aria-live="polite">
+        <p>Select a company.</p>
+      </div>
+
+      <section aria-labelledby="supply-companies-heading">
+        <h2 id="supply-companies-heading">Companies</h2>
+        <ul class="supply-company-list">
+          {
+            graph.nodes.map((node) => (
+              <li data-supply-node={node.id}>
+                <button type="button" data-select-node={node.id} aria-pressed="false">
+                  {node.name}
+                </button>
+                {node.placeLabel && <p>{node.placeLabel}</p>}
+                <p>{node.located ? 'Coordinates on file' : 'Location unverified'}</p>
+                <p>{node.hqCountryLabel}. {node.tierLabel}.</p>
+                <p>{node.domesticShareLabel}</p>
+              </li>
+            ))
+          }
+        </ul>
+      </section>
+
+      <section aria-labelledby="supply-links-heading">
+        <h2 id="supply-links-heading">Links</h2>
+        <ul class="supply-link-list">
+          {
+            graph.edges.map((edge) => (
+              <li data-supply-edge={edge.id}>
+                <p>
+                  <strong>{edge.supplierName}</strong>
+                  <span aria-hidden="true"> → </span>
+                  {edge.customerName}
+                </p>
+                <p>
+                  {edge.inputName}. {edge.flagLabel}. {edge.dashed ? 'Unverified' : 'Verified'}. Tier {edge.tier}.
+                </p>
+                {edge.statusNote && <p class="quiet">{edge.statusNote}</p>}
+                {edge.exitsUs.length > 0 && <p>Leaves the United States: {edge.exitsUs.join('; ')}.</p>}
+                <ul class="supply-sources">
+                  {edge.sources.map((source) => (
+                    <li>
+                      <a href={source.url} rel="noopener noreferrer">{source.title}</a>
+                      {source.publisher && <span class="quiet"> · {source.publisher}</span>}
+                    </li>
+                  ))}
+                </ul>
+              </li>
+            ))
+          }
+        </ul>
+      </section>
     </aside>
   </div>
-
-  <p id="supply-filter-empty" hidden>No companies match.</p>
-
-  <section class="section" aria-labelledby="supply-companies-heading">
-    <h2 id="supply-companies-heading">Companies</h2>
-    <ul class="supply-company-list">
-      {
-        graph.nodes.map((node) => (
-          <li data-supply-node={node.id}>
-            <button type="button" data-select-node={node.id} aria-pressed="false">
-              {node.name}
-            </button>
-            {node.placeLabel && <p>{node.placeLabel}</p>}
-            <p>{node.located ? 'Coordinates on file' : 'Location unverified'}</p>
-            <p>{node.hqCountryLabel}. {node.tierLabel}.</p>
-            <p>{node.domesticShareLabel}</p>
-          </li>
-        ))
-      }
-    </ul>
-  </section>
-
-  <section class="section" aria-labelledby="supply-links-heading">
-    <h2 id="supply-links-heading">Links</h2>
-    <ul class="supply-link-list">
-      {
-        graph.edges.map((edge) => (
-          <li data-supply-edge={edge.id}>
-            <p>
-              <strong>{edge.supplierName}</strong>
-              <span aria-hidden="true"> → </span>
-              {edge.customerName}
-            </p>
-            <p>
-              {edge.inputName}. {edge.flagLabel}. {edge.dashed ? 'Unverified' : 'Verified'}. Tier {edge.tier}.
-            </p>
-            {edge.statusNote && <p class="quiet">{edge.statusNote}</p>}
-            {edge.exitsUs.length > 0 && <p>Leaves the United States: {edge.exitsUs.join('; ')}.</p>}
-            <ul class="supply-sources">
-              {edge.sources.map((source) => (
-                <li>
-                  <a href={source.url} rel="noopener noreferrer">{source.title}</a>
-                  {source.publisher && <span class="quiet"> · {source.publisher}</span>}
-                </li>
-              ))}
-            </ul>
-          </li>
-        ))
-      }
-    </ul>
-  </section>
 
   <script id="supply-graph-data" type="application/json" is:inline set:html={payload}></script>
   <script>

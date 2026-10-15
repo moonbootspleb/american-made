@@ -1,3 +1,5 @@
+import { primaryLocation } from '../lib/supply-graph.mjs';
+
 /** Fill the side panel from a graph node. Text only, no invented fields. */
 
 function el(tag, className, text) {
@@ -47,6 +49,8 @@ export function renderSupplyDetail(container, node, graph) {
   const facts = el('dl', 'supply-facts');
   row(facts, 'Headquarters', node.hqCountryLabel);
   row(facts, 'Place on file', node.placeLabel);
+  const pinned = primaryLocation(node);
+  if (pinned?.address) row(facts, 'Street address', pinned.address);
   row(facts, 'Tier', node.tierLabel);
   row(facts, 'Domestic share', node.domesticShareLabel);
   if (node.parent?.name) {

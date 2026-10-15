@@ -15,6 +15,13 @@
       "city": "Dallas",
       "region": "TX",
       "country": "US",
+      "address": "2021 McKinney Avenue, Suite 1100, Dallas, TX 75201",
+      "lat": 32.790956,
+      "lng": -96.803557,
+      "coordinateSources": [
+        "ati-home",
+        "census-geocode-ati"
+      ],
       "status": "sourced",
       "sources": [
         "ati-home"
@@ -89,7 +96,15 @@
       "publisher": "ATI Inc.",
       "url": "https://www.atimaterials.com/",
       "kind": "supplier",
-      "note": "Footer: ATI Corporate, 2021 McKinney Avenue Suite 1100, Dallas, TX 75201. Read October 9, 2026."
+      "note": "Footer: ATI Corporate, 2021 McKinney Avenue Suite 1100, Dallas, TX 75201. Read October 9, 2026. The street line was still on the home page October 15, 2026."
+    },
+    {
+      "id": "census-geocode-ati",
+      "title": "Census Bureau geocoder, 2021 McKinney Avenue",
+      "publisher": "U.S. Census Bureau",
+      "url": "https://geocoding.geo.census.gov/geocoder/locations/onelineaddress?address=2021%20McKinney%20Avenue%2C%20Dallas%2C%20TX%2075201&benchmark=Public_AR_Current&format=json",
+      "kind": "government",
+      "note": "Public_AR_Current benchmark, October 15, 2026. Matched 2021 MCKINNEY AVE, DALLAS, TX, 75201 at longitude -96.803557, latitude 32.790956."
     }
   ]
 }

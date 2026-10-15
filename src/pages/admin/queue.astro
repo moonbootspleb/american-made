@@ -5,6 +5,9 @@ import AdminQueue from '../../components/AdminQueue.astro';
 import Base from '../../layouts/Base.astro';
 import { safeNextPath } from '../../lib/admin-session.mjs';
 import { loadQueue, sessionFromCookies } from '../../lib/admin-server';
+import { proposalResultNote } from '../../lib/proposal-actions.mjs';
+import { bundledProposals } from '../../lib/proposal-bundle';
+import { loadProposalsForAdmin, renderProposalSection } from '../../lib/supply-proposals.mjs';
 import { countByForm, filterByForm, selectedForm } from '../../lib/queue-view.mjs';
 
 const form = selectedForm(Astro.url.searchParams.get('form'));
@@ -24,6 +27,10 @@ const siteLabel = loaded.ok
     ? `Reading the production site ${loaded.siteId} because NETLIFY_SITE_ID and SITE_ID are unset.`
     : `Reading form submissions for site ${loaded.siteId}.`
   : 'The form inbox has not been read.';
+
+const proposalLoad = loadProposalsForAdmin(process.cwd(), bundledProposals());
+const proposalHtml = renderProposalSection(proposalLoad.proposals, proposalLoad.issues);
+const proposalNote = proposalResultNote(Astro.url.searchParams.get('result'));
 
 Astro.response.headers.set('Cache-Control', 'private, no-store');
 Astro.response.headers.set('X-Robots-Tag', 'noindex');
@@ -48,7 +55,8 @@ Astro.response.headers.set('X-Robots-Tag', 'noindex');
       <a href="/admin/drafts">Drafts</a>
     </p>
     <p class="lede">
-      Notes from the forms. Reading them does not publish a company, and it does not write a manufacturer file.
+      Notes from the forms, and supply proposals from the research command. Reading a form does not publish a company.
+      Verify on a proposal files an unverified supply link in a checkout. It does not publish the supplier.
       A company that is not on the public list yet is on <a href="/admin/drafts">Drafts</a>.
     </p>
   </div>
@@ -61,5 +69,7 @@ Astro.response.headers.set('X-Robots-Tag', 'noindex');
     problem={loaded.ok ? null : loaded.reason}
     upstreamStatus={loaded.ok ? 0 : (loaded.status ?? 0)}
     siteLabel={siteLabel}
+    proposalHtml={proposalHtml}
+    proposalNote={proposalNote}
   />
 </Base>

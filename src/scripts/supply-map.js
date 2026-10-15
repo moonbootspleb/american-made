@@ -65,7 +65,11 @@ export function initSupplyMap() {
   }
 
   if (pinned.length > 0) {
-    map.fitBounds(pinned, { padding: [36, 36], maxZoom: 6 });
+    map.fitBounds(pinned, {
+      paddingTopLeft: [28, 150],
+      paddingBottomRight: [400, 56],
+      maxZoom: 6,
+    });
   } else {
     map.setView([39.8, -98.6], 4);
   }

@@ -1,0 +1,22 @@
+{
+  "id": "liberty-tabletop--divine-brothers--buffing-compounds",
+  "status": "open",
+  "customer": {
+    "slug": "liberty-tabletop",
+    "name": "Liberty Tabletop"
+  },
+  "supplier": {
+    "slug": "divine-brothers",
+    "name": "Divine Brothers",
+    "identified": true
+  },
+  "input": {
+    "key": "buffing-compounds",
+    "name": "buffing compounds"
+  },
+  "tierHint": 1,
+  "quote": "The other main inputs in flatware production are buffs and compounds that come from either Utica, New York, or Ohio. Thank you, family-owned Divine Brothers and Van Industries, for also being reliable suppliers.",
+  "sourceUrl": "https://www.buydirectusa.com/made-in-america-flatware-has-no-supply-chain-issues/",
+  "confidence": "medium",
+  "fetchedAt": "2026-10-15T18:11:59.902Z"
+}

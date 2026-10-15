@@ -1,0 +1,22 @@
+{
+  "id": "liberty-tabletop--nass--stainless-steel",
+  "status": "open",
+  "customer": {
+    "slug": "liberty-tabletop",
+    "name": "Liberty Tabletop"
+  },
+  "supplier": {
+    "slug": "nass",
+    "name": "NASS",
+    "identified": true
+  },
+  "input": {
+    "key": "stainless-steel",
+    "name": "stainless steel"
+  },
+  "tierHint": 1,
+  "quote": "It could come from Allegheny Ludlum, it could come from AK Steel, and it could come from NASS, or another place down in Birmingham.\"",
+  "sourceUrl": "https://www.americanmanufacturing.org/blog/liberty-sets-the-table-for-growth/",
+  "confidence": "low",
+  "fetchedAt": "2026-10-15T18:11:59.902Z"
+}
