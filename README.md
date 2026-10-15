@@ -34,6 +34,20 @@ npm run preview
 
 Try the queue with `npm run dev`.
 
+## Smoke
+
+`npm run smoke` checks a deployed site. It must be green on the develop deploy before any production promote. After a promote, run it against that production URL as well. Every new bug gets a permanent check in this script.
+
+```bash
+npm run smoke -- --base-url https://american-forge-develop.netlify.app
+```
+
+The command reads `src/data/manufacturers/*.json`. A missing `status`, or `"published"`, is a public company. `"draft"` and any other status must stay off the public pages. The script does not hard-code those names.
+
+It exits non-zero if any check fails. Google Chrome or Chromium has to be installed. Set `CHROME_PATH` when the binary is not on the usual path.
+
+The checks are the home list, each published profile, `/supply-chain/map` (OpenStreetMap tiles, and a pin only for a sourced location in the page’s graph), `/supply-chain/explore` with WebGL and again without it, `/admin/queue` and `/admin/drafts` redirecting to login when signed out, `GET /api/admin/submissions` returning 401, and draft companies absent from those public pages and the graph JSON with their profile URL returning 404.
+
 ## Netlify
 
 Settings are also in [`netlify.toml`](netlify.toml).

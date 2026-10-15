@@ -11,7 +11,8 @@
     "build": "astro build",
     "preview": "astro preview",
     "test": "node --test src/lib/*.test.mjs",
-    "check:supply": "node scripts/check-supply-links.mjs"
+    "check:supply": "node scripts/check-supply-links.mjs",
+    "smoke": "node scripts/smoke.mjs"
   },
   "dependencies": {
     "@astrojs/netlify": "^6.6.5",
@@ -19,5 +20,8 @@
     "astro": "^5.13.0",
     "leaflet": "^1.9.4",
     "zod": "^3.24.0"
+  },
+  "devDependencies": {
+    "puppeteer-core": "^25.14.0"
   }
 }
