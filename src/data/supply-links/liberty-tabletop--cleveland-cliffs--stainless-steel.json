@@ -15,6 +15,13 @@
       "city": "Cleveland",
       "region": "OH",
       "country": "US",
+      "address": "200 Public Square, Suite 3300, Cleveland, OH 44114",
+      "lat": 41.499968,
+      "lng": -81.691827,
+      "coordinateSources": [
+        "cliffs-contact",
+        "osm-200-public-square"
+      ],
       "status": "sourced",
       "sources": [
         "cliffs-contact"
@@ -78,7 +85,15 @@
       "publisher": "Cleveland-Cliffs Inc.",
       "url": "https://www.clevelandcliffs.com/operations/steelmaking/butler-works",
       "kind": "supplier",
-      "note": "Butler Works, about an hour north of Pittsburgh, melts and rolls stainless steel. A plant near one of the places Sherrill names, not a link to Sherrill."
+      "note": "Butler Works, about an hour north of Pittsburgh, melts and rolls stainless steel. A plant near one of the places Sherrill names, not a link to Sherrill. No street address for Butler Works is filed here, so that plant is not pinned."
+    },
+    {
+      "id": "osm-200-public-square",
+      "title": "200 Public Square",
+      "publisher": "OpenStreetMap",
+      "url": "https://www.openstreetmap.org/way/112985831",
+      "kind": "reference",
+      "note": "Building way 112985831, named 200 Public Square, housenumber 200 on Public Square in Cleveland. The map point is that building's centroid, 41.499968, -81.691827. Read October 15, 2026. The U.S. Census Bureau one-line geocoder (Public_AR_Current) returned no match for this address the same day, so the Census result is not used."
     }
   ]
 }

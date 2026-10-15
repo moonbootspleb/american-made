@@ -15,6 +15,13 @@
       "city": "Ghent",
       "region": "KY",
       "country": "US",
+      "address": "6870 Highway 42 East, Ghent, KY 41045",
+      "lat": 38.730422,
+      "lng": -85.073278,
+      "coordinateSources": [
+        "acerinox-nas",
+        "census-geocode-nas"
+      ],
       "status": "sourced",
       "sources": [
         "acerinox-nas"
@@ -80,7 +87,15 @@
       "publisher": "Acerinox S.A.",
       "url": "https://www.acerinox.com/en/acerinox/fabricas/north-american-stainless/",
       "kind": "supplier",
-      "note": "Factory head office 6870 Highway 42 East, Ghent, KY 41045; Acerinox head office Santiago de Compostela 100, 28035 Madrid, Spain. Read October 9, 2026."
+      "note": "Factory head office 6870 Highway 42 East, Ghent, KY 41045; Acerinox head office Santiago de Compostela 100, 28035 Madrid, Spain. Read October 9, 2026. Confirmed October 15, 2026. The Madrid address is the parent office and is not the pin."
+    },
+    {
+      "id": "census-geocode-nas",
+      "title": "Census Bureau geocoder, 6870 Highway 42 East",
+      "publisher": "U.S. Census Bureau",
+      "url": "https://geocoding.geo.census.gov/geocoder/locations/onelineaddress?address=6870%20Highway%2042%20East%2C%20Ghent%2C%20KY%2041045&benchmark=Public_AR_Current&format=json",
+      "kind": "government",
+      "note": "Public_AR_Current benchmark, October 15, 2026. Matched 6870 US HWY 42, GHENT, KY, 41045 at longitude -85.073278, latitude 38.730422."
     }
   ]
 }

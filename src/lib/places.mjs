@@ -6,8 +6,10 @@ import { z } from 'zod';
  * `country` is an ISO 3166-1 alpha-2 code (US, ES, ZA) or `unknown`.
  * `status: "sourced"` needs at least one source id that states this place.
  * Anything not stated by a source is `status: "unverified"`.
- * `lat` and `lng` are optional. They go in only together, and only when
- * `coordinateSources` names a source that confirms them. Never geocode a guess.
+ * `lat` and `lng` are optional. They go in only together, and only with `address`
+ * (the street or plant address that was geocoded) and `coordinateSources`.
+ * Those source ids name the page that states the address and the geocode.
+ * Never use a city centroid, and never geocode a guess.
  */
 export const countryCode = z.union([z.string().regex(/^[A-Z]{2}$/, 'Use an ISO 3166-1 alpha-2 code such as US.'), z.literal('unknown')]);
 
@@ -17,6 +19,7 @@ export const placeSchema = z
     city: z.string().min(1).max(80).optional(),
     region: z.string().min(1).max(80).optional(),
     country: countryCode,
+    address: z.string().min(1).max(200).optional(),
     lat: z.number().min(-90).max(90).optional(),
     lng: z.number().min(-180).max(180).optional(),
     coordinateSources: z.array(z.string().min(1)).min(1).optional(),
@@ -41,6 +44,9 @@ export function placeIssues(place) {
   const hasLat = place.lat !== undefined;
   const hasLng = place.lng !== undefined;
   if (hasLat !== hasLng) issues.push('lat and lng go in together.');
+  if (hasLat && hasLng && !(typeof place.address === 'string' && place.address.trim())) {
+    issues.push('Coordinates need the street or plant address they were geocoded from.');
+  }
   if (hasLat && !place.coordinateSources) {
     issues.push('lat and lng need coordinateSources naming a source that confirms them.');
   }

@@ -171,7 +171,7 @@ export const manufacturerSchema = z.object({
   }),
   /**
    * Optional mappable headquarters. `country` is an ISO code (US). Coordinates
-   * only with `coordinateSources`. See src/lib/places.mjs.
+   * only with a street or plant `address` and `coordinateSources`. See src/lib/places.mjs.
    */
   hq: placeSchema.optional(),
   /** Optional mappable plants, offices, mills. Each place is sourced or marked unverified. */

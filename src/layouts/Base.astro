@@ -6,9 +6,10 @@ interface Props {
   description: string;
   noindex?: boolean;
   wide?: boolean;
+  stage?: boolean;
 }
 
-const { title, description, noindex = false, wide = false } = Astro.props;
+const { title, description, noindex = false, wide = false, stage = false } = Astro.props;
 const siteName = 'The American Forge';
 const fullTitle = title ? `${title} · ${siteName}` : siteName;
 const path = Astro.url.pathname.replace(/\/$/, '') || '/';
@@ -37,7 +38,7 @@ const current = (href: string) => {
     />
     <title>{fullTitle}</title>
   </head>
-  <body>
+  <body class:list={{ 'is-stage': stage }}>
     <a class="skip" href="#content">Skip to content</a>
     <header class="site-header">
       <div class="header-inner">

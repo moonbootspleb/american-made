@@ -234,7 +234,9 @@ test('repository graph matches the files and leaves drafts off', () => {
   assert.ok(graph.nodes.some((node) => node.slug === 'liberty-tabletop'));
   assert.ok(graph.nodes.length > 1);
   assert.ok(graph.edges.length > 0);
-  assert.ok(graph.nodes.every((node) => node.located === false));
+  const located = graph.nodes.filter((node) => node.located).map((node) => node.slug).sort();
+  assert.deepEqual(located, ['ati', 'cleveland-cliffs', 'liberty-tabletop', 'north-american-stainless']);
+  assert.ok(graph.nodes.filter((node) => !node.located).length > 0);
   assert.ok(graph.edges.every((edge) => edge.dashed === true));
   assert.ok(graph.edges.every((edge) => graph.nodes.some((node) => node.id === edge.source)));
   assert.ok(graph.edges.every((edge) => graph.nodes.some((node) => node.id === edge.target)));
@@ -252,6 +254,10 @@ test('repository graph matches the files and leaves drafts off', () => {
   }
 
   const libertyNode = graph.nodes.find((node) => node.slug === 'liberty-tabletop');
+  const libertyPlace = primaryLocation(libertyNode);
+  assert.equal(libertyPlace.kind, 'manufacturing');
+  assert.equal(libertyPlace.address, '102 East Seneca Street, Sherrill, NY 13461');
+  assert.ok(libertyPlace.lat > 43 && libertyPlace.lat < 44);
   const { links } = loadSupplyLinksFromDisk(root);
   assert.deepEqual(libertyNode.domesticShare, domesticShareByLine(links, 'liberty-tabletop'));
   assert.match(libertyNode.domesticShareLabel, /3 of 3 input lines domestic/);

@@ -90,7 +90,15 @@ test('places: sourced needs sources, coordinates need coordinate sources', () =>
   assert.ok(placeIssues({ country: 'US', status: 'sourced', sources: [] }).length > 0);
   assert.ok(placeIssues({ country: 'US', status: 'unverified', sources: [], lat: 1, lng: 2 }).length > 0);
   assert.deepEqual(
-    placeIssues({ country: 'US', status: 'sourced', sources: ['a'], lat: 1, lng: 2, coordinateSources: ['a'] }),
+    placeIssues({
+      country: 'US',
+      status: 'sourced',
+      sources: ['a'],
+      address: '1 Main Street',
+      lat: 1,
+      lng: 2,
+      coordinateSources: ['a'],
+    }),
     [],
   );
 });

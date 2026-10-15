@@ -345,6 +345,7 @@ function manufacturerLocations(profile) {
       lat: hq.lat,
       lng: hq.lng,
       label: formatPlace(profile.hq),
+      ...(typeof profile.hq.address === 'string' && profile.hq.address ? { address: profile.hq.address } : {}),
     });
   }
   const facilities = Array.isArray(profile.facilities) ? profile.facilities : [];
@@ -358,6 +359,9 @@ function manufacturerLocations(profile) {
       lat: coord.lat,
       lng: coord.lng,
       label: formatPlace(facility.place),
+      ...(typeof facility.place.address === 'string' && facility.place.address
+        ? { address: facility.place.address }
+        : {}),
     });
   }
   return locations;
@@ -374,6 +378,7 @@ function supplierLocations(supplier) {
       lat: coord.lat,
       lng: coord.lng,
       label: formatPlace(supplier.hq),
+      ...(typeof supplier.hq.address === 'string' && supplier.hq.address ? { address: supplier.hq.address } : {}),
     },
   ];
 }

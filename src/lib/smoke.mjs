@@ -159,6 +159,17 @@ export function pinCount(graph) {
   }, 0);
 }
 
+/**
+ * The map or graph drawing should cover most of the viewport, not a small column.
+ * @param {{ width: number, height: number } | null | undefined} box
+ * @param {{ width: number, height: number } | null | undefined} viewport
+ */
+export function fillsViewport(box, viewport) {
+  if (!box || !viewport) return false;
+  if (!(viewport.width > 0) || !(viewport.height > 0)) return false;
+  return box.width >= viewport.width * 0.85 && box.height >= viewport.height * 0.7;
+}
+
 /** Leaflet circle markers use an arc command. Polylines do not. */
 export function isCircleMarkerPath(d) {
   return typeof d === 'string' && /[Aa]/.test(d);

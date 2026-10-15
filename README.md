@@ -46,7 +46,7 @@ The command reads `src/data/manufacturers/*.json`. A missing `status`, or `"publ
 
 It exits non-zero if any check fails. Google Chrome or Chromium has to be installed. Set `CHROME_PATH` when the binary is not on the usual path.
 
-The checks are the home list, each published profile, `/supply-chain/map` (OpenStreetMap tiles, and a pin only for a sourced location in the page’s graph), `/supply-chain/explore` with WebGL and again without it, `/admin/queue` and `/admin/drafts` redirecting to login when signed out, `GET /api/admin/submissions` returning 401, and draft companies absent from those public pages and the graph JSON with their profile URL returning 404.
+The checks are the home list, each published profile, `/supply-chain/map` (OpenStreetMap tiles, a near-fullscreen map, and a pin for each sourced street or plant coordinate in these files), `/supply-chain/explore` with WebGL and again without it, also near-fullscreen, `/admin/queue` and `/admin/drafts` redirecting to login when signed out, `GET /api/admin/submissions` returning 401, and draft companies absent from those public pages and the graph JSON with their profile URL returning 404.
 
 ## Netlify
 
@@ -316,7 +316,7 @@ The other page is a 3D view of the same companies and links. Drag to turn it, sc
 
 ### Places
 
-`src/lib/places.mjs` defines a place: `city`, `region`, `country` (ISO 3166-1 alpha-2 such as `US`, or `unknown`), optional `lat` and `lng`, `status` (`sourced` or `unverified`), and `sources`. A sourced place needs at least one source id. Coordinates go in only together and only with `coordinateSources`. Do not geocode a guess.
+`src/lib/places.mjs` defines a place: `city`, `region`, `country` (ISO 3166-1 alpha-2 such as `US`, or `unknown`), optional `address`, optional `lat` and `lng`, `status` (`sourced` or `unverified`), and `sources`. A sourced place needs at least one source id. Coordinates go in only together, only with the street or plant address they were taken from, and only with `coordinateSources`. Those ids name the page that states the address and the geocode or published plant coordinate. A city name is not a pin. Do not geocode a guess.
 
 A manufacturer file may add `hq` (one place) and `facilities` (plants, mills, offices, each with an `id`, `name`, `kind`, and `place`). Their source ids must be in the file's `sources` and count as citations.
 

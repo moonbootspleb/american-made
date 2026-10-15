@@ -7,6 +7,7 @@ import {
   SMOKE_USAGE,
   chromeCandidates,
   findChrome,
+  fillsViewport,
   formatReport,
   graphFromHtml,
   isLoginRedirect,
@@ -16,6 +17,7 @@ import {
   parseBaseUrl,
   pinCount,
 } from '../src/lib/smoke.mjs';
+import { loadSupplyGraphFromDisk } from '../src/lib/load-supply-graph.mjs';
 
 const root = nodePath.resolve(nodePath.dirname(fileURLToPath(import.meta.url)), '..');
 
@@ -142,13 +144,25 @@ async function checkMap(baseUrl, chromePath, mapPage) {
           attribution: document.querySelector('.leaflet-control-attribution')?.textContent || '',
           buttonName,
           panel: document.querySelector('#supply-detail')?.textContent || '',
+          box: document.querySelector('#supply-map')?.getBoundingClientRect(),
+          viewport: { width: window.innerWidth, height: window.innerHeight },
         };
       }, '[Aa]');
+      const filePins = pinCount(loadSupplyGraphFromDisk(root));
       if (state.tiles < 1) problems.push('no OpenStreetMap tiles loaded');
       if (failedTiles.length > 0 && state.tiles < 1) problems.push('OpenStreetMap tile requests failed');
       if (!/openstreetmap/i.test(state.attribution)) problems.push('map attribution is missing');
       if (state.pins !== expectedPins) {
         problems.push(`pins ${state.pins}, sourced locations ${expectedPins}`);
+      }
+      if (filePins > 0 && state.pins < 1) problems.push('files have sourced coordinates but the map has no pin');
+      if (filePins !== expectedPins) {
+        problems.push(`page lists ${expectedPins} sourced locations, files list ${filePins}`);
+      }
+      if (!fillsViewport(state.box, state.viewport)) {
+        problems.push(
+          `map ${Math.round(state.box?.width || 0)}x${Math.round(state.box?.height || 0)} in a ${state.viewport.width}x${state.viewport.height} viewport`,
+        );
       }
       if (!state.buttonName) {
         if (expectedPins < 1) problems.push('no company button and no pins');
@@ -211,9 +225,16 @@ async function checkExplore(baseUrl, chromePath, explorePage) {
           companies: visible('[data-supply-node]'),
           links: visible('[data-supply-edge]'),
           panel: document.querySelector('#supply-detail')?.textContent || '',
+          box: stage?.getBoundingClientRect(),
+          viewport: { width: window.innerWidth, height: window.innerHeight },
         };
       }, manufacturer?.id ?? '');
       if (state.stageHidden !== false || state.canvasWidth < 1) problems.push('3D view did not draw');
+      if (!fillsViewport(state.box, state.viewport)) {
+        problems.push(
+          `graph ${Math.round(state.box?.width || 0)}x${Math.round(state.box?.height || 0)} in a ${state.viewport.width}x${state.viewport.height} viewport`,
+        );
+      }
       if (state.noteHidden !== true) problems.push('no-WebGL note was showing');
       if (state.companies !== graph.nodes.length || state.links !== graph.edges.length) {
         problems.push(`list ${state.companies} companies and ${state.links} links, graph ${stateDetail(graph)}`);

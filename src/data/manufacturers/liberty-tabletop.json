@@ -25,9 +25,13 @@
     "city": "Sherrill",
     "region": "NY",
     "country": "US",
+    "address": "102 East Seneca Street, Sherrill, NY 13461",
+    "lat": 43.076944,
+    "lng": -75.598611,
+    "coordinateSources": ["liberty-contact", "epa-frs-sherrill"],
     "status": "sourced",
-    "sources": ["about", "pr-2025"],
-    "note": "Company and plant are in Sherrill. The street address of the production floor is not separately verified. No source confirms coordinates, so none are set."
+    "sources": ["about", "pr-2025", "liberty-contact", "epa-frs-sherrill"],
+    "note": "Mail address on the company contact page, and the street address on the EPA facility record. The pin is the EPA best-pick plant entrance, not a geocode of the city."
   },
   "facilities": [
     {
@@ -38,8 +42,13 @@
         "city": "Sherrill",
         "region": "NY",
         "country": "US",
+        "address": "102 East Seneca Street, Sherrill, NY 13461",
+        "lat": 43.076944,
+        "lng": -75.598611,
+        "coordinateSources": ["liberty-contact", "epa-frs-sherrill"],
         "status": "sourced",
-        "sources": ["pr-2025", "aam"]
+        "sources": ["pr-2025", "aam", "liberty-contact", "epa-frs-sherrill"],
+        "note": "EPA Facility Registry best pick for this street address: plant entrance, photo interpolation, 25 meters. The company page says the factory is on Liberty Drive off East Seneca and does not give a house number there."
       }
     }
   ],
@@ -334,8 +343,8 @@
       "sources": ["wikipedia", "aam"]
     },
     {
-      "text": "The street address of the production floor is not separately verified. The only street address read on the company site is the Suite 510 customer-service line. Sources agree the flatware work is in Sherrill. They do not, in the pages read here, pin the factory door to that suite.",
-      "sources": ["about", "pr-2025"]
+      "text": "The company contact page gives 102 East Seneca Street, Suite 510 as the mail address and says the factory and showroom are on Liberty Drive off East Seneca Street. It does not give a house number on Liberty Drive. EPA's Facility Registry Service lists Sherrill Manufacturing Inc. at 102 East Seneca Street and publishes a best-pick plant entrance at 43.076944, -75.598611, collected by photo interpolation to about 25 meters. The map uses that plant entrance. It is not a city centroid, and Suite 510 is not treated as the factory door.",
+      "sources": ["liberty-contact", "epa-frs-sherrill"]
     },
     {
       "text": "No current headcount is stated. Published numbers are tied to the source that printed them: six and then 42 in Wikipedia's summary of the bankruptcy years, 36 in the AAM profile, about 40 in the March 2016 Syracuse.com report, 120 laid off during the Mexico shift in the May 2014 report, and 25 added jobs mentioned to Business Insider in 2021.",
@@ -471,6 +480,22 @@
       "url": "https://www.romesentinel.com/news/sherrill-manufacturing-continues-proud-flatware-tradition/article_fd7986ae-e3e2-11ef-882e-bfe2121c4982.html",
       "kind": "news",
       "note": "Read September 27, 2026. Describes one MARQ4 Automation stamper at the plant and a February 6, 2025 photo of Owens with it. One machine is not treated as a full survey of the floor."
+    },
+    {
+      "id": "liberty-contact",
+      "title": "Contact Us",
+      "publisher": "Liberty Tabletop / Sherrill Manufacturing",
+      "url": "https://libertytabletop.com/pages/contact-1",
+      "kind": "company",
+      "note": "Read October 15, 2026. Mail address 102 East Seneca Street, Suite 510, Sherrill, N.Y. 13461. Directions say the factory and showroom are on Liberty Drive, off East Seneca Street, and do not give a house number on Liberty Drive."
+    },
+    {
+      "id": "epa-frs-sherrill",
+      "title": "FRS Facility Coordinates, Sherrill Manufacturing Inc.",
+      "publisher": "U.S. Environmental Protection Agency",
+      "url": "https://frs-public.epa.gov/ords/frs_public2/gis_viewer.map_page?p_registry_id=110013731587",
+      "kind": "government",
+      "note": "Read October 15, 2026. Registry id 110013731587. Address 102 East Seneca Street, Sherrill, NY 13461. Best-pick coordinate 43.076944, -75.598611 (NAD83), reference point plant entrance, collection method photo interpolation, reported accuracy 25 meters. A separate row on the same page is a ZIP-code centroid and is not the best pick."
     }
   ]
 }
