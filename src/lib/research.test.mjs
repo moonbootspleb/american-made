@@ -33,6 +33,14 @@ test('an excerpt drops tags and stays short', () => {
   assert.ok(excerpt.length <= 20);
 });
 
+test('an excerpt keeps the article and drops stylesheet text in a template', () => {
+  const excerpt = htmlToExcerpt(
+    '<title>T</title><template>:host { --shadow-border-radius-xs: 1rem; }</template><article><p>Liberty Tabletop buys stainless bar from Fixture Alloy Works.</p></article>',
+  );
+  assert.equal(excerpt.includes(':host'), false);
+  assert.equal(excerpt.includes('Fixture Alloy Works'), true);
+});
+
 test('a known mill name is not proposed again', () => {
   const known = [{ slug: 'cleveland-cliffs', name: 'Cleveland-Cliffs Inc. (AK Steel lineage)' }];
   assert.equal(isKnownSupplier('AK Steel', 'ak-steel', known), true);

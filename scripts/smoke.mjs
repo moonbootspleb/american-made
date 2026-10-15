@@ -21,6 +21,7 @@ import {
   pinCount,
 } from '../src/lib/smoke.mjs';
 import { loadSupplyGraphFromDisk } from '../src/lib/load-supply-graph.mjs';
+import { htmlToExcerpt } from '../src/lib/research.mjs';
 import { loadProposalsFromDisk, renderProposalSection } from '../src/lib/supply-proposals.mjs';
 
 const root = nodePath.resolve(nodePath.dirname(fileURLToPath(import.meta.url)), '..');
@@ -368,6 +369,13 @@ function checkResearch(directory) {
     }
   } finally {
     rmSync(out, { recursive: true, force: true });
+  }
+
+  const styled = htmlToExcerpt(
+    '<template>:host { --shadow-border-radius-xs: 1rem; }</template><article><p>Liberty Tabletop buys stainless bar from Fixture Alloy Works.</p></article>',
+  );
+  if (styled.includes(':host') || !styled.includes('Fixture Alloy Works')) {
+    problems.push('excerpt kept stylesheet text');
   }
 
   const onFile = loadProposalsFromDisk(directory);

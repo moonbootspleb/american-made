@@ -132,11 +132,21 @@ export function allowlistFor(record) {
  * @param {number} [limit]
  */
 export function htmlToExcerpt(html, limit = EXCERPT_LIMIT) {
-  const text = String(html)
+  let source = String(html)
+    .replace(/<!--[\s\S]*?-->/g, ' ')
     .replace(/<script[\s\S]*?<\/script>/gi, ' ')
     .replace(/<style[\s\S]*?<\/style>/gi, ' ')
+    .replace(/<template[\s\S]*?<\/template>/gi, ' ')
+    .replace(/<noscript[\s\S]*?<\/noscript>/gi, ' ')
+    .replace(/<svg[\s\S]*?<\/svg>/gi, ' ');
+  const article = source.match(/<article(?:\s[^>]*)?>[\s\S]*?<\/article>/i);
+  const main = source.match(/<main(?:\s[^>]*)?>[\s\S]*?<\/main>/i);
+  if (article) source = article[0];
+  else if (main) source = main[0];
+  const text = source
     .replace(/<[^>]+>/g, ' ')
     .replace(/&nbsp;/gi, ' ')
+    .replace(/&ndash;|&#8211;/gi, '-')
     .replace(/&amp;/gi, '&')
     .replace(/&quot;/gi, '"')
     .replace(/&#39;|&apos;/gi, "'")
