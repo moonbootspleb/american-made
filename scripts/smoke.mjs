@@ -144,7 +144,10 @@ async function checkMap(baseUrl, chromePath, mapPage) {
           attribution: document.querySelector('.leaflet-control-attribution')?.textContent || '',
           buttonName,
           panel: document.querySelector('#supply-detail')?.textContent || '',
-          box: document.querySelector('#supply-map')?.getBoundingClientRect(),
+          box: (() => {
+            const rect = document.querySelector('#supply-map')?.getBoundingClientRect();
+            return rect ? { width: rect.width, height: rect.height } : null;
+          })(),
           viewport: { width: window.innerWidth, height: window.innerHeight },
         };
       }, '[Aa]');
@@ -225,7 +228,9 @@ async function checkExplore(baseUrl, chromePath, explorePage) {
           companies: visible('[data-supply-node]'),
           links: visible('[data-supply-edge]'),
           panel: document.querySelector('#supply-detail')?.textContent || '',
-          box: stage?.getBoundingClientRect(),
+          box: stage
+            ? { width: stage.getBoundingClientRect().width, height: stage.getBoundingClientRect().height }
+            : null,
           viewport: { width: window.innerWidth, height: window.innerHeight },
         };
       }, manufacturer?.id ?? '');
