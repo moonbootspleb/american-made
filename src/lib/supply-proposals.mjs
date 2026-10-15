@@ -139,16 +139,21 @@ export function loadProposalsFromDisk(root) {
 }
 
 /**
- * Disk when this process is a checkout. The bundled list when the host only has the build.
+ * Disk when this checkout has proposal JSON files.
+ * The Netlify function packages src/data/manufacturers and does not package the proposals directory,
+ * so a manufacturer directory alone must not hide the bundled list.
  * @param {string} root
  * @param {unknown[]} [bundled]
  */
 export function loadProposalsForAdmin(root = process.cwd(), bundled = []) {
-  if (existsSync(nodePath.join(root, 'src/data/manufacturers'))) {
-    const loaded = loadProposalsFromDisk(root);
-    return { ...loaded, source: 'disk' };
+  const proposalDir = nodePath.join(root, 'src/data/supply-proposals');
+  const bundledList = Array.isArray(bundled) ? bundled : [];
+  const hasProposalFile =
+    existsSync(proposalDir) && readdirSync(proposalDir).some((name) => name.endsWith('.json'));
+  if (hasProposalFile || bundledList.length === 0) {
+    return { ...loadProposalsFromDisk(root), source: 'disk' };
   }
-  const files = bundled.map((raw, index) => {
+  const files = bundledList.map((raw, index) => {
     const id = raw && typeof raw === 'object' && 'id' in raw && typeof raw.id === 'string' ? raw.id : `bundled-${index}`;
     return { path: `src/data/supply-proposals/${id}.json`, raw };
   });
