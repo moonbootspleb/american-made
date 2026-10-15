@@ -46,7 +46,7 @@ The command reads `src/data/manufacturers/*.json`. A missing `status`, or `"publ
 
 It exits non-zero if any check fails. Google Chrome or Chromium has to be installed. Set `CHROME_PATH` when the binary is not on the usual path.
 
-The checks are the home list, each published profile, `/supply-chain/map` (OpenStreetMap tiles, a near-fullscreen map, and a pin for each sourced street or plant coordinate in these files), `/supply-chain/explore` with WebGL and again without it, also near-fullscreen, `/admin/queue` and `/admin/drafts` redirecting to login when signed out, `GET /api/admin/submissions` returning 401, and draft companies absent from those public pages and the graph JSON with their profile URL returning 404.
+The checks are the home list, each published profile, `/supply-chain/map` (OpenStreetMap tiles, a near-fullscreen map, and a pin for each sourced street or plant coordinate in these files), `/supply-chain/explore` with WebGL and again without it, also near-fullscreen, `/admin/queue` and `/admin/drafts` redirecting to login when signed out, `GET /api/admin/submissions` returning 401, draft companies absent from those public pages and the graph JSON with their profile URL returning 404, the research command in dry-run and fixture mode, the proposals directory schema, the admin proposal list when a proposal is present, and an unsigned `POST /api/admin/proposals` returning 401. Smoke does not file a supply link.
 
 ## Netlify
 
@@ -60,7 +60,7 @@ Settings are also in [`netlify.toml`](netlify.toml).
 
 The site is a static Astro build. Profiles are not stored in a blob store. One Netlify function, `netlify/functions/donate.ts`, opens Stripe Checkout for donations. It does not read the form inbox and it does not write manufacturer files. Card donations stay off until the settings in [Donations](#donations) are set.
 
-`/admin` is on-demand. It reads the Netlify Forms inbox after a password check. It does not write manufacturer files either. See [Admin queue](#admin-queue).
+`/admin` is on-demand. It reads the Netlify Forms inbox after a password check. Form notes do not write manufacturer files. A supply-proposal action can write a file only in a checkout, and the deployed host refuses that write. See [Admin queue](#admin-queue) and [Supply research](#supply-research).
 
 ## Corrections and reviews
 
@@ -124,7 +124,7 @@ All three post to `/submit/received`. Do not add a build step or a function that
 
 `/admin` and `/admin/queue` list the inbox, newest first. Tabs filter `review-request`, `company-suggestion`, and `page-submission`. A visit without the cookie is sent to the login page. `GET /api/admin/submissions` returns 401 without that cookie. The footer link labeled Admin goes to the same gate. It is not in the header. Draft companies are a separate page, [Draft preview](#draft-preview). The queue link labeled Drafts opens it.
 
-The page reads Netlify’s submissions API on the server. The token is not sent to the browser. The page does not create `src/data/manufacturers/*.json`, and it does not publish a company.
+The page reads Netlify’s submissions API on the server. The token is not sent to the browser. A form note does not create `src/data/manufacturers/*.json`, and it does not publish a company. Supply proposals are listed on the same page. See [Supply research](#supply-research).
 
 | Setting | Where it lives | What it does |
 | --- | --- | --- |
@@ -338,6 +338,40 @@ Each file in `src/data/supply-links/` is one edge: a supplier, a customer, and o
 A company saying its steel "could come from" a mill does not verify a link. An unidentified supplier cannot be verified.
 
 `npm run build` fails when a link breaks these rules. `npm run check:supply` prints the same check plus each customer's domestic share, counted by input line, and every link where the chain leaves the United States (foreign origin, foreign supplier headquarters, or foreign parent). `npm test` runs the unit tests.
+
+## Supply research
+
+Research is a manual command. It reads a fixed allowlist and writes leads. It does not verify a supplier, and it does not call a paid API or a model. A weekly cron is not installed. Add one later only if a person still wants to run this same command on a schedule.
+
+```bash
+npm run research -- --from liberty-tabletop
+```
+
+`--dry-run` prints the allowlist and writes nothing. `--fixture` uses `src/data/research-fixtures/` and does not use the network. `--out <dir>` writes the cache and proposals under that directory instead of this checkout. `--geocode` is off unless you pass it.
+
+The allowlist is the company website, company and made-in-USA pages already cited on that manufacturer, and SEC, patent, or trade URLs already cited on that manufacturer or its supply links. The command does not follow links off that list. News articles are left alone. Each fetched page is stored as a URL, a fetch time, and a short text excerpt under `src/data/research-cache/<manufacturer-id>/`.
+
+Leads go to `src/data/supply-proposals/*.json`: supplier, customer, input, tier hint, quote, source URL, and confidence. A proposal is not a supply link. The command never writes `src/data/supply-links/`.
+
+A street address is kept only when it appears on the fetched page. Coordinates are added only with `--geocode`, and only when that street address has a source URL. The geocoder is Nominatim. A result without a house number is dropped. A city name is not geocoded.
+
+Verify is the human gate. On the review queue, each open proposal has Verify, Needs source, and Reject.
+
+| Action | What it writes |
+| --- | --- |
+| Verify | An **unverified** file in `src/data/supply-links/`. `namingSources` stays empty. When the supplier is new, named, and the proposal has a company site, it also writes `src/data/manufacturers/<slug>.json` with `"status": "draft"` and a placeholder mark. It does not publish the company. |
+| Needs source | The proposal status only. |
+| Reject | The proposal status only. |
+
+The same gate from a checkout:
+
+```bash
+npm run research -- --act verify --id <proposal-id>
+npm run research -- --act needs-source --id <proposal-id>
+npm run research -- --act reject --id <proposal-id>
+```
+
+On Netlify the buttons are visible after sign-in, and the write is refused. Filing happens in a checkout, then in git. Nothing in this path sets a supply link to `verified`. That still requires a source that names the supplier for the customer, edited by hand.
 
 ## Donations
 

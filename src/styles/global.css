@@ -1753,3 +1753,13 @@ body.is-stage .leaflet-bottom.leaflet-right {
     height: 100%;
   }
 }
+
+.proposal-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.proposal-actions form {
+  margin: 0;
+}

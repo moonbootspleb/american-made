@@ -40,9 +40,12 @@ interface Props {
   problem: 'not_configured' | 'invalid_site' | 'upstream' | null;
   upstreamStatus?: number;
   siteLabel: string;
+  proposalHtml: string;
+  proposalNote?: string;
 }
 
-const { form, counts, items, truncated, problem, upstreamStatus = 0, siteLabel } = Astro.props;
+const { form, counts, items, truncated, problem, upstreamStatus = 0, siteLabel, proposalHtml, proposalNote = '' } =
+  Astro.props;
 
 const problemText = (() => {
   if (problem === 'not_configured') {
@@ -68,6 +71,14 @@ const problemText = (() => {
 ---
 
 <p class="hint">{siteLabel}</p>
+
+{proposalNote && (
+  <div class="queue-note" role="status">
+    <p>{proposalNote}</p>
+  </div>
+)}
+
+<div set:html={proposalHtml} />
 
 {
   problem ? (
