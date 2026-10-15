@@ -6,6 +6,7 @@ import { loadProposalsFromDisk, proposalSchema } from './supply-proposals.mjs';
 /**
  * Low-cost supply research.
  * Reads a fixed allowlist of public URLs already cited in the repo,
+ * plus src/data/research-allowlist/<manufacturer-id>.json,
  * stores a short excerpt, and writes proposals only.
  * It never writes src/data/supply-links. It does not call a model.
  * Nominatim runs only when geocode is requested, and only for a street address with a source.
@@ -19,6 +20,7 @@ export const RESEARCH_USAGE = `Usage: npm run research -- --from <manufacturer-i
 --geocode asks Nominatim for a street address that already has a source URL. It is off unless you pass this flag.`;
 
 const EXCERPT_LIMIT = 800;
+const EXCERPT_CAP = 1600;
 const COMPANY_KINDS = new Set(['company', 'press-release', 'filing', 'trade', 'supplier']);
 
 const US_STATES = new Set([
@@ -31,10 +33,21 @@ const NAME_STOP = new Set([
   'a', 'an', 'the', 'steel', 'company', 'mill', 'plant', 'united', 'states', 'america', 'american', 'inc', 'llc', 'co',
 ]);
 
+const NAME = '([^.;,\\n]{2,80})';
 const RULES = [
-  { re: /\bcould come from\s+([^.;\n]{2,80})/gi, confidence: 'low' },
-  { re: /\b(?:might come from|may come from)\s+([^.;\n]{2,80})/gi, confidence: 'low' },
-  { re: /\b(?:supplied by|purchased from|bought from|sourced from|buys(?:\s+\w+){0,4}\s+from)\s+([^.;\n]{2,80})/gi, confidence: 'medium' },
+  { re: new RegExp(`\\bcould come from\\s+${NAME}`, 'gi'), confidence: 'low' },
+  { re: new RegExp(`\\b(?:might come from|may come from)\\s+${NAME}`, 'gi'), confidence: 'low' },
+  {
+    re: new RegExp(
+      `\\b(?:supplied by|purchased from|bought from|sourced from|buys(?:\\s+\\w+){0,4}\\s+from)\\s+${NAME}`,
+      'gi',
+    ),
+    confidence: 'medium',
+  },
+  {
+    re: /\bthank you,?\s+(?:["“”']?family-owned["“”']?\s+)?([^.;\n]{2,80}?)(?:,\s*|\s+)for (?:also )?being (?:a )?reliable suppliers?/gi,
+    confidence: 'medium',
+  },
 ];
 
 const ADDRESS_RE =
@@ -98,10 +111,11 @@ export function isSecPatentOrTradeUrl(url) {
 
 /**
  * Fixed allowlist: the company site, company and made-in-USA pages, and SEC, patent, or trade URLs already cited.
- * News articles are not fetched. New URLs are not discovered from page links.
+ * Extra trade, patent, and filing URLs come from src/data/research-allowlist/. Page links are not followed.
  * @param {{ manufacturer: { slug?: string, website?: string, sources?: Array<{ url?: string, kind?: string, title?: string }> }, links: Array<{ customer?: { slug?: string }, sources?: Array<{ url?: string, kind?: string, title?: string }> }> }} record
+ * @param {Array<{ url?: string, why?: string }>} [extras]
  */
-export function allowlistFor(record) {
+export function allowlistFor(record, extras = []) {
   const manufacturer = record.manufacturer;
   /** @type {Array<{ url: string, why: string }>} */
   const rows = [];
@@ -124,7 +138,29 @@ export function allowlistFor(record) {
     if (link?.customer?.slug !== manufacturer?.slug) continue;
     for (const source of link.sources || []) take(source);
   }
+  for (const extra of extras) push(extra?.url, extra?.why || 'research allowlist');
   return rows;
+}
+
+/**
+ * Hand-checked trade, patent, and filing URLs for one manufacturer.
+ * Missing file means no extras. A present file must be JSON.
+ * @param {string} root
+ * @param {string} slug
+ */
+export function extraAllowlist(root, slug) {
+  const path = nodePath.join(root, 'src/data/research-allowlist', `${slug}.json`);
+  if (!existsSync(path)) return [];
+  const parsed = JSON.parse(readFileSync(path, 'utf8'));
+  const rows = Array.isArray(parsed) ? parsed : parsed?.urls;
+  if (!Array.isArray(rows)) return [];
+  /** @type {Array<{ url: string, why: string }>} */
+  const extras = [];
+  for (const row of rows) {
+    if (typeof row === 'string') extras.push({ url: row, why: 'research allowlist' });
+    else if (row && typeof row.url === 'string') extras.push({ url: row.url, why: row.why || 'research allowlist' });
+  }
+  return extras;
 }
 
 /**
@@ -143,16 +179,60 @@ export function htmlToExcerpt(html, limit = EXCERPT_LIMIT) {
   const main = source.match(/<main(?:\s[^>]*)?>[\s\S]*?<\/main>/i);
   if (article) source = article[0];
   else if (main) source = main[0];
-  const text = source
-    .replace(/<[^>]+>/g, ' ')
-    .replace(/&nbsp;/gi, ' ')
-    .replace(/&ndash;|&#8211;/gi, '-')
-    .replace(/&amp;/gi, '&')
-    .replace(/&quot;/gi, '"')
-    .replace(/&#39;|&apos;/gi, "'")
-    .replace(/\s+/g, ' ')
-    .trim();
-  return text.slice(0, limit);
+  const text = decodeEntities(source.replace(/<[^>]+>/g, ' ')).replace(/\s+/g, ' ').trim();
+  if (limit !== EXCERPT_LIMIT) return text.slice(0, limit);
+  const slice = text.slice(0, limit);
+  const ends = sentenceEnds(slice);
+  let excerpt = ends.length ? slice.slice(0, ends[ends.length - 1]).trim() : slice;
+  for (const tail of evidenceTails(text, excerpt)) {
+    const glue = /[.!?]["”']?$/.test(excerpt) ? ' ' : '. ';
+    const next = `${excerpt}${glue}${tail}`.trim();
+    if (next.length > EXCERPT_CAP) break;
+    excerpt = next;
+  }
+  return excerpt;
+}
+
+/**
+ * @param {string} value
+ */
+function decodeEntities(value) {
+  return value
+    .replace(/&amp;|&#38;/gi, '&')
+    .replace(/&nbsp;|&#160;/gi, ' ')
+    .replace(/&ndash;|&#8211;|&#x2013;/gi, '-')
+    .replace(/&mdash;|&#8212;|&#x2014;/gi, '-')
+    .replace(/&quot;|&#34;/gi, '"')
+    .replace(/&#39;|&apos;|&#x27;/gi, "'")
+    .replace(/&ldquo;|&rdquo;|&#8220;|&#8221;|&#x201c;|&#x201d;/gi, '"')
+    .replace(/&lsquo;|&rsquo;|&#8216;|&#8217;|&#x2018;|&#x2019;/gi, "'");
+}
+
+/**
+ * Sentences past the lead that name a supplier, plus a short owner or product window.
+ * @param {string} text
+ * @param {string} lead
+ */
+function evidenceTails(text, lead) {
+  /** @type {string[]} */
+  const tails = [];
+  const push = (snippet) => {
+    const clean = snippet.replace(/\s+/g, ' ').trim();
+    if (!clean || lead.includes(clean) || tails.includes(clean)) return;
+    tails.push(clean);
+  };
+  for (const rule of RULES) {
+    const re = new RegExp(rule.re.source, rule.re.flags);
+    for (const match of text.matchAll(re)) {
+      const sentence = sentenceAt(text, match.index ?? 0);
+      if (!lead.includes(sentence)) push(sentence);
+    }
+  }
+  const flat = text.search(/\bflatware\b|\bstainless\b/i);
+  if (flat >= lead.length) push(text.slice(Math.max(0, flat - 40), flat + 80));
+  const owner = text.search(/owner name:|sherrill manufacturing/i);
+  if (owner >= lead.length) push(text.slice(Math.max(0, owner - 24), owner + 90));
+  return tails;
 }
 
 /**
@@ -185,9 +265,25 @@ export function cleanSupplierName(raw) {
 /**
  * @param {string} sentence
  */
+/**
+ * @param {string} raw
+ */
+export function supplierNames(raw) {
+  /** @type {string[]} */
+  const names = [];
+  for (const piece of String(raw).split(/\s+and\s+/i)) {
+    const name = cleanSupplierName(piece);
+    if (name && !names.includes(name)) names.push(name);
+  }
+  return names;
+}
+
+/**
+ * @param {string} sentence
+ */
 export function inputFromSentence(sentence) {
   const text = sentence.toLowerCase();
-  if (text.includes('buffing')) return { key: 'buffing-compounds', name: 'buffing compounds' };
+  if (/\bbuffs?\b/.test(text) || text.includes('buffing')) return { key: 'buffing-compounds', name: 'buffing compounds' };
   if (text.includes('packag')) return { key: 'packaging', name: 'packaging' };
   if (text.includes('stainless') || text.includes('steel')) return { key: 'stainless-steel', name: 'stainless steel' };
   return { key: 'unspecified', name: 'unspecified input' };
@@ -235,15 +331,25 @@ export function extractProposals(input) {
   for (const rule of RULES) {
     const re = new RegExp(rule.re.source, rule.re.flags);
     for (const match of excerpt.matchAll(re)) {
-      const name = cleanSupplierName(match[1] || '');
-      if (!name) continue;
-      const supplierSlug = slugifyName(name);
-      if (!supplierSlug || isKnownSupplier(name, supplierSlug, input.knownSuppliers)) continue;
+      const names = supplierNames(match[1] || '');
+      if (names.length === 0) continue;
       const index = match.index ?? 0;
       const sentence = sentenceAt(excerpt, index);
-      const product = inputFromSentence(sentence);
+      const previous = previousSentence(excerpt, index);
+      const product = inputFromSentence(`${previous} ${sentence}`);
+      const naming = inputFromSentence(sentence);
+      const quote = (
+        product.key !== 'unspecified' &&
+        naming.key === 'unspecified' &&
+        previous &&
+        inputFromSentence(previous).key === product.key
+          ? `${previous} ${sentence}`
+          : sentence
+      ).slice(0, 500);
+      for (const name of names) {
+      const supplierSlug = slugifyName(name);
+      if (!supplierSlug || isKnownSupplier(name, supplierSlug, input.knownSuppliers)) continue;
       const id = `${input.customer.slug}--${supplierSlug}--${product.key}`;
-      const quote = sentence.slice(0, 500);
       const website = websiteIn(sentence);
       const address = streetAddressIn(sentence);
       /** @type {Record<string, unknown>} */
@@ -264,8 +370,8 @@ export function extractProposals(input) {
         confidence: rule.confidence,
         ...(input.fetchedAt ? { fetchedAt: input.fetchedAt } : {}),
       };
-      const previous = byId.get(id);
-      if (!previous || rank[rule.confidence] > rank[previous.confidence]) byId.set(id, proposal);
+      const existing = byId.get(id);
+      if (!existing || rank[rule.confidence] > rank[existing.confidence]) byId.set(id, proposal);
       else continue;
       if (address) {
         proposal.supplier.address = address.address;
@@ -273,6 +379,7 @@ export function extractProposals(input) {
         proposal.supplier.region = address.region;
         proposal.supplier.country = address.country;
         proposal.addressSourceUrl = input.sourceUrl;
+      }
       }
     }
   }
@@ -296,12 +403,53 @@ export function extractProposals(input) {
  * @param {string} text
  * @param {number} index
  */
+/**
+ * Index just after each sentence end. A closing quote counts as part of the sentence.
+ * @param {string} text
+ */
+function sentenceEnds(text) {
+  /** @type {number[]} */
+  const ends = [];
+  for (const match of text.matchAll(/[.!?]["”']?(?=\s|$)/g)) {
+    ends.push((match.index ?? 0) + match[0].length);
+  }
+  return ends;
+}
+
+/**
+ * @param {string} text
+ * @param {number} index
+ */
 function sentenceAt(text, index) {
-  const start = Math.max(text.lastIndexOf('. ', index), text.lastIndexOf('! ', index), text.lastIndexOf('? ', index));
-  const from = start >= 0 ? start + 2 : 0;
-  const next = text.slice(from).search(/[.!?](\s|$)/);
-  const end = next >= 0 ? from + next + 1 : text.length;
-  return text.slice(from, end).trim();
+  const ends = sentenceEnds(text);
+  let from = 0;
+  let to = text.length;
+  for (const end of ends) {
+    if (end <= index) from = end;
+    else {
+      to = end;
+      break;
+    }
+  }
+  return text.slice(from, to).trim();
+}
+
+/**
+ * @param {string} text
+ * @param {number} index
+ */
+function previousSentence(text, index) {
+  const ends = sentenceEnds(text);
+  let prior = 0;
+  let start = 0;
+  for (const end of ends) {
+    if (end <= index) {
+      prior = start;
+      start = end;
+    } else break;
+  }
+  if (start === 0) return '';
+  return text.slice(prior, start).trim();
 }
 
 /**
@@ -405,7 +553,7 @@ function fixturePages(root, slug) {
 export async function runResearch(options) {
   const record = loadManufacturerRecord(options.root, options.from);
   if (!record) throw new Error(`No manufacturer file for ${options.from}.`);
-  const allowlist = allowlistFor(record);
+  const allowlist = allowlistFor(record, extraAllowlist(options.root, options.from));
   if (options.dryRun) {
     return { dryRun: true, allowlist, proposals: [], wrote: [] };
   }

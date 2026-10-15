@@ -352,6 +352,9 @@ function checkResearch(directory) {
   const dry = runResearchScript(directory, ['--from', 'liberty-tabletop', '--dry-run']);
   if (dry.status !== 0) problems.push(`dry-run exit ${dry.status}: ${dry.stderr || dry.stdout}`);
   if (!String(dry.stdout).includes('https://libertytabletop.com/')) problems.push('dry-run omitted the company site');
+  if (!String(dry.stdout).includes('buydirectusa.com')) problems.push('dry-run omitted the trade page');
+  if (!String(dry.stdout).includes('sec.gov')) problems.push('dry-run omitted the SEC filing');
+  if (!String(dry.stdout).includes('uspto.gov')) problems.push('dry-run omitted the USPTO record');
   if (!String(dry.stdout).includes('dry-run: no files written')) problems.push('dry-run did not say it wrote nothing');
   if (String(dry.stdout).includes(`${nodePath.sep}supply-links${nodePath.sep}`)) problems.push('dry-run wrote a supply link');
 

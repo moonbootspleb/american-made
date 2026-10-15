@@ -41,6 +41,69 @@ test('an excerpt keeps the article and drops stylesheet text in a template', () 
   assert.equal(excerpt.includes('Fixture Alloy Works'), true);
 });
 
+test('a trade thank-you names each new supplier', () => {
+  const excerpt =
+    'The truck hauls our Made in USA stainless steel from Pittsburgh or Tennessee to Ohio. Thank you, “family-owned” H&D Steel for being a reliable supplier. The other main inputs in flatware production are buffs and compounds that come from either Utica, New York, or Ohio. Thank you, family-owned Divine Brothers and Van Industries, for also being reliable suppliers.';
+  const proposals = extractProposals({
+    excerpt,
+    sourceUrl: 'https://www.buydirectusa.com/made-in-america-flatware-has-no-supply-chain-issues/',
+    customer: { slug: 'liberty-tabletop', name: 'Liberty Tabletop' },
+    knownSuppliers: [],
+  });
+  const byName = Object.fromEntries(proposals.map((proposal) => [proposal.supplier.name, proposal]));
+  assert.deepEqual(Object.keys(byName).sort(), ['Divine Brothers', 'H&D Steel', 'Van Industries']);
+  assert.equal(byName['H&D Steel'].id, 'liberty-tabletop--h-and-d-steel--stainless-steel');
+  assert.equal(byName['H&D Steel'].input.key, 'stainless-steel');
+  assert.equal(byName['H&D Steel'].confidence, 'medium');
+  assert.equal(byName['Divine Brothers'].input.key, 'buffing-compounds');
+  assert.equal(byName['Van Industries'].input.key, 'buffing-compounds');
+  assert.match(byName['Divine Brothers'].quote, /buffs and compounds/);
+});
+
+test('a mill list keeps a new short name and skips mills already linked', () => {
+  const known = [
+    { slug: 'cleveland-cliffs', name: 'Cleveland-Cliffs Inc. (AK Steel lineage)' },
+    { slug: 'ati', name: 'ATI Inc. (Allegheny Ludlum lineage)' },
+  ];
+  const proposals = extractProposals({
+    excerpt:
+      'All of our steel is sourced domestically. It could come from Allegheny Ludlum, it could come from AK Steel, and it could come from NASS, or another place down in Birmingham.',
+    sourceUrl: 'https://www.americanmanufacturing.org/blog/liberty-sets-the-table-for-growth/',
+    customer: { slug: 'liberty-tabletop', name: 'Liberty Tabletop' },
+    knownSuppliers: known,
+  });
+  assert.equal(proposals.length, 1);
+  assert.equal(proposals[0].supplier.name, 'NASS');
+  assert.equal(proposals[0].supplier.slug, 'nass');
+  assert.equal(proposals[0].confidence, 'low');
+  assert.equal(proposals[0].input.key, 'stainless-steel');
+});
+
+test('a late supplier sentence is not glued to a cut-off lead', () => {
+  const html = `<article><p>But the cost of making flatware keeps rising in this town. ${'word '.repeat(160)}The line keeps going. It could come from NASS, or another place down in Birmingham. "The Made in America thing is real."</p></article>`;
+  const excerpt = htmlToExcerpt(html);
+  const proposals = extractProposals({
+    excerpt,
+    sourceUrl: 'https://www.americanmanufacturing.org/blog/liberty-sets-the-table-for-growth/',
+    customer: { slug: 'liberty-tabletop', name: 'Liberty Tabletop' },
+    knownSuppliers: [],
+  });
+  assert.equal(proposals.length, 1);
+  assert.equal(proposals[0].quote, 'It could come from NASS, or another place down in Birmingham.');
+  assert.equal(excerpt.includes('word word'), false);
+});
+
+test('an excerpt keeps a supplier sentence and an owner name past the lead', () => {
+  const filler = 'Alpha '.repeat(180);
+  const excerpt = htmlToExcerpt(
+    `<article><p>${filler} For: Flatware, namely, forks. Owner Name: SHERRILL MANUFACTURING, INC. It could come from NASS.</p></article>`,
+  );
+  assert.equal(excerpt.includes('could come from NASS'), true);
+  assert.equal(excerpt.includes('SHERRILL MANUFACTURING'), true);
+  assert.equal(excerpt.includes('Flatware'), true);
+  assert.ok(excerpt.length <= 1600);
+});
+
 test('a known mill name is not proposed again', () => {
   const known = [{ slug: 'cleveland-cliffs', name: 'Cleveland-Cliffs Inc. (AK Steel lineage)' }];
   assert.equal(isKnownSupplier('AK Steel', 'ak-steel', known), true);

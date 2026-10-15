@@ -1,0 +1,22 @@
+{
+  "id": "liberty-tabletop--h-and-d-steel--stainless-steel",
+  "status": "open",
+  "customer": {
+    "slug": "liberty-tabletop",
+    "name": "Liberty Tabletop"
+  },
+  "supplier": {
+    "slug": "h-and-d-steel",
+    "name": "H&D Steel",
+    "identified": true
+  },
+  "input": {
+    "key": "stainless-steel",
+    "name": "stainless steel"
+  },
+  "tierHint": 1,
+  "quote": "Thank you, “family-owned” H&D Steel for being a reliable supplier.",
+  "sourceUrl": "https://www.buydirectusa.com/made-in-america-flatware-has-no-supply-chain-issues/",
+  "confidence": "medium",
+  "fetchedAt": "2026-10-15T18:11:59.902Z"
+}
