@@ -152,6 +152,26 @@ a:hover {
   box-shadow: inset 0 -2px 0 var(--brass-bright);
 }
 
+.nav a.nav__donate {
+  color: var(--header);
+  background: var(--brass-bright);
+  padding: 0.15rem 0.75rem;
+  border: 1px solid var(--brass-bright);
+  font-weight: 600;
+  box-shadow: none;
+}
+
+.nav a.nav__donate:hover {
+  color: var(--header);
+  background: #fff;
+}
+
+.nav a.nav__donate[aria-current="page"] {
+  color: var(--header);
+  background: var(--paper);
+  box-shadow: none;
+}
+
 .wrap {
   padding-block: 1.75rem 4rem;
 }
@@ -902,6 +922,22 @@ h2 {
   color: #fff;
 }
 
+.button--quiet {
+  background: transparent;
+  color: var(--ink);
+  border-color: #2c2a26;
+}
+
+.button--quiet:hover {
+  background: var(--header);
+  color: var(--header-ink);
+}
+
+.button:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
 .submission {
   scroll-margin-top: 1rem;
 }
@@ -968,7 +1004,9 @@ h2 {
 .choice input {
   width: 1.15rem;
   height: 1.15rem;
+  min-height: 1.15rem;
   margin-top: 0.28rem;
+  padding: 0;
   flex: none;
   accent-color: var(--header);
 }
@@ -993,8 +1031,17 @@ h2 {
   width: 100%;
 }
 
-.field input {
+.field input:not([type="radio"]):not([type="checkbox"]) {
   min-height: 44px;
+}
+
+.field .choice input {
+  width: 1.15rem;
+  min-width: 1.15rem;
+  max-width: 1.15rem;
+  height: 1.15rem;
+  min-height: 1.15rem;
+  padding: 0;
 }
 
 .field textarea {
@@ -1031,6 +1078,83 @@ h2 {
   border: 0;
 }
 
+.gallery {
+  list-style: none;
+  margin: 1rem 0 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 0.75rem;
+}
+
+.gallery figure {
+  margin: 0;
+  background: var(--paper-raised);
+  border: 1px solid #b7b0a4;
+  box-shadow: var(--shadow);
+}
+
+.gallery img {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 1;
+  object-fit: contain;
+  background: #f7f4ee;
+}
+
+.gallery figcaption {
+  display: grid;
+  gap: 0.15rem;
+  padding: 0.55rem 0.7rem 0.7rem;
+  font-size: 0.95rem;
+}
+
+.gallery__caption {
+  font-weight: 600;
+}
+
+.gallery-empty {
+  margin-top: 0.9rem;
+}
+
+.gallery-empty p {
+  margin: 0.45rem 0 0;
+}
+
+.gallery-empty p:first-child {
+  margin-top: 0;
+  font-weight: 600;
+}
+
+.donate-amounts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 0.85rem;
+}
+
+.donate-amounts .button {
+  min-width: 5.5rem;
+}
+
+.donate-address {
+  margin: 0.75rem 0 0;
+  font-family: var(--mono);
+  font-size: 0.92rem;
+  line-height: 1.45;
+  overflow-wrap: anywhere;
+}
+
+.panel > p .button {
+  margin-top: 0.85rem;
+}
+
+.panel form,
+form.panel {
+  margin: 0;
+}
+
 .site-footer {
   border-top: 1px solid #b7b0a4;
   background: #cfc8bc;
@@ -1047,6 +1171,11 @@ h2 {
 
 .site-footer a {
   color: var(--ink);
+}
+
+.site-footer a.footer-quiet {
+  color: var(--muted);
+  font-size: 0.92rem;
 }
 
 .crumb {
@@ -1094,6 +1223,96 @@ h2 {
   margin-top: 0.35rem;
   max-width: 68ch;
   padding-bottom: 0.5rem;
+}
+
+.queue-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 0.75rem 1rem;
+}
+
+.queue-bar h1 {
+  max-width: none;
+}
+
+.queue-note {
+  background: var(--paper-raised);
+  border: 1px solid #b7b0a4;
+  border-left: 4px solid var(--brass);
+  padding: 0.9rem 1rem;
+  margin: 0 0 1.15rem;
+}
+
+.queue-note p {
+  margin: 0;
+}
+
+.queue-note code,
+.form-error code {
+  font-family: var(--mono);
+  font-size: 0.92em;
+}
+
+.form-error {
+  margin: 0 0 1rem;
+  color: var(--clay);
+  font-weight: 600;
+}
+
+.queue {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 0.85rem;
+}
+
+.queue-card {
+  background: var(--paper-raised);
+  border: 1px solid #b7b0a4;
+  border-top: 4px solid #2c2a26;
+  box-shadow: var(--shadow);
+  padding: 1rem 1.05rem 1.15rem;
+  display: grid;
+  gap: 0.7rem;
+}
+
+.queue-card header {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 0.35rem 1rem;
+  align-items: baseline;
+}
+
+.queue-card h2 {
+  font-size: 1.35rem;
+  overflow-wrap: anywhere;
+}
+
+.queue-card p {
+  margin: 0;
+}
+
+.queue-meta {
+  display: grid;
+  gap: 0.7rem;
+}
+
+.queue-meta div {
+  display: grid;
+  gap: 0.12rem;
+}
+
+.queue-body {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.queue-card a {
+  overflow-wrap: anywhere;
 }
 
 @media (max-width: 640px) {

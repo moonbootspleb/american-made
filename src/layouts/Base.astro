@@ -53,6 +53,7 @@ const current = (href: string) => {
         <nav class="nav" aria-label="Primary">
           <a href="/categories" aria-current={current('/categories')}>Categories</a>
           <a href="/how-we-rate" aria-current={current('/how-we-rate')}>How we rate</a>
+          <a class="nav__donate" href="/donate" aria-current={current('/donate')}>Donate</a>
         </nav>
       </div>
     </header>
@@ -68,6 +69,14 @@ const current = (href: string) => {
           <a href="/how-we-rate">How we rate</a>
           <span aria-hidden="true"> · </span>
           <a href="/submit">Send a correction</a>
+          <span aria-hidden="true"> · </span>
+          <a href="/submit/review">Request a review</a>
+          <span aria-hidden="true"> · </span>
+          <a href="/submit/company">Suggest a company</a>
+          <span aria-hidden="true"> · </span>
+          <a href="/donate">Donate</a>
+          <span aria-hidden="true"> · </span>
+          <a class="footer-quiet" href="/admin">Admin</a>
         </p>
       </div>
     </footer>

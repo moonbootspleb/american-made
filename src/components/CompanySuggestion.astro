@@ -1,0 +1,140 @@
+---
+import SubmissionNav from './SubmissionNav.astro';
+---
+
+<section class="submission submission--page" id="company-suggestion" aria-labelledby="company-suggestion-heading">
+  <p class="eyebrow">In the queue</p>
+  <h1 id="company-suggestion-heading">Suggest a company</h1>
+  <div class="stack submission__copy">
+    <p class="lede">For a manufacturer that is not on the list. Sending this does not add the company.</p>
+    <p>
+      The note sits in a queue. A person reads it. A profile is a JSON file in the repository, written later, and only with sources. The form does not create that file, and the company does not go live from this page.
+    </p>
+    <p>
+      If the company is already on the list, <a href="/submit/review">request a review</a> instead. A correction to a page that is already up is <a href="/submit">a correction</a>.
+    </p>
+  </div>
+  <SubmissionNav current="company" />
+
+  <form
+    class="submission-form"
+    name="company-suggestion"
+    method="POST"
+    action="/submit/received"
+    data-netlify="true"
+    data-netlify-honeypot="bot-field"
+    netlify-honeypot="bot-field"
+    accept-charset="UTF-8"
+  >
+    <input type="hidden" name="form-name" value="company-suggestion" />
+    <input type="hidden" name="type" value="company-suggestion" />
+    <div class="hp" aria-hidden="true">
+      <label>
+        Leave this empty
+        <input name="bot-field" tabindex="-1" autocomplete="off" />
+      </label>
+    </div>
+
+    <div class="field">
+      <label for="suggest-company">Company</label>
+      <input
+        id="suggest-company"
+        name="company"
+        type="text"
+        required
+        autocomplete="organization"
+        maxlength="160"
+      />
+    </div>
+
+    <div class="field">
+      <label for="suggest-company-url">Company link</label>
+      <input
+        id="suggest-company-url"
+        name="company_url"
+        type="url"
+        required
+        inputmode="url"
+        spellcheck="false"
+        maxlength="300"
+        aria-describedby="suggest-company-url-hint"
+      />
+      <p class="hint" id="suggest-company-url-hint">The company’s own site, starting with https://.</p>
+    </div>
+
+    <div class="field">
+      <label for="suggest-place">Place <span class="optional">optional</span></label>
+      <input
+        id="suggest-place"
+        name="place"
+        type="text"
+        maxlength="120"
+        autocomplete="off"
+        aria-describedby="suggest-place-hint"
+      />
+      <p class="hint" id="suggest-place-hint">City and state, if you know them.</p>
+    </div>
+
+    <div class="field">
+      <label for="suggest-products">What they make <span class="optional">optional</span></label>
+      <input
+        id="suggest-products"
+        name="products"
+        type="text"
+        maxlength="200"
+        aria-describedby="suggest-products-hint"
+      />
+      <p class="hint" id="suggest-products-hint">The kind of goods, such as stainless flatware. Not a price.</p>
+    </div>
+
+    <div class="field">
+      <label for="suggest-name">Your name <span class="optional">optional</span></label>
+      <input id="suggest-name" name="name" type="text" autocomplete="name" maxlength="120" />
+    </div>
+
+    <div class="field">
+      <label for="suggest-email">Email <span class="optional">optional</span></label>
+      <input
+        id="suggest-email"
+        name="email"
+        type="email"
+        autocomplete="email"
+        inputmode="email"
+        maxlength="200"
+        aria-describedby="suggest-email-hint"
+      />
+      <p class="hint" id="suggest-email-hint">Only if you want a reply. It is not published.</p>
+    </div>
+
+    <div class="field">
+      <label for="suggest-body">The note</label>
+      <textarea
+        id="suggest-body"
+        name="body"
+        required
+        rows="8"
+        maxlength="8000"
+        aria-describedby="suggest-body-hint"
+      ></textarea>
+      <p class="hint" id="suggest-body-hint">Why this company belongs on the list, and what you actually know.</p>
+    </div>
+
+    <div class="field">
+      <label for="suggest-evidence">Evidence <span class="optional">optional</span></label>
+      <textarea
+        id="suggest-evidence"
+        name="evidence"
+        rows="4"
+        maxlength="2000"
+        spellcheck="false"
+        aria-describedby="suggest-evidence-hint"
+      ></textarea>
+      <p class="hint" id="suggest-evidence-hint">Web addresses, one per line. A filing, an article, or a company page.</p>
+    </div>
+
+    <div class="form-actions">
+      <button class="button" type="submit">Send it in</button>
+      <p class="hint">It goes to the queue. It does not go on the list.</p>
+    </div>
+  </form>
+</section>

@@ -1,0 +1,109 @@
+---
+import Base from '../../layouts/Base.astro';
+import {
+  DONATION_CENTS,
+  bitcoinDonationAddress,
+  cardCheckoutEnabled,
+  donationLabel,
+  stripePaymentLink,
+} from '../../lib/donations';
+
+const paymentLink = stripePaymentLink(import.meta.env.PUBLIC_STRIPE_PAYMENT_LINK);
+const checkout = cardCheckoutEnabled(import.meta.env.PUBLIC_STRIPE_CHECKOUT);
+const bitcoin = bitcoinDonationAddress(import.meta.env.PUBLIC_BITCOIN_DONATION_ADDRESS);
+
+if (import.meta.env.PUBLIC_STRIPE_PAYMENT_LINK && !paymentLink) {
+  console.warn(
+    'PUBLIC_STRIPE_PAYMENT_LINK is set but is not shown. Use an https link on buy.stripe.com or donate.stripe.com.',
+  );
+}
+if (import.meta.env.PUBLIC_BITCOIN_DONATION_ADDRESS && !bitcoin) {
+  console.warn(
+    'PUBLIC_BITCOIN_DONATION_ADDRESS is set but is not shown. It is not a confirmed mainnet address.',
+  );
+}
+---
+
+<Base
+  title="Donate"
+  description="Donate to The American Forge. Card payments go through Stripe when that is turned on. No Bitcoin address is shown until one is confirmed."
+>
+  <p class="crumb">
+    <a href="/">Manufacturers</a>
+    <span aria-hidden="true"> / </span>
+    <span>Donate</span>
+  </p>
+  <div class="page-intro">
+    <p class="eyebrow">The record</p>
+    <h1>Donate</h1>
+    <p class="lede">This list is free to read. A donation helps keep the record online.</p>
+  </div>
+  <div class="stack">
+    <p class="prose">
+      The American Forge does not take a card number on this site. When card donations are on, Stripe hosts the payment. A Bitcoin address appears below only after one is confirmed. Nothing here is a tax receipt.
+    </p>
+  </div>
+
+  <section class="section" id="card" aria-labelledby="card-heading">
+    <p class="kicker">Card</p>
+    <h2 id="card-heading">Card</h2>
+    <div class="stack" style="margin-top:0.9rem">
+      {
+        paymentLink && (
+          <div class="panel">
+            <p>The button opens a Stripe payment page. The amount is chosen there. The card number is entered at Stripe.</p>
+            <p>
+              <a class="button" href={paymentLink} rel="noopener noreferrer">Donate by card</a>
+            </p>
+          </div>
+        )
+      }
+      {
+        checkout && (
+          <form class="panel" method="POST" action="/.netlify/functions/donate">
+            <p>Pick an amount in US dollars. It opens Stripe Checkout. The card number is entered at Stripe, not here.</p>
+            <div class="donate-amounts">
+              {DONATION_CENTS.map((cents) => (
+                <button class="button" type="submit" name="amount" value={String(cents)}>
+                  {donationLabel(cents)}
+                </button>
+              ))}
+            </div>
+          </form>
+        )
+      }
+      {
+        !paymentLink && !checkout && (
+          <div class="panel">
+            <p>Card donations are not turned on.</p>
+            <p>
+              Nothing on this page charges a card. When a Stripe payment link or Stripe Checkout is connected, the way to pay will show in this spot.
+            </p>
+          </div>
+        )
+      }
+    </div>
+  </section>
+
+  <section class="section" id="bitcoin" aria-labelledby="bitcoin-heading">
+    <p class="kicker">Bitcoin</p>
+    <h2 id="bitcoin-heading">Bitcoin</h2>
+    {
+      bitcoin ? (
+        <div class="panel" style="margin-top:0.9rem">
+          <p>
+            This is the address set for The American Forge. Check it on this page before you send anything. The site does not see the transfer.
+          </p>
+          <p class="donate-address">{bitcoin}</p>
+        </div>
+      ) : (
+        <div class="panel" style="margin-top:0.9rem">
+          <p>Coming soon. No Bitcoin address is posted.</p>
+          <p>
+            One will appear in this spot only after it is confirmed for this site. Do not send Bitcoin to an address from a message, an email, or another page.
+          </p>
+        </div>
+      )
+    }
+  </section>
+</Base>

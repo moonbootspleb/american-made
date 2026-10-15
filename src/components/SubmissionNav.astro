@@ -1,0 +1,22 @@
+---
+interface Props {
+  current: 'correction' | 'review' | 'company';
+}
+
+const { current } = Astro.props;
+const items = [
+  { id: 'correction', href: '/submit', label: 'A correction' },
+  { id: 'review', href: '/submit/review', label: 'Request a review' },
+  { id: 'company', href: '/submit/company', label: 'Suggest a company' },
+] as const;
+---
+
+<nav class="shelves" aria-label="What you are sending">
+  {
+    items.map((item) => (
+      <a class="shelf" href={item.href} aria-current={item.id === current ? 'page' : undefined}>
+        {item.label}
+      </a>
+    ))
+  }
+</nav>

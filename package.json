@@ -14,6 +14,7 @@
     "check:supply": "node scripts/check-supply-links.mjs"
   },
   "dependencies": {
+    "@astrojs/netlify": "^6.6.5",
     "astro": "^5.13.0",
     "zod": "^3.24.0"
   }

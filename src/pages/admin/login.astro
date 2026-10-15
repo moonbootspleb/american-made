@@ -1,0 +1,107 @@
+---
+export const prerender = false;
+
+import Base from '../../layouts/Base.astro';
+import { safeNextPath } from '../../lib/admin-session.mjs';
+import {
+  adminPassword,
+  establishSession,
+  passwordsMatch,
+  sessionFromCookies,
+} from '../../lib/admin-server';
+
+const configured = Boolean(adminPassword());
+const nextTarget = safeNextPath(Astro.url.searchParams.get('next'));
+
+let error: 'wrong' | 'unconfigured' | null = null;
+
+if (Astro.request.method === 'GET' || Astro.request.method === 'HEAD') {
+  if (sessionFromCookies(Astro.cookies)) {
+    return Astro.redirect(nextTarget);
+  }
+} else if (Astro.request.method === 'POST') {
+  const expected = adminPassword();
+  let submitted = '';
+  let postedNext = nextTarget;
+  try {
+    const form = await Astro.request.formData();
+    submitted = String(form.get('password') ?? '');
+    postedNext = safeNextPath(String(form.get('next') ?? nextTarget));
+  } catch {
+    submitted = '';
+  }
+
+  if (!expected) {
+    error = 'unconfigured';
+    Astro.response.status = 503;
+  } else if (!passwordsMatch(submitted, expected)) {
+    await new Promise((resolve) => setTimeout(resolve, 400));
+    error = 'wrong';
+    Astro.response.status = 401;
+  } else {
+    establishSession(Astro.cookies, Astro.request);
+    return Astro.redirect(postedNext, 303);
+  }
+} else {
+  Astro.response.status = 405;
+  Astro.response.headers.set('Allow', 'GET, HEAD, POST');
+}
+
+Astro.response.headers.set('Cache-Control', 'private, no-store');
+Astro.response.headers.set('X-Robots-Tag', 'noindex');
+---
+
+<Base title="Sign in" description="Sign in to read the review queue." noindex>
+  <div class="page-intro">
+    <p class="eyebrow">Admin</p>
+    <h1>Sign in</h1>
+    <p class="lede">The review queue. A wrong password does not open it.</p>
+  </div>
+
+  {
+    !configured && (
+      <div class="queue-note">
+        <p>
+          Admin login is not turned on. Set <code>ADMIN_PASSWORD</code> on Netlify. It is not stored in this repository, and a short or placeholder value is ignored.
+        </p>
+      </div>
+    )
+  }
+
+  {
+    error === 'wrong' && (
+      <p class="form-error" role="alert">
+        That password is not right.
+      </p>
+    )
+  }
+  {
+    error === 'unconfigured' && (
+      <p class="form-error" role="alert">
+        Login is not turned on, so this password was not accepted.
+      </p>
+    )
+  }
+
+  <form class="submission-form" method="POST" action="/admin/login" accept-charset="UTF-8">
+    <input type="hidden" name="next" value={nextTarget} />
+    <div class="field">
+      <label for="admin-password">Password</label>
+      <input
+        id="admin-password"
+        name="password"
+        type="password"
+        required
+        minlength="12"
+        maxlength="200"
+        autocomplete="current-password"
+        spellcheck="false"
+        autofocus
+      />
+    </div>
+    <div class="form-actions">
+      <button class="button" type="submit" disabled={!configured}>Sign in</button>
+      <p class="hint">The session lasts 12 hours. Logging out clears it.</p>
+    </div>
+  </form>
+</Base>
