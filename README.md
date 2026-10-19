@@ -46,7 +46,7 @@ The command reads `src/data/manufacturers/*.json`. A missing `status`, or `"publ
 
 It exits non-zero if any check fails. Google Chrome or Chromium has to be installed. Set `CHROME_PATH` when the binary is not on the usual path.
 
-The checks are the home list, each published profile, `/supply-chain/map` (OpenStreetMap tiles, a near-fullscreen map, and a pin for each sourced street or plant coordinate in these files), `/supply-chain/explore` with WebGL and again without it, also near-fullscreen, `/admin/queue` and `/admin/drafts` redirecting to login when signed out, `GET /api/admin/submissions` returning 401, draft companies absent from those public pages and the graph JSON with their profile URL returning 404, the research command in dry-run and fixture mode (the dry-run must still list the Liberty trade page, the SEC filing, and the USPTO record), the proposals directory schema, the admin proposal list when a proposal is present, and an unsigned `POST /api/admin/proposals` returning 401. Smoke does not file a supply link.
+The checks are the home list, each published profile, `/supply-chain/map` (OpenStreetMap tiles, a near-fullscreen map, and a pin for each sourced street or plant coordinate in these files), `/supply-chain/explore` with WebGL and again without it, also near-fullscreen, `/admin/queue` and `/admin/drafts` redirecting to login when signed out, `GET /api/admin/submissions` returning 401, draft companies absent from those public pages and the graph JSON with their profile URL returning 404, the research command in dry-run and fixture mode (the dry-run must still list the Liberty trade page, the SEC filing, and the USPTO record), the proposals directory schema, the admin proposal list when a proposal is present, a host that has manufacturer files but no proposals directory still rendering the bundled Liberty leads, and an unsigned `POST /api/admin/proposals` returning 401. Smoke does not file a supply link.
 
 ## Netlify
 
@@ -351,7 +351,7 @@ npm run research -- --from liberty-tabletop
 
 The allowlist is the company website, company and made-in-USA pages already cited on that manufacturer, and SEC, patent, or trade URLs already cited on that manufacturer or its supply links. Extra trade, patent, and filing URLs live in `src/data/research-allowlist/<manufacturer-id>.json`. That file is a fixed list checked by hand. The command does not follow links off the list. Other news articles are left alone. Each fetched page is stored as a URL, a fetch time, and a short text excerpt under `src/data/research-cache/<manufacturer-id>/`. A supplier sentence that sits past the first 800 characters is appended, and the stored excerpt stays under 1,600 characters.
 
-Leads go to `src/data/supply-proposals/*.json`: supplier, customer, input, tier hint, quote, source URL, and confidence. A proposal is not a supply link. The command never writes `src/data/supply-links/`.
+Leads go to `src/data/supply-proposals/*.json`: supplier, customer, input, tier hint, quote, source URL, and confidence. A proposal is not a supply link. The command never writes `src/data/supply-links/`. On the deployed host the proposals directory is not packaged next to the manufacturer files, so the review queue reads the same JSON from the server bundle.
 
 A street address is kept only when it appears on the fetched page. Coordinates are added only with `--geocode`, and only when that street address has a source URL. The geocoder is Nominatim. A result without a house number is dropped. A city name is not geocoded.
 

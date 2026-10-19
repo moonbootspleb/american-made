@@ -1,6 +1,6 @@
 import { spawnSync } from 'node:child_process';
 import { createHash } from 'node:crypto';
-import { existsSync, mkdtempSync, readdirSync, readFileSync, rmSync } from 'node:fs';
+import { existsSync, mkdirSync, mkdtempSync, readdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import nodePath from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -22,7 +22,7 @@ import {
 } from '../src/lib/smoke.mjs';
 import { loadSupplyGraphFromDisk } from '../src/lib/load-supply-graph.mjs';
 import { htmlToExcerpt } from '../src/lib/research.mjs';
-import { loadProposalsFromDisk, renderProposalSection } from '../src/lib/supply-proposals.mjs';
+import { loadProposalsForAdmin, loadProposalsFromDisk, renderProposalSection } from '../src/lib/supply-proposals.mjs';
 
 const root = nodePath.resolve(nodePath.dirname(fileURLToPath(import.meta.url)), '..');
 
@@ -384,6 +384,27 @@ function checkResearch(directory) {
   const onFile = loadProposalsFromDisk(directory);
   if (onFile.issues.length > 0) problems.push(onFile.issues.join('; '));
   if (supplyLinkDigest(directory) !== before) problems.push('supply links changed during research');
+
+  const host = mkdtempSync(nodePath.join(tmpdir(), 'forge-smoke-proposal-host-'));
+  try {
+    mkdirSync(nodePath.join(host, 'src/data/manufacturers'), { recursive: true });
+    writeFileSync(nodePath.join(host, 'src/data/manufacturers/liberty-tabletop.json'), '{"slug":"liberty-tabletop"}\n');
+    const bundled = readdirSync(nodePath.join(directory, 'src/data/supply-proposals'))
+      .filter((name) => name.endsWith('.json'))
+      .map((name) => JSON.parse(readFileSync(nodePath.join(directory, 'src/data/supply-proposals', name), 'utf8')));
+    const hosted = loadProposalsForAdmin(host, bundled);
+    if (hosted.source !== 'bundle') problems.push(`host used ${hosted.source} instead of the bundled proposals`);
+    const html = renderProposalSection(hosted.proposals, hosted.issues);
+    for (const name of ['H&amp;D Steel', 'Divine Brothers', 'Van Industries', 'NASS']) {
+      if (!html.includes(name)) problems.push(`host bundle omitted ${name}`);
+    }
+    const checkout = loadProposalsForAdmin(directory, [{ id: 'not-a-file' }]);
+    if (checkout.source !== 'disk') problems.push('checkout ignored the proposal files');
+    if (checkout.proposals.length !== onFile.proposals.length) problems.push('checkout proposal count changed');
+  } finally {
+    rmSync(host, { recursive: true, force: true });
+  }
+
   const detail =
     onFile.proposals.length === 0
       ? 'dry-run and fixture exit 0, no proposals on file'
