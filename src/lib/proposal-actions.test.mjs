@@ -123,3 +123,24 @@ test('a readonly host does not write', () => {
   assert.equal(researchWritesAllowed({ CONTEXT: 'production' }), false);
   assert.equal(researchWritesAllowed({}), true);
 });
+
+test('a decision with a review record stores it on the proposal and appends the audit log', async () => {
+  const { buildReviewRecord } = await import('./review-audit.mjs');
+  const root = checkout();
+  const review = buildReviewRecord({
+    proposal: proposal(),
+    decision: 'verify',
+    reviewer: 'Boots',
+    check: { ok: true, sha256: 'b'.repeat(64), found: true },
+    now: new Date('2026-10-19T22:00:00Z'),
+  });
+  const result = applyProposalAction({ root, id: proposal().id, action: 'verify', today: '2026-10-19', review });
+  assert.equal(result.reason, 'filed');
+  const saved = JSON.parse(readFileSync(nodePath.join(root, 'src/data/supply-proposals', `${proposal().id}.json`), 'utf8'));
+  assert.equal(saved.review.decision, 'verify');
+  assert.equal(saved.review.liveTextSha256, 'b'.repeat(64));
+  assert.equal(saved.review.quoteFound, true);
+  const log = readFileSync(nodePath.join(root, 'src/data/review-audit', `${proposal().id}.jsonl`), 'utf8').trim().split('\n');
+  assert.equal(log.length, 1);
+  assert.equal(JSON.parse(log[0]).reviewer, 'Boots');
+});

@@ -22,6 +22,7 @@ import {
 } from '../src/lib/smoke.mjs';
 import { loadSupplyGraphFromDisk } from '../src/lib/load-supply-graph.mjs';
 import { htmlToExcerpt } from '../src/lib/research.mjs';
+import { buildFramedPage } from '../src/lib/source-view.mjs';
 import { loadProposalsForAdmin, loadProposalsFromDisk, renderProposalSection } from '../src/lib/supply-proposals.mjs';
 
 const root = nodePath.resolve(nodePath.dirname(fileURLToPath(import.meta.url)), '..');
@@ -370,6 +371,11 @@ function checkResearch(directory) {
     if (!html.includes('value="verify"') || !html.includes('value="reject"') || !html.includes('value="needs-source"')) {
       problems.push('admin section omitted verify, reject, or needs-source');
     }
+    if (!html.includes('/api/admin/source-view?proposal=')) problems.push('review card has no live source frame');
+    if (!html.includes('sandbox="allow-scripts')) problems.push('live source frame is not sandboxed');
+    if (!html.includes('Claim to verify')) problems.push('review card omitted the claim');
+    if (!html.includes('#:~:text=')) problems.push('review card omitted the jump-to-quote link');
+    if (!html.includes('What the quote does not establish')) problems.push('review card omitted the gaps');
   } finally {
     rmSync(out, { recursive: true, force: true });
   }
@@ -410,6 +416,45 @@ function checkResearch(directory) {
       ? 'dry-run and fixture exit 0, no proposals on file'
       : `dry-run and fixture exit 0, ${onFile.proposals.length} proposals on file`;
   return result(name, problems, detail);
+}
+
+/**
+ * The live source viewer script, run in Chrome against a fixture page:
+ * it must highlight a quote that spans an inline tag, and must report a missing quote as missing.
+ * @param {string} chromePath
+ */
+async function checkSourceViewer(chromePath) {
+  const name = 'Source viewer highlight';
+  /** @type {string[]} */
+  const problems = [];
+  const fixture = readFileSync(nodePath.join(root, 'src/data/research-fixtures/source-view/flatware-page.html'), 'utf8');
+  const quote = 'buffs and compounds that come from either Utica, New York, or Ohio.';
+  try {
+    await withPage(chromePath, false, async (page) => {
+      await page.setRequestInterception(true);
+      page.on('request', (req) => (req.url().startsWith('data:') || req.url() === 'about:blank' ? req.continue() : req.abort()));
+      await page.setContent(buildFramedPage(fixture, { url: 'https://source.example/post/', quote, proposalId: 'smoke--fixture', nonce: 'smoke' }));
+      const found = await page.evaluate(() => ({
+        state: document.documentElement.getAttribute('data-taf-quote'),
+        text: Array.from(document.querySelectorAll('mark.taf-quote')).map((mark) => mark.textContent).join(''),
+        stolen: typeof window.stolen,
+      }));
+      if (found.state !== 'found') problems.push(`quote state ${found.state || 'unset'}`);
+      if (found.text.replace(/\s+/g, ' ').trim() !== quote) problems.push(`highlighted "${found.text}"`);
+      if (found.stolen !== 'undefined') problems.push('a source page script ran');
+      await page.setContent(
+        buildFramedPage(fixture, { url: 'https://source.example/post/', quote: 'Fixture Steel ships nickel to the moon.', proposalId: 'smoke--fixture', nonce: 'smoke' }),
+      );
+      const missing = await page.evaluate(() => ({
+        state: document.documentElement.getAttribute('data-taf-quote'),
+        marks: document.querySelectorAll('mark.taf-quote').length,
+      }));
+      if (missing.state !== 'not-found' || missing.marks !== 0) problems.push(`missing quote state ${missing.state} with ${missing.marks} marks`);
+    });
+  } catch (error) {
+    problems.push(error instanceof Error ? error.message : String(error));
+  }
+  return result(name, problems, 'quote across <em> highlighted, missing quote reported missing, source scripts stripped');
 }
 
 /**
@@ -475,6 +520,16 @@ async function runSmoke(baseUrl) {
   const api = await request(`${baseUrl}/api/admin/submissions`, { redirect: 'manual' });
   const apiProblems = api.status === 401 ? [] : [`HTTP ${api.status}`];
 
+  const firstProposal = loadProposalsFromDisk(root).proposals[0];
+  const sourceView = await request(
+    `${baseUrl}/api/admin/source-view?proposal=${encodeURIComponent(firstProposal ? firstProposal.id : 'smoke-probe')}`,
+    { redirect: 'manual' },
+  );
+  const sourceViewOpen = await request(`${baseUrl}/api/admin/source-view?proposal=https%3A%2F%2Fexample.com%2F`, { redirect: 'manual' });
+  const sourceViewProblems = [];
+  if (sourceView.status !== 401) sourceViewProblems.push(`HTTP ${sourceView.status}`);
+  if (sourceViewOpen.status !== 401) sourceViewProblems.push(`arbitrary URL HTTP ${sourceViewOpen.status}`);
+
   const linksBefore = supplyLinkDigest(root);
   const researchCheck = checkResearch(root);
   const verifyProbe = await request(`${baseUrl}/api/admin/proposals`, {
@@ -494,6 +549,7 @@ async function runSmoke(baseUrl) {
   const exploreCheck = chromePath
     ? await checkExplore(baseUrl, chromePath, explorePage)
     : browserSkipped('Supply chain explore (WebGL)');
+  const viewerCheck = chromePath ? await checkSourceViewer(chromePath) : browserSkipped('Source viewer highlight');
   const fallbackCheck = chromePath
     ? await checkExploreFallback(baseUrl, chromePath, explorePage)
     : browserSkipped('Supply chain explore (no WebGL)');
@@ -510,6 +566,8 @@ async function runSmoke(baseUrl) {
     fallbackCheck,
     result('Admin queue and drafts', adminProblems, '302 to /admin/login'),
     result('Admin submissions API', apiProblems, '401'),
+    result('Source viewer stays closed', sourceViewProblems, '401 signed out, for a proposal and for a raw URL'),
+    viewerCheck,
     researchCheck,
     result('Proposal verify stays closed', verifyProblems, '401, supply links unchanged'),
     result(

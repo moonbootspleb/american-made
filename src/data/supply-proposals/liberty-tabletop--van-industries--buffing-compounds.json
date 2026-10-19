@@ -18,5 +18,21 @@
   "quote": "The other main inputs in flatware production are buffs and compounds that come from either Utica, New York, or Ohio. Thank you, family-owned Divine Brothers and Van Industries, for also being reliable suppliers.",
   "sourceUrl": "https://www.buydirectusa.com/made-in-america-flatware-has-no-supply-chain-issues/",
   "confidence": "medium",
-  "fetchedAt": "2026-10-15T18:11:59.902Z"
+  "fetchedAt": "2026-10-15T18:11:59.902Z",
+  "gaps": [
+    "The page says buffs and compounds come from Utica, New York, or Ohio. It does not say which company is in which place, or which one supplies buffs and which supplies compounds."
+  ],
+  "sourceCheck": {
+    "checkedAt": "2026-10-19T22:00:01.801Z",
+    "ok": true,
+    "httpStatus": 200,
+    "sha256": "dc24cb613a6d568dcb09f554c123cffe18840a9813980558b0027ef1d5986231",
+    "quoteFound": true,
+    "method": "exact",
+    "paragraph": 2,
+    "heading": "Made In America Flatware Has No Supply Chain Issues",
+    "title": "Made In America Flatware Has No Supply Chain Issues | BuyDirectUSA",
+    "publisher": "BuyDirectUSA",
+    "published": "2022-01-01T00:16:00+00:00"
+  }
 }
