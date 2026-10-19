@@ -39,14 +39,14 @@ Try the queue with `npm run dev`.
 `npm run smoke` checks a deployed site. It must be green on the develop deploy before any production promote. After a promote, run it against that production URL as well. Every new bug gets a permanent check in this script.
 
 ```bash
-npm run smoke -- --base-url https://american-forge-develop.netlify.app
+npm run smoke -- --base-url https://develop--american-forge.netlify.app
 ```
 
 The command reads `src/data/manufacturers/*.json`. A missing `status`, or `"published"`, is a public company. `"draft"` and any other status must stay off the public pages. The script does not hard-code those names.
 
 It exits non-zero if any check fails. Google Chrome or Chromium has to be installed. Set `CHROME_PATH` when the binary is not on the usual path.
 
-The checks are the home list, each published profile, `/supply-chain/map` (OpenStreetMap tiles, a near-fullscreen map, and a pin for each sourced street or plant coordinate in these files), `/supply-chain/explore` with WebGL and again without it, also near-fullscreen, `/admin/queue` and `/admin/drafts` redirecting to login when signed out, `GET /api/admin/submissions` returning 401, draft companies absent from those public pages and the graph JSON with their profile URL returning 404, the research command in dry-run and fixture mode (the dry-run must still list the Liberty trade page, the SEC filing, and the USPTO record), the proposals directory schema, the admin proposal list when a proposal is present, a host that has manufacturer files but no proposals directory still rendering the bundled Liberty leads, and an unsigned `POST /api/admin/proposals` returning 401. Smoke does not file a supply link.
+The checks are the home list, each published profile, `/supply-chain/map` (OpenStreetMap tiles, a near-fullscreen map, and a pin for each sourced street or plant coordinate in these files), `/supply-chain/explore` with WebGL and again without it, also near-fullscreen, `/admin/queue` and `/admin/drafts` redirecting to login when signed out, `GET /api/admin/submissions` returning 401, draft companies absent from those public pages and the graph JSON with their profile URL returning 404, the research command in dry-run and fixture mode (the dry-run must still list the Liberty trade page, the SEC filing, and the USPTO record), the proposals directory schema, the admin proposal list when a proposal is present, a host that has manufacturer files but no proposals directory still rendering the bundled Liberty leads, an unsigned `POST /api/admin/proposals` returning 401, an unsigned `GET /api/admin/source-view` returning 401 (for a proposal id and for a raw URL), the review card carrying the sandboxed live source frame, claim, gaps, and jump-to-quote link, and the source viewer script in Chrome highlighting a fixture quote that spans an inline tag while reporting a missing quote as missing. Smoke does not file a supply link.
 
 ## Netlify
 
@@ -371,7 +371,31 @@ npm run research -- --act needs-source --id <proposal-id>
 npm run research -- --act reject --id <proposal-id>
 ```
 
-On Netlify the buttons are visible after sign-in, and the write is refused. Filing happens in a checkout, then in git. Nothing in this path sets a supply link to `verified`. That still requires a source that names the supplier for the customer, edited by hand.
+### Reviewing a proposal against the live source
+
+Each proposal card in `/admin/queue` is split in two. The left pane loads the **live** source page through `GET /api/admin/source-view?proposal=<id>` and highlights the quote in yellow, scrolled into view. The right pane shows:
+
+- **Claim to verify**, one sentence (`claim` on the proposal, or built from supplier, input, and customer).
+- **Quote**, as filed.
+- **Match on the live page**: found (verbatim, or with quote marks and spacing folded) or `Quote not found on live page`. If the page did not load, the pane says so.
+- The last research check: date, and the paragraph and heading where the quote sits, or `quote not found in source`.
+- **What the quote does not establish**: automatic notes only when they follow from the text (the quote does not name the customer, the same quote names two suppliers, hedged words such as "could", the input is not mentioned, the page is three or more years old), then the `gaps` research wrote after reading the page.
+- Source title, publisher, and date as the page states them, and **Open live page at the quote** (a `#:~:text=` link).
+
+The source viewer is admin only. It fetches only the `sourceUrl` of a proposal on file, so it is not an open proxy. It strips the source page's scripts, inline handlers, frames, meta refresh, and CSP, adds a `<base>` so images and styles load, and serves its own CSP that allows only its one nonce'd highlight script. The admin page frames it with `sandbox` and no same-origin, so nothing in it can read the admin cookie.
+
+Check every open proposal against its live page, from a checkout:
+
+```bash
+npm run research -- --check-sources            # every open or needs-source proposal
+npm run research -- --check-sources --id <proposal-id>
+```
+
+That writes `sourceCheck` on each proposal: when, HTTP status, a sha256 of the page text, whether the quote was found and how, paragraph and heading, and the page's title, publisher, and date. A miss is stored as a miss. Page text is not stored.
+
+Each decision is recorded for audit: proposal id, decision, reviewer, UTC time, source URL, claim, quote, the sha256 of the live page text fetched at that moment, whether the quote was on it (and whether the viewer found it), and the optional note. In a checkout the record is stored on the proposal as `review` and appended to `src/data/review-audit/<proposal-id>.jsonl`. On Netlify the host cannot write files, so the record goes to the Netlify Blobs store `review-audit` under `<proposal-id>/<time>.json`, the proposal status does not change, and the page says so.
+
+On Netlify the buttons are visible after sign-in, the decision is recorded in the audit store, and the file write is refused. Filing happens in a checkout, then in git. Nothing in this path sets a supply link to `verified`. That still requires a source that names the supplier for the customer, edited by hand.
 
 ## Donations
 

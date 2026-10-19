@@ -18,5 +18,21 @@
   "quote": "It could come from Allegheny Ludlum, it could come from AK Steel, and it could come from NASS, or another place down in Birmingham.\"",
   "sourceUrl": "https://www.americanmanufacturing.org/blog/liberty-sets-the-table-for-growth/",
   "confidence": "low",
-  "fetchedAt": "2026-10-15T18:11:59.902Z"
+  "fetchedAt": "2026-10-15T18:11:59.902Z",
+  "gaps": [
+    "The article quotes Owens listing Allegheny Ludlum, AK Steel, NASS, or a mill near Birmingham as places the steel could come from. It does not say NASS has shipped steel to Liberty."
+  ],
+  "sourceCheck": {
+    "checkedAt": "2026-10-19T22:00:01.801Z",
+    "ok": true,
+    "httpStatus": 200,
+    "sha256": "4ddabcb9678c0dd3447f89be26edaa8f662435afa651ed51649785f739a15a9d",
+    "quoteFound": true,
+    "method": "normalized",
+    "paragraph": 7,
+    "heading": "No more illusions about politics",
+    "title": "Liberty Sets the Table for Growth - Alliance for American Manufacturing",
+    "publisher": "Alliance for American Manufacturing",
+    "published": "2015-11-09T20:39:21+00:00"
+  }
 }

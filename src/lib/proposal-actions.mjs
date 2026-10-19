@@ -1,6 +1,7 @@
 import { existsSync, mkdirSync, readdirSync, readFileSync, unlinkSync, writeFileSync } from 'node:fs';
 import nodePath from 'node:path';
 import { deriveFlag, validateSupplyLinks } from './supply-links.mjs';
+import { appendAuditToDisk } from './review-audit.mjs';
 import { loadProposalsFromDisk } from './supply-proposals.mjs';
 
 /**
@@ -30,6 +31,10 @@ export function proposalResultNote(reason) {
   }
   if (reason === 'rejected') return 'Marked the proposal rejected. No supply link was written.';
   if (reason === 'needs-source') return 'Marked the proposal needs-source. No supply link was written.';
+  if (reason === 'host-readonly-recorded') {
+    return 'Recorded your decision for audit, with the live page hash and whether the quote was found. This host does not write data files, so the proposal status did not change. To file it, run in a checkout: npm run research -- --act <verify|needs-source|reject> --id <proposal-id>.';
+  }
+  if (reason === 'audit-failed') return 'The decision could not be saved to the audit log. Nothing changed. Try again.';
   if (reason === 'host-readonly') {
     return 'This host does not write data files. Run the action in a checkout: npm run research -- --act verify --id <proposal-id>.';
   }
@@ -41,7 +46,8 @@ export function proposalResultNote(reason) {
 }
 
 /**
- * @param {{ root: string, id: string, action: string, writesAllowed?: boolean, today?: string }} options
+ * @param {{ root: string, id: string, action: string, writesAllowed?: boolean, today?: string, review?: import('./review-audit.mjs').buildReviewRecord extends (...args: any[]) => infer R ? R : never }} options
+ * When `review` is passed, it is stored on the proposal and appended to src/data/review-audit/<id>.jsonl.
  */
 export function applyProposalAction(options) {
   const id = options.id || '';
@@ -61,7 +67,8 @@ export function applyProposalAction(options) {
       return { ok: false, status: 409, reason: 'already-closed' };
     }
     const next = action === 'reject' ? 'rejected' : 'needs-source';
-    writeJson(proposalPath(options.root, id), { ...proposal, status: next });
+    writeJson(proposalPath(options.root, id), withReview({ ...proposal, status: next }, options.review));
+    if (options.review) appendAuditToDisk(options.root, options.review);
     return { ok: true, status: 200, reason: next, profile: 'unchanged' };
   }
 
@@ -97,8 +104,18 @@ export function applyProposalAction(options) {
       };
     }
   }
-  writeJson(proposalPath(options.root, id), { ...proposal, status: 'filed', filedAt: today });
+  writeJson(proposalPath(options.root, id), withReview({ ...proposal, status: 'filed', filedAt: today }, options.review));
+  if (options.review) appendAuditToDisk(options.root, options.review);
   return { ok: true, status: 200, reason: 'filed', profile: profileState };
+}
+
+/**
+ * @template T
+ * @param {T} proposal
+ * @param {unknown} review
+ */
+function withReview(proposal, review) {
+  return review ? { ...proposal, review } : proposal;
 }
 
 /**

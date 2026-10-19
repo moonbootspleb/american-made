@@ -1763,3 +1763,120 @@ body.is-stage .leaflet-bottom.leaflet-right {
 .proposal-actions form {
   margin: 0;
 }
+
+/* Supply proposal review: live source on the left, claim and decision on the right. */
+.review-split {
+  display: grid;
+  grid-template-columns: minmax(0, 1.6fr) minmax(280px, 1fr);
+  gap: 1rem;
+  align-items: start;
+}
+
+.review-source {
+  display: grid;
+  gap: 0.35rem;
+  position: sticky;
+  top: 0.5rem;
+}
+
+.review-source__bar {
+  display: flex;
+  gap: 0.5rem;
+  align-items: baseline;
+}
+
+.review-frame {
+  width: 100%;
+  height: min(78vh, 760px);
+  border: 1px solid #b7b0a4;
+  background: #fff;
+}
+
+.review-panel {
+  display: grid;
+  gap: 0.85rem;
+}
+
+.review-panel > div {
+  display: grid;
+  gap: 0.2rem;
+}
+
+.review-claim {
+  font-size: 1.08rem;
+  font-weight: 600;
+}
+
+.review-quote {
+  margin: 0;
+  padding: 0.5rem 0.7rem;
+  border-left: 4px solid #e8590c;
+  background: #fffbea;
+}
+
+.review-quote mark {
+  background: #ffe066;
+  color: var(--ink);
+}
+
+.review-status {
+  font-weight: 600;
+}
+
+.review-status[data-quote-status="found"] {
+  color: var(--enamel);
+}
+
+.review-status[data-quote-status="not-found"],
+.review-status[data-quote-status="failed"] {
+  color: var(--clay);
+}
+
+.review-gaps {
+  margin: 0;
+  padding-left: 1.1rem;
+  display: grid;
+  gap: 0.25rem;
+}
+
+.review-form {
+  display: grid;
+  gap: 0.55rem;
+  border-top: 1px solid var(--rule);
+  padding-top: 0.7rem;
+}
+
+.review-field {
+  display: grid;
+  gap: 0.15rem;
+}
+
+.review-field input,
+.review-field textarea {
+  font: inherit;
+  padding: 0.35rem 0.45rem;
+  border: 1px solid #b7b0a4;
+  background: #fff;
+}
+
+@media (max-width: 900px) {
+  .review-split {
+    grid-template-columns: 1fr;
+  }
+
+  .review-source {
+    position: static;
+  }
+
+  .review-frame {
+    height: 60vh;
+  }
+}
+
+/* Give the live source room: the proposal list breaks out of the reading column on wide screens. */
+@media (min-width: 1100px) {
+  .queue--proposals {
+    width: min(96vw, 1500px);
+    margin-left: calc(50% - min(48vw, 750px));
+  }
+}

@@ -14,9 +14,11 @@ import { loadProposalsFromDisk, proposalSchema } from './supply-proposals.mjs';
 
 export const RESEARCH_USAGE = `Usage: npm run research -- --from <manufacturer-id> [--dry-run] [--fixture] [--out <dir>] [--geocode]
        npm run research -- --act verify|reject|needs-source --id <proposal-id>
+       npm run research -- --check-sources [--id <proposal-id>]
 
 --dry-run lists the allowlist and writes nothing.
 --fixture reads src/data/research-fixtures and does not use the network.
+--check-sources fetches each open proposal's live source page and records whether the quote is on it (sourceCheck).
 --geocode asks Nominatim for a street address that already has a source URL. It is off unless you pass this flag.`;
 
 const EXCERPT_LIMIT = 800;
@@ -58,14 +60,15 @@ const ADDRESS_RE =
  */
 export function parseResearchArgs(argv) {
   const args = argv.slice(2);
-  /** @type {{ from?: string, dryRun: boolean, fixture: boolean, geocode: boolean, out?: string, act?: string, id?: string, help: boolean }} */
-  const parsed = { dryRun: false, fixture: false, geocode: false, help: false };
+  /** @type {{ from?: string, dryRun: boolean, fixture: boolean, geocode: boolean, checkSources: boolean, out?: string, act?: string, id?: string, help: boolean }} */
+  const parsed = { dryRun: false, fixture: false, geocode: false, checkSources: false, help: false };
   for (let index = 0; index < args.length; index += 1) {
     const arg = args[index];
     if (arg === '--help' || arg === '-h') parsed.help = true;
     else if (arg === '--dry-run') parsed.dryRun = true;
     else if (arg === '--fixture') parsed.fixture = true;
     else if (arg === '--geocode') parsed.geocode = true;
+    else if (arg === '--check-sources') parsed.checkSources = true;
     else if (arg === '--from') parsed.from = args[++index];
     else if (arg.startsWith('--from=')) parsed.from = arg.slice('--from='.length);
     else if (arg === '--out') parsed.out = args[++index];
